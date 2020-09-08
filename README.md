@@ -19,7 +19,7 @@
 > - 노드 연결 -> 오류   
 
 > ### 2020/09/02 WED   
-> - skeleton code FrontEnd 실행 완료   
+> - skeleton code FrontEnd 실행 완료.   
 > - skeleton code BackEnd JRE 버전 동기화 완료   
 > - BackEnd에 Getter, Setter 추가 완료.   
 
