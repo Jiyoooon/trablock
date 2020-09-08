@@ -61,9 +61,9 @@ public class WalletService implements IWalletService
 	 * @return
 	 */
 	@Override
-	public Wallet register(final Wallet wallet)
-	{
-		return null;
+	public Wallet register(final Wallet wallet) {
+		long id = this.walletRepository.create(wallet);
+		return this.walletRepository.get(id);
 	}
 
 	/**
