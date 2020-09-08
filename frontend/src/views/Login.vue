@@ -78,7 +78,7 @@ export default {
         },
         function(error) {
           console.error(error);
-          alert("유저 이메일 혹은 비밀번호가 일치하지 않습니다.");
+          alert("유저 이메일 혹은 비밀번호가 일치하지 않습니다..");
         }
       );
     }
