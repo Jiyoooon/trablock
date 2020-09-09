@@ -6,19 +6,19 @@
 <mapper namespace="com.trablock.domain.repository.IPartyRepository">
 
     <!--  Read  -->
-    <select id="searchAll" parameterType="" resultType="party">
+    <select id="searchAll" resultType="Party">
         select *
         from party;
     </select>
 
-    <select id="searchById" parameterType="long" resultType="party">
+    <select id="searchById" parameterType="long" resultType="Party">
         select *
         from party
         where id = #{id}
         ;
     </select>
 
-    <select id="searchByName" parameterType="String" resultType="party">
+    <select id="searchByName" parameterType="String" resultType="Party">
         select *
         from party
         where name like concat('%', #{name}, '%')
@@ -27,7 +27,7 @@
     <!--  Read  -->
 
     <!-- Create   -->
-    <insert id="create" parameterType="party">
+    <insert id="create" parameterType="Party">
         insert into party(
             id, name, explanation, created,
             target, pay_cycle, pay_date, pay_amount,
@@ -43,7 +43,7 @@
     <!-- Create   -->
 
     <!-- Update    -->
-    <update id="update" parameterType="party">
+    <update id="update" parameterType="Party">
         update party
         set
            name = #{name},
