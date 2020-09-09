@@ -1,6 +1,7 @@
 package com.ecommerce.application.impl;
 
 import com.ecommerce.application.IEthereumService;
+import com.ecommerce.domain.Transaction;
 import com.ecommerce.domain.exception.ApplicationException;
 import com.ecommerce.domain.repository.ITransactionRepository;
 import com.ecommerce.domain.wrapper.EthereumTransaction;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.exceptions.TransactionException;
@@ -64,7 +66,15 @@ public class EthereumService implements IEthereumService {
 	 */
 	@Override
 	public BigInteger getBalance(String address){
-		return null;
+		BigInteger bigInteger = null;
+		try {
+			bigInteger = web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST).sendAsync().get().getBalance();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return bigInteger;
 	}
 
 	/**
