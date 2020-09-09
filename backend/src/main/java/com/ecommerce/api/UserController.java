@@ -27,6 +27,8 @@ public class UserController {
         this.userService = userService;
     }
 
+    
+    //전체 유저 리스틑
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public List<User> list() {
         List<User> userList = userService.list();
@@ -49,6 +51,8 @@ public class UserController {
         return user;
     }
 
+    
+    //로그인
     @RequestMapping(value = "/users/login", method = RequestMethod.POST)
     public User login(@RequestBody User user) {
         User userFetched = userService.get(user.getEmail());
@@ -58,16 +62,22 @@ public class UserController {
         return userFetched;
     }
 
+    
+    //회원가입
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     public User create(@RequestBody User user) {
         return userService.add(user);
     }
 
+    
+    //회원수정
     @RequestMapping(value = "/users", method = RequestMethod.PUT)
     public User update(@RequestBody User user) {
         return userService.update(user);
     }
 
+    
+    //회원탈퇴
     @RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable int id) {
         userService.delete(id);
