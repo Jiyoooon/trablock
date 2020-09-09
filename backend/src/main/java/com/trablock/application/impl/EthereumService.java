@@ -8,6 +8,15 @@ import com.trablock.domain.exception.ApplicationException;
 import com.trablock.domain.repository.ITransactionRepository;
 import com.trablock.domain.wrapper.EthereumTransaction;
 
+import com.trablock.application.IEthereumService;
+import com.trablock.domain.Transaction;
+import com.trablock.domain.exception.ApplicationException;
+import com.trablock.domain.repository.ITransactionRepository;
+import com.trablock.domain.wrapper.EthereumTransaction;
+import com.trablock.domain.Address;
+import com.trablock.domain.CommonUtil;
+import com.trablock.domain.CryptoUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.*;
 import org.web3j.protocol.exceptions.TransactionException;
@@ -65,7 +75,15 @@ public class EthereumService implements IEthereumService {
 	 */
 	@Override
 	public BigInteger getBalance(String address){
-		return null;
+		BigInteger bigInteger = null;
+		try {
+			bigInteger = web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST).sendAsync().get().getBalance();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return bigInteger;
 	}
 
 	/**

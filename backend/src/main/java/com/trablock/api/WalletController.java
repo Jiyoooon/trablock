@@ -5,6 +5,13 @@ import com.trablock.domain.Wallet;
 import com.trablock.domain.exception.EmptyListException;
 import com.trablock.domain.exception.NotFoundException;
 
+import com.trablock.application.IWalletService;
+import com.trablock.domain.Wallet;
+import com.trablock.domain.exception.ApplicationException;
+import com.trablock.domain.exception.EmptyListException;
+import com.trablock.domain.exception.NotFoundException;
+import com.trablock.infrastructure.repository.WalletRepository;
+
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +44,12 @@ public class WalletController {
 	@ApiOperation(value = "Register wallet of user")
 	@RequestMapping(value = "/wallets", method = RequestMethod.POST)
 	public Wallet register(@Valid @RequestBody Wallet wallet) {
-		return null;
+
+		Wallet newWallet = this.walletService.register(wallet);
+		if(newWallet == null) {
+			throw new ApplicationException("지갑 정보를 등록할 수 없습니다.");
+		}
+		return newWallet;
 	}
 
 	/**
@@ -48,7 +60,11 @@ public class WalletController {
 	@ApiOperation(value = "Fetch wallet by address")
 	@RequestMapping(value = "/wallets/{address}", method = RequestMethod.GET)
 	public Wallet get(@PathVariable String address) {
-		return null;
+		Wallet searchWallet = new WalletRepository().get(address);
+		if (searchWallet == null) {
+			throw new ApplicationException("지갑을 찾을 수 없습니다.");
+		}
+		return searchWallet;
 	}
 
 	/**
@@ -59,7 +75,11 @@ public class WalletController {
 	@ApiOperation(value = "Fetch wallet of user")
 	@RequestMapping(value = "/wallets/of/{uid}", method = RequestMethod.GET)
 	public Wallet getByUser(@PathVariable long uid) {
-		return null;
+		Wallet searchWallet = this.walletService.get(uid);
+		if (searchWallet == null) {
+			throw new ApplicationException("지갑을 찾을 수 없습니다.");
+		}
+		return searchWallet;
 	}
 
 	/**
@@ -70,6 +90,6 @@ public class WalletController {
 	@ApiOperation(value = "Request ether")
 	@RequestMapping(value ="/wallets/{address}", method = RequestMethod.PUT)
 	public Wallet requestEth(@PathVariable String address){ // 테스트 가능하도록 일정 개수의 코인을 충전해준다.
-		return null;
+		return this.walletService.requestEth(address);
 	}
 }
