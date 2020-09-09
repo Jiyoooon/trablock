@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.trablock.domain.repository.IUserRepository">
+ 
+ 	<select id="list" resultType="User">
+ 		SELECT id, name FROM users
+ 	</select>
+ 	
+ 	<select id="getUserById" parameterType="long" resultType="User">
+ 		SELECT id, name, email FROM users WHERE id = #{id};
+ 	</select>
+
+	<select id="getWallets" parameterType="long" resultType="Wallet">
+		SELECT id, address 
+		<if test="mine == 1">, balance</if>
+		FROM wallets
+		WHERE owner_id = #{userid}
+	</select> 	
+	
+	<select id="getParties" parameterType="long" resultType="Party">
+		SELECT p.*
+		FROM Party p
+		RIGHT JOIN (SELECT party_id FROM PartyMember WHERE user_id = #{userid}) pm
+		ON p.id = pm.party_id
+	</select>
+	
+	<insert id="create" parameterType="User">
+		INSERT INTO users(name, email, password)
+		VALUES(#{name}, #{email}, #{password})
+	</insert>
+	
+	<update id="update" parameterType="User">
+		UPDATE users 
+			SET name = #{name}
+				email = #{email}
+				password = #{password}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="delete" parameterType="long">
+		DELETE FROM users
+		WHERE id = #{userid}
+	</delete>
+	
+	
+	
+	<select id="isDupEmail" parameterType="string" resultType="int">
+		SELECT count(id) FROM users WHERE email = #{email}
+	</select>
+	
+	<select id="isConfirmedEmail" parameterType="string" resultType="int">
+		SELECT count(email)
+		FROM EmailConfirm
+		WHERE email = #{email} AND now() &lt; expire_date
+	</select>
+	
+	<insert id="insertEmailConfirm" parameterType="string">
+		INSERT into EmailConfirm
+			VALUES(#{email}, #{code}, now(), date_add(now(), interval 3 minute))
+	</insert>
+	
+	<select id="checkConfirmCode" parameterType="EmailConfirm" resultType="int">
+		SELECT count(email)
+		FROM EmailConfirm
+		WHERE email = #{email} 
+			AND code = #{code} 
+			AND now() &lt; expire_date
+		LIMIT 0, 1
+	</select>
+	
+	<delete id="deleteConfirmCode" parameterType="string">
+		DELETE FROM EmailConfirm
+		WHERE email = #{email}
+	</delete>
+	
+	
+	
+	<select id="userInGroup" parameterType="long" resultType="PartyMember">
+		SELECT 	u.id as 'userId', u.email as 'email', u.name as 'name'
+				, pm.party_id as 'partyId', pm.payment as 'payment', pm.chief as 'chief', pm.warning as 'warning'
+		FROM users u,
+		RIGHT JOIN (SELECT * PartyMember WHERE party_id = #{partyId}) pm
+		ON u.id = pm.user_id
+		
+	</select>
+	
+	<select id="checkPassword" parameterType="string" resultType="int">
+		SELECT count(id)
+		FROM users
+		WHERE id = #{userid} AND password = #{password}
+	</select>
+	
+</mapper>

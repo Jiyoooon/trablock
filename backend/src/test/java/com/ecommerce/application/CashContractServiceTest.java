@@ -1,6 +1,5 @@
 package com.ecommerce.application;
 
-import com.ecommerce.Application;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -9,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.trablock.Application;
+import com.trablock.application.ICashContractService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)

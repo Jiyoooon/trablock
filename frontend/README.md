@@ -1,30 +1,23 @@
-# frontend-master
+# plog_frontend
 
 ## Project setup
 ```
-npm install
+yarn install
 ```
-config/index.js의 API_BASE_URL, BLOCKCHAIN_URL와 
-이더리움에 배포한 스마트 컨트랙트 주소 정보를 알맞게 설정
 
 ### Compiles and hot-reloads for development
 ```
-npm run serve
+yarn serve
 ```
 
 ### Compiles and minifies for production
 ```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
+yarn build
 ```
 
 ### Lints and fixes files
 ```
-npm run lint
+yarn lint
 ```
 
 ### Customize configuration
