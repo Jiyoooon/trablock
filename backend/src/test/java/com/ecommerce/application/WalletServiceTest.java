@@ -1,8 +1,10 @@
 package com.ecommerce.application;
 
-import com.ecommerce.Application;
-import com.ecommerce.domain.Wallet;
 import com.fasterxml.jackson.databind.node.BigIntegerNode;
+import com.trablock.Application;
+import com.trablock.application.IWalletService;
+import com.trablock.domain.Wallet;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

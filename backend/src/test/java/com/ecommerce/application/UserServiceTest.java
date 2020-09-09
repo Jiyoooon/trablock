@@ -1,7 +1,9 @@
 package com.ecommerce.application;
 
-import com.ecommerce.Application;
-import com.ecommerce.domain.User;
+import com.trablock.Application;
+import com.trablock.application.IUserService;
+import com.trablock.domain.User;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

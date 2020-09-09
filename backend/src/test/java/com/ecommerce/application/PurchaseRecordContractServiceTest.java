@@ -1,8 +1,10 @@
 package com.ecommerce.application;
 
-import com.ecommerce.Application;
-import com.ecommerce.application.impl.PurchaseRecordContractService;
-import com.ecommerce.domain.Record;
+import com.trablock.Application;
+import com.trablock.application.IPurchaseRecordContractService;
+import com.trablock.application.impl.PurchaseRecordContractService;
+import com.trablock.domain.Record;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
