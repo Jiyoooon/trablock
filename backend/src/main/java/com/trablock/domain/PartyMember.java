@@ -9,6 +9,9 @@ public class PartyMember {
     private boolean chief;          // 모임리더인지 여부(true이면 리더)
     private boolean warning;        // 미납경고(true이면 경고)
 
+    private String email;			//유저 이메일
+    private String name;			//유저 이름
+    
     public PartyMember() {
     }
 
@@ -51,15 +54,30 @@ public class PartyMember {
     public void setWarning(boolean warning) {
         this.warning = warning;
     }
+    
+    
 
-    @Override
-    public String toString() {
-        return "PartyMember{" +
-                "userId=" + userId +
-                ", partyId=" + partyId +
-                ", payment=" + payment +
-                ", chief=" + chief +
-                ", warning=" + warning +
-                '}';
-    }
+    public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "PartyMember [userId=" + userId + ", partyId=" + partyId + ", payment=" + payment + ", chief=" + chief
+				+ ", warning=" + warning + ", email=" + email + ", name=" + name + "]";
+	}
+
+	
 }

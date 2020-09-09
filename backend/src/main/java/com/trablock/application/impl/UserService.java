@@ -35,44 +35,44 @@ public class UserService implements IUserService {
         return this.userRepository.list();
     }
 
-    @Override
-    public User get(long id) {
-    	//다른 유저 정보 가져옴
-        return this.userRepository.get(id);
-    }
-
-    @Override
-    public User get(String email) {
-    	//로그인한 유저 정보 가져옴 => token
-    	return this.userRepository.get(email); 
-    }
-
-    @Override
-    public User add(User user) {
-        long id = this.userRepository.create(user);
-        return this.userRepository.get(id);
-    }
-
-    @Override
-    public User update(User user) {
-
-        User found = this.userRepository.get(user.getEmail());
-        if(found == null)
-            throw new ApplicationException("회원 정보를 찾을 수 없습니다.");
-
-        if(user.getId() == 0)
-            user.setId(found.getId());
-        if(user.getName() == null)
-            user.setName(found.getName());
-        if(user.getPassword() == null)
-            user.setPassword(found.getPassword());
-
-        int affected = this.userRepository.update(user);
-        if(affected == 0)
-            throw new ApplicationException("회원수정 처리가 반영되지 않았습니다.");
-
-        return this.userRepository.get(user.getId());
-    }
+//    @Override
+//    public User get(long id) {
+//    	//다른 유저 정보 가져옴
+//        return this.userRepository.get(id);
+//    }
+//
+//    @Override
+//    public User get(String email) {
+//    	//로그인한 유저 정보 가져옴 => token
+//    	return this.userRepository.get(email); 
+//    }
+//
+//    @Override
+//    public User add(User user) {
+//        long id = this.userRepository.create(user);
+//        return this.userRepository.get(id);
+//    }
+//
+//    @Override
+//    public User update(User user) {
+//
+//        User found = this.userRepository.get(user.getEmail());
+//        if(found == null)
+//            throw new ApplicationException("회원 정보를 찾을 수 없습니다.");
+//
+//        if(user.getId() == 0)
+//            user.setId(found.getId());
+//        if(user.getName() == null)
+//            user.setName(found.getName());
+//        if(user.getPassword() == null)
+//            user.setPassword(found.getPassword());
+//
+//        int affected = this.userRepository.update(user);
+//        if(affected == 0)
+//            throw new ApplicationException("회원수정 처리가 반영되지 않았습니다.");
+//
+//        return this.userRepository.get(user.getId());
+//    }
 
     @Override
     public void delete(long id) {
@@ -121,6 +121,8 @@ public class UserService implements IUserService {
 		
 	}
 
+	
+	
 	@Override
 	public boolean checkConfirmCode(EmailConfirm emailConfirm) {
 		return userRepository.checkConfirmCode(emailConfirm) > 0 ? true : false;
@@ -129,5 +131,33 @@ public class UserService implements IUserService {
 	@Override
 	public void removeConfirmCode(String email) {
 		userRepository.deleteConfirmCode(email);
+	}
+
+
+	@Override
+	public User get(long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public User get(String email) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public User add(User user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public User update(User user) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

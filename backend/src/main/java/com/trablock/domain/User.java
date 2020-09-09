@@ -1,7 +1,9 @@
 package com.trablock.domain;
 
-import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import lombok.Data;
 
 @Data
 public class User {
@@ -10,6 +12,10 @@ public class User {
     private String email;
     private String password;
     private LocalDateTime createdAt;
+    
+    private List<Wallet> wallets;
+    private List<Party> parties;
+    
 	public long getId() {
 		return id;
 	}
@@ -39,6 +45,23 @@ public class User {
 	}
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+	public List<Wallet> getWallets() {
+		return wallets;
+	}
+	public void setWallets(List<Wallet> wallets) {
+		this.wallets = wallets;
+	}
+	public List<Party> getParties() {
+		return parties;
+	}
+	public void setParties(List<Party> parties) {
+		this.parties = parties;
+	}
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", createdAt="
+				+ createdAt + ", wallets=" + wallets + ", parties=" + parties + "]";
 	}
     
     
