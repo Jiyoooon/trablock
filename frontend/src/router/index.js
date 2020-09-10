@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Main from "../views/Main.vue";
+import groupMain from "../views/group/GroupMain.vue";
 
 Vue.use(VueRouter)
 
@@ -9,6 +10,11 @@ Vue.use(VueRouter)
       path: "/",
       name: "main",
       component: Main,
+    },
+    {
+      path: "/group",
+      name: "groupmain",
+      component: groupMain,
     },
   ]
 
