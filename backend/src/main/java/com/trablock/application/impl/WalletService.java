@@ -51,9 +51,19 @@ public class WalletService implements IWalletService
 	 * @return
 	 */
 	@Override
-	public Wallet get(final long userId)
-	{
-		return null;
+	public Wallet get(final long userId) {
+		Wallet wallet = walletRepository.get(userId);
+		String walletAddress = wallet.getAddress();
+
+		// 주소로 정보검색 요청
+		BigInteger updatedBalance = ethereumService.getBalance(walletAddress);
+
+		// 잔액정보가 불일치하면 업데이트
+		if (updatedBalance != wallet.getBalance().toBigInteger()) {
+			wallet.setBalance(BigDecimal.valueOf(Long.parseLong(updatedBalance.toString())));
+		}
+
+		return wallet;
 	}
 
 	/**
@@ -73,8 +83,8 @@ public class WalletService implements IWalletService
 	 * @return Wallet
 	 */
 	@Override
-	public Wallet syncBalance(final String walletAddress, final BigDecimal balance, final int cash)
-	{
+	public Wallet syncBalance(final String walletAddress, final BigDecimal balance, final int cash) {
+
 		return null;
 	}
 
@@ -86,6 +96,17 @@ public class WalletService implements IWalletService
 	 */
 	@Override
 	public Wallet requestEth(String walletAddress) {
-		return null;
+		// 1. 일단 지갑주소를 가지고 지갑객체를 얻는다.
+		Wallet wallet = walletRepository.get(walletAddress);
+
+		// 2. 지갑을 더 충전할 수 있는지 확인한다.
+		if (!wallet.canRequestEth()) {
+			return wallet;	// 2-1. 더 이상 충전할 수 없다면 원래 지갑 정보를 반환
+		}
+
+		// 2-2. 지갑에 5eth를 더 충전하도록 한다.
+		ethereumService.requestEth(walletAddress);
+
+		return wallet;
 	}
 }

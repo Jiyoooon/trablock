@@ -22,7 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -97,6 +99,27 @@ public class EthereumService implements IEthereumService {
 	@Override
 	public String requestEth(final String address) // 특정 주소로 테스트 특정 양(5Eth) 만큼 충전해준다.
 	{
+		try {
+			// 1. keystore... 이게 뭐하는 함수...이지? (뭘 받아오는 함수인거 같긴한데..)
+			Credentials credentials = WalletUtils.loadCredentials(PASSWORD, ADMIN_WALLET_FILE);
+
+			// 2. 송금 트랜젝션 생성
+			TransactionReceipt transactionReceipt = Transfer.sendFunds(web3j, credentials, address, BigDecimal.valueOf(5), Convert.Unit.ETHER).send();
+
+			// 3. hash 결과(string) 반환
+			return transactionReceipt.getTransactionHash();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (CipherException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (TransactionException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// #. 에러발생시 null을 반환한다.
 		return null;
 	}
 
