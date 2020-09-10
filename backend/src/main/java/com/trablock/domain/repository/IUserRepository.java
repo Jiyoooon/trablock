@@ -15,6 +15,7 @@ public interface IUserRepository {
     
     
     User getUserById(long id);
+    User getUserByEmail(String email);
     
     List<Wallet> getWallets(long userid, long mine);
     List<Party> getParties(long userid);
@@ -23,6 +24,9 @@ public interface IUserRepository {
     int update(User user);
     int delete(long userid);
 
+    
+    //닉네임 중복
+    int isDupNickname(String nickname);
     //이메일 인증
 	int isDupEmail(String email);
 	int isConfirmedEmail(String email);
@@ -32,5 +36,8 @@ public interface IUserRepository {
 	
 	List<User> userInGroup(long partyId);//그룹별 유저정보
 	
-	int checkPassword(long userid, String password);
+	int checkPassword(String uid, String password);
+	void updatePasswordByEmail(String password, String email);
+	
+	long selectNextUserId();
 }

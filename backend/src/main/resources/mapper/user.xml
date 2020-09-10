@@ -6,17 +6,21 @@
 <mapper namespace="com.trablock.domain.repository.IUserRepository">
  
  	<select id="list" resultType="User">
- 		SELECT id, name FROM users
+ 		SELECT id, nickname, email FROM User
  	</select>
  	
  	<select id="getUserById" parameterType="long" resultType="User">
- 		SELECT id, name, email FROM users WHERE id = #{id};
+ 		SELECT id, nickname, email FROM User WHERE id = #{id};
+ 	</select>
+ 	
+ 	<select id="getUserByEmail" parameterType="string" resultType="User">
+ 		SELECT id, nickname, email FROM User WHERE email = #{email}
  	</select>
 
 	<select id="getWallets" parameterType="long" resultType="Wallet">
 		SELECT id, address 
 		<if test="mine == 1">, balance</if>
-		FROM wallets
+		FROM Wallet
 		WHERE owner_id = #{userid}
 	</select> 	
 	
@@ -28,27 +32,30 @@
 	</select>
 	
 	<insert id="create" parameterType="User">
-		INSERT INTO users(name, email, password)
-		VALUES(#{name}, #{email}, #{password})
+		INSERT INTO User(nickname, email, password)
+		VALUES(#{nickname}, #{email}, #{password})
 	</insert>
 	
 	<update id="update" parameterType="User">
-		UPDATE users 
-			SET name = #{name}
+		UPDATE User 
+			SET nickname = #{nickname}
 				email = #{email}
 				password = #{password}
 		WHERE id = #{id}
 	</update>
 	
 	<delete id="delete" parameterType="long">
-		DELETE FROM users
+		DELETE FROM User
 		WHERE id = #{userid}
 	</delete>
 	
 	
+	<select id="isDupNickname" parameterType="string" resultType="int">
+		SELECT count(id) FROM User WHERE nickname = #{nickname}
+	</select>
 	
 	<select id="isDupEmail" parameterType="string" resultType="int">
-		SELECT count(id) FROM users WHERE email = #{email}
+		SELECT count(id) FROM User WHERE email = #{email}
 	</select>
 	
 	<select id="isConfirmedEmail" parameterType="string" resultType="int">
@@ -81,7 +88,7 @@
 	<select id="userInGroup" parameterType="long" resultType="PartyMember">
 		SELECT 	u.id as 'userId', u.email as 'email', u.name as 'name'
 				, pm.party_id as 'partyId', pm.payment as 'payment', pm.chief as 'chief', pm.warning as 'warning'
-		FROM users u,
+		FROM User u,
 		RIGHT JOIN (SELECT * PartyMember WHERE party_id = #{partyId}) pm
 		ON u.id = pm.user_id
 		
@@ -89,8 +96,21 @@
 	
 	<select id="checkPassword" parameterType="string" resultType="int">
 		SELECT count(id)
-		FROM users
+		FROM User
 		WHERE id = #{userid} AND password = #{password}
 	</select>
 	
+	<update id="updatePasswordByEmail" parameterType="string">
+		UPDATE User
+		SET password = #{password}
+		WHERE email = #{email}	
+	</update>
+	
+	
+	<select id="selectNextUserId" resultType="int">
+		SELECT AUTO_INCREMENT
+		FROM information_schema.tables
+		WHERE table_name = 'User'
+		AND table_schema = DATABASE()
+	</select>
 </mapper>
