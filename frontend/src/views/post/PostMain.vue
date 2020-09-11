@@ -2,7 +2,7 @@
   <center>
     <v-card height="100%">
       <v-toolbar
-        color="#FFA000"
+        color="green darken-1"
         dark
         flat
         prominent
@@ -23,10 +23,10 @@
         </v-btn>
 
         <div class="my-2">
-          <router-link
+            <router-link
             :to="{path: 'group'}">
-            <v-btn large color="green darken-1">Blog</v-btn>
-          </router-link>
+                <v-btn large color="amber darken-1">Group</v-btn>
+            </router-link>
         </div>
 
         <template v-slot:extension>
