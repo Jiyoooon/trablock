@@ -92,7 +92,7 @@
               </v-list>
             </v-navigation-drawer>
             <v-card min-height="40vh" class="mx-10">
-              <h1>HOW TO USE TRABLCOK</h1>
+              <h1>그룹크리에이트</h1>
             </v-card>
           </v-card>
         </v-tab-item>
