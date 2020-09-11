@@ -1,6 +1,5 @@
 package com.trablock.api.handler;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -74,12 +73,20 @@ public class GlobalExceptionHandler {
     
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = Exception.class)
-    public HashMap<String, Object> handleException(Exception e){
+    public HashMap<String, Object> defaultHandleException(HttpServletRequest req, Exception e){
     	e.printStackTrace();
     	HashMap<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("result", "fail");
 		map.put("cause", e.getMessage());
+		
+		StringBuilder msg = new StringBuilder();
+		msg.append(":bangbang:`Backend exception log`\n");
+		msg.append("**ERROR**\t").append(e.toString()).append("\n");
+		msg.append("**URL**\t\t").append(req.getRequestURL()).append("\n");
+  
+//		SlackApi api =new SlackApi("https://meeting.ssafy.com/hooks/7rifsd8zajfj7xh5ewop5bwjee");    //웹훅URL
+//        api.call(new SlackMessage("jiyooon","spring",msg.toString()));
 		
 		return map;
     }
