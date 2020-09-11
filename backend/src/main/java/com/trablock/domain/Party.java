@@ -7,16 +7,16 @@ public class Party {
     private long id;                    // 모임 아이디
     private String name;                // 모임 명
     private String explanation;         // 모임 설명
-    private LocalDateTime created;      // 모임 생성날짜
+    private LocalDateTime created;      // 모임 생성날짜(기본 : 현재 시간)
     private BigDecimal target;          // 모임 목표금액
-    private int payCycle;               // 모임 납입주기
-    private int payDate;                // 모임 납입날짜
+    private boolean payCycle;           // 모임 납입주기(false : 월단위, true : 주단위)
+    private int payDate;                // 모임 납입날짜(월단위시 일을 의미하고, 주단위시 1=월요일 ~ 7=일요일을 의미)
     private BigDecimal payAmount;       // 모임 납입금
     private String image;               // 사진
-    private LocalDateTime startDate;    // 여행 시작 날짜
-    private LocalDateTime endDate;      // 여행 종료 날짜
+    private LocalDateTime startDate;    // 여행 시작 날짜(기본)
+    private LocalDateTime endDate;      // 여행 종료 날짜(기본)
     private String destination;         // 여행지
-    private boolean available;          // 완료 여부
+    private boolean available;          // 완료 여부(기본 : false)
     private BigDecimal exitFee;         // 퇴출수수료
 
     public long getId() {
@@ -59,11 +59,11 @@ public class Party {
         this.target = target;
     }
 
-    public int getPayCycle() {
+    public boolean getPayCycle() {
         return payCycle;
     }
 
-    public void setPayCycle(int payCycle) {
+    public void setPayCycle(boolean payCycle) {
         this.payCycle = payCycle;
     }
 
