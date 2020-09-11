@@ -8,19 +8,19 @@
     <!--  Read  -->
     <select id="searchAll" resultType="Party">
         select *
-        from party;
+        from Party;
     </select>
 
     <select id="searchById" parameterType="long" resultType="Party">
         select *
-        from party
+        from Party
         where id = #{id}
         ;
     </select>
 
     <select id="searchByName" parameterType="String" resultType="Party">
         select *
-        from party
+        from Party
         where name like concat('%', #{name}, '%')
         ;
     </select>
@@ -28,7 +28,7 @@
 
     <!-- Create   -->
     <insert id="create" parameterType="Party">
-        insert into party(
+        insert into Party(
             id, name, explanation, created,
             target, pay_cycle, pay_date, pay_amount,
             image, start_date, end_date, destination,
@@ -44,7 +44,7 @@
 
     <!-- Update    -->
     <update id="update" parameterType="Party">
-        update party
+        update Party
         set
            name = #{name},
            explanation = #{explanation},
@@ -66,7 +66,7 @@
     <!-- Delete    -->
     <delete id="delete" parameterType="long">
         delete
-        from party
+        from Party
         where id = #{id}
     </delete>
     <!-- Delete    -->
