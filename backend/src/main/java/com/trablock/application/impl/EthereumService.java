@@ -9,7 +9,6 @@ import com.trablock.domain.repository.ITransactionRepository;
 import com.trablock.domain.wrapper.EthereumTransaction;
 
 import com.trablock.application.IEthereumService;
-import com.trablock.domain.Transaction;
 import com.trablock.domain.exception.ApplicationException;
 import com.trablock.domain.repository.ITransactionRepository;
 import com.trablock.domain.wrapper.EthereumTransaction;
@@ -25,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
+import org.web3j.exceptions.MessageDecodingException;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -84,6 +84,9 @@ public class EthereumService implements IEthereumService {
 			e.printStackTrace();
 		} catch (ExecutionException e) {
 			e.printStackTrace();
+		} catch (MessageDecodingException e) {
+			//"주소 길이/형식 오류"
+			e.printStackTrace();
 		}
 		return bigInteger;
 	}
@@ -99,28 +102,34 @@ public class EthereumService implements IEthereumService {
 	@Override
 	public String requestEth(final String address) // 특정 주소로 테스트 특정 양(5Eth) 만큼 충전해준다.
 	{
+		String hash = "";
 		try {
-			// 1. keystore... 이게 뭐하는 함수...이지? (뭘 받아오는 함수인거 같긴한데..)
-			Credentials credentials = WalletUtils.loadCredentials(PASSWORD, ADMIN_WALLET_FILE);
+			String privatetKey = "";
+			// 1-1. keystore-비밀번호를 통해 복호화 -> PrivateKey(개인키)를 구함 ; 자격증명
+			Credentials credentials =  WalletUtils.loadCredentials("sp199191", "keyStore1");
 
-			// 2. 송금 트랜젝션 생성
-			TransactionReceipt transactionReceipt = Transfer.sendFunds(web3j, credentials, address, BigDecimal.valueOf(5), Convert.Unit.ETHER).send();
-
-			// 3. hash 결과(string) 반환
-			return transactionReceipt.getTransactionHash();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (CipherException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (TransactionException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
+			// 1-2. 또는 keystore파일이 없을경우 사용자가 직접 privatekey를 입력함
+			//String privateKey = "입력받은값";
+			//Credentials credentials = Credentials.create(privateKey);
+			
+			/* 2. 송금 트랜잭션 생성
+			 */
+			TransactionReceipt transactionReceipt = Transfer.sendFunds(
+					web3j, 
+					credentials, //from : credentials 보낼 증명서
+					address, // toAddress : addr 받을 주소
+			        BigDecimal.valueOf(5.0), //value : 보낼 값
+			        Convert.Unit.ETHER) //unit : 단위
+			        .send();
+			
+			// hash 결과 출력
+			hash = transactionReceipt.getTransactionHash();
+			
+		}  catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// #. 에러발생시 null을 반환한다.
-		return null;
+		return hash;
 	}
 
 	/**
@@ -133,6 +142,7 @@ public class EthereumService implements IEthereumService {
 	 */
 	@Override
 	public Address getAddress(String addr){
+	
 		return null;
 	}
 

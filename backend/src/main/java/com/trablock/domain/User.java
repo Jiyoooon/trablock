@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class User {
     private long id;
-    private String name;
+    private String nickname;
     private String email;
     private String password;
     private LocalDateTime createdAt;
@@ -22,11 +22,11 @@ public class User {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getName() {
-		return name;
+	public String getNickname() {
+		return nickname;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 	public String getEmail() {
 		return email;
@@ -60,7 +60,7 @@ public class User {
 	}
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", createdAt="
+		return "User [id=" + id + ", nickname=" + nickname + ", email=" + email + ", password=" + password + ", createdAt="
 				+ createdAt + ", wallets=" + wallets + ", parties=" + parties + "]";
 	}
     
