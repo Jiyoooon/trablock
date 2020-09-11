@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Main from "../views/Main.vue";
 import groupMain from "../views/group/GroupMain.vue";
+import groupCreate from "../views/group/GroupCreate.vue";
 
 // post
 import postMain from "../views/post/PostMain.vue";
@@ -20,6 +21,12 @@ Vue.use(VueRouter)
       path: "/group",
       name: "groupmain",
       component: groupMain,
+    },
+    
+    {
+      path: "/group/create",
+      name: "groupcreate",
+      component: groupCreate,
     },
 
     // post

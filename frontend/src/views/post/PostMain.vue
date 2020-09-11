@@ -15,16 +15,16 @@
         <v-spacer></v-spacer>
 
         <v-btn icon>
-          <v-icon>mdi-account-outline</v-icon>
+          <v-icon>far fa-user</v-icon>
         </v-btn>
 
         <v-btn icon>
-          <v-icon>mdi-blinds</v-icon>
+          <v-icon>far fa-bell</v-icon>
         </v-btn>
 
         <div class="my-2">
             <router-link
-            :to="{path: 'group'}">
+            :to="{path: 'group'}" class="py-0 text-center text-h6 text-decoration-none">
                 <v-btn large color="amber darken-1">Group</v-btn>
             </router-link>
         </div>
@@ -36,8 +36,8 @@
           >
             <v-tabs-slider color="yellow"></v-tabs-slider>
 
-            <v-tab>모임 관리</v-tab>
-            <v-tab>계좌 관리</v-tab>
+            <v-tab class="tabinfo navbarlistitemlink" @click="gotoPostMain">포스트</v-tab>
+            <v-tab class="tabinfo navbarlistitemlink" @click="gotoPostManage">계좌 관리</v-tab>
           </v-tabs>
         </template>
       </v-toolbar>
@@ -59,41 +59,54 @@
             </v-row>
 
             <v-navigation-drawer
-              v-model="drawer"
-              :expand-on-hover="expandOnHover"
-              :mini-variant="miniVariant"
-              :right="right"
-              :permanent="permanent"
-              absolute
-            >
-              <v-list
-                dense
-                nav
-                class="py-0"
-              >
-                <v-list-item :class="miniVariant && 'px-0'">
-                  <v-list-item-content class="elevation-5 mt-5 mb-2">
-                    <v-list-item-title><h3>나의 모임</h3></v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
+            :mini-variant="miniVariant"
+          permanent
+          expand-on-hover
+          left
+          absolute
+          
+        >
+          <!-- <v-list>
+            <v-list-item class="px-2">
+              <v-list-item-avatar>
+                <v-img src="https://randomuser.me/api/portraits/women/85.jpg"></v-img>
+              </v-list-item-avatar>
+            </v-list-item>
 
-                <v-divider></v-divider>
+            <v-list-item link>
+              <v-list-item-content>
+                <v-list-item-title class="title">Sandra Adams</v-list-item-title>
+                <v-list-item-subtitle>sandra_a88@gmail.com</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list> -->
 
-                <v-list-item
-                  v-for="item in items"
-                  :key="item.title"
-                  link
-                >
-                  <v-list-item-icon>
-                    <v-icon>{{ item.icon }}</v-icon>
-                  </v-list-item-icon>
+          <v-divider></v-divider>
 
-                  <v-list-item-content>
-                    <v-list-item-title>{{ item.title }}</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-            </v-navigation-drawer>
+          <v-list
+            nav
+            dense
+          >
+            <v-list-item link>
+              <v-list-item-icon>
+                <v-icon>mdi-folder</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>My Files</v-list-item-title>
+            </v-list-item>
+            <v-list-item link>
+              <v-list-item-icon>
+                <v-icon>mdi-account-multiple</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Shared with me</v-list-item-title>
+            </v-list-item>
+            <v-list-item link>
+              <v-list-item-icon>
+                <v-icon>mdi-star</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Starred</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-navigation-drawer>
             <v-card min-height="40vh" class="mx-10">
               <h1>HOW TO USE TRABLCOK</h1>
             </v-card>
@@ -135,7 +148,13 @@ export default {
       }
     },
   methods: {
-    
+    // 상단 탭 : 클릭 이용성 개선
+    gotoPostMain() {  
+        this.$router.push('/post')
+    },
+    gotoPostManage() {
+        this.$router.push('/post/manage')
+    },
   },
 };
 </script>
