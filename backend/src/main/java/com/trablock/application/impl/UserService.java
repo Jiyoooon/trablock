@@ -73,7 +73,7 @@ public class UserService implements IUserService {
     		throw new NotFoundException("회원 정보 찾지 못함");
     	}
     	
-    	user.setPassword("");
+//    	user.setPassword("");
 	    user.setWallets(this.userRepository.getWallets(user.getId(), 0));
 	    user.setParties(this.userRepository.getParties(user.getId()));
     	
