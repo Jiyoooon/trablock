@@ -305,7 +305,7 @@ public class UserController {
      
       //id로 회원정보 조회
       @ApiOperation(value = "id로 회원 정보 가져오기")
-      @GetMapping("user/{id}")
+      @GetMapping("user/id/{id}")
       public ResponseEntity<HashMap<String, Object>> getUserInfoById(HttpServletRequest request, @PathVariable("id") String id) throws Exception {
 	      	HashMap<String, Object> map = new HashMap<String, Object>();
 	      	
@@ -320,6 +320,29 @@ public class UserController {
   				user.setPassword("");
   				result = "success";
   				map.put("data", user);
+  			}
+  			
+  			map.put("result", result);
+  			return new ResponseEntity<HashMap<String, Object>>(map, status);
+      }
+      
+      
+      //닉네임 or 이메일로 회원 조회
+      @ApiOperation(value = "닉네임 또는 이메일로 회원 정보 가져오기")
+      @GetMapping("user/query/{query}")
+      public ResponseEntity<HashMap<String, Object>> getUserInfoByEmailOrNickname(HttpServletRequest request, @PathVariable("query") String query) throws Exception {
+	      	HashMap<String, Object> map = new HashMap<String, Object>();
+	      	
+	      	String result = "fail";
+	      	HttpStatus status = HttpStatus.ACCEPTED;
+	      
+  			List<User> userList = userService.findUserByEmailOrNickname(query);
+  			if(userList == null) {
+  				logger.error("NOT FOUND Email or Nickname: ", query);
+  				throw new NotFoundException("회원 정보 찾을 수 없음");
+  			}else {
+  				result = "success";
+  				map.put("data", userList);
   			}
   			
   			map.put("result", result);
