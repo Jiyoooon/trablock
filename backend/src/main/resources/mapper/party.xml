@@ -11,6 +11,14 @@
         from Party;
     </select>
 
+    <!--  PartyMember의 party_id 가져오기  -->
+    <select id="getByUserId" parameterType="long" resultType="Long">
+        select party_id
+        from PartyMember
+        where user_id = #{userId}
+        ;
+    </select>
+
     <select id="searchById" parameterType="long" resultType="Party">
         select *
         from Party

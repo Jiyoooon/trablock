@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface IPartyService {
     List<Party> list();
+    List<Long> getByUserId(long userId);
     Party get(long id);
     List<Party> get(String name);
 

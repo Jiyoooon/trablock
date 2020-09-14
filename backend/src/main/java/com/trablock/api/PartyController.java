@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -39,18 +40,32 @@ public class PartyController {
         return partyList;
     }
 
+    /**
+     *
+     * @param id User 테이블의 유저 아이디
+     * @return
+     */
     // 특정 id의 모임 검색
     @ApiOperation(value = "특정 id의 모임 검색")
     @GetMapping("/party/searchId/{id}")
-    public Party get(@PathVariable int id) {
+    public List<Party> get(@PathVariable int id) {
 
-        Party party = partyService.get(id);
-        if (party == null) {
+        List<Party> partyList = new ArrayList<>();
+
+        // 1. PartyMember에서 해당되는 모임 아이디들을 가져온다.
+        List<Long> partyIdList = partyService.getByUserId(id);
+
+        // 2. for문을 돌려서 해당되는 party객체들을 찾아 partyList에 채운다.
+        for (long partyId:partyIdList) {
+            partyList.add(partyService.get(partyId));
+        }
+
+        if (partyList.size() == 0) {
             logger.error("NOT FOUND ID: ", id);
             throw new NotFoundException(id + " 모임 정보를 찾을 수 없습니다.");
         }
 
-        return party;
+        return partyList;
     }
 
     // 특정이름(name)이 포함된 모임 리스트 검색
