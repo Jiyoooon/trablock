@@ -7,6 +7,8 @@ import groupCreate from "../views/group/GroupCreate.vue";
 // post
 import postMain from "../views/post/PostMain.vue";
 import postDetail from "../views/post/PostDetail.vue";
+import postManage from "../views/post/PostManage.vue";
+import postCreate from "../views/post/PostCreate.vue";
 
 
 Vue.use(VueRouter)
@@ -38,8 +40,18 @@ Vue.use(VueRouter)
     // post CRUD
     {
       path: "/post/detail",
-      name: "postDetail",
+      name: "postdetail",
       component: postDetail,
+    },
+    {
+      path: "/post/manage",
+      name: "postmanage",
+      component: postManage,
+    },
+    {
+      path: "/post/create",
+      name: "postcreate",
+      component: postCreate,
     },
   ]
 

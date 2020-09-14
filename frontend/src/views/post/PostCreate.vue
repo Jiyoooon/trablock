@@ -37,7 +37,7 @@
             <v-tabs-slider color="yellow"></v-tabs-slider>
 
             <v-tab class="tabinfo navbarlistitemlink" @click="gotoPostMain">포스트</v-tab>
-            <v-tab class="tabinfo navbarlistitemlink" @click="gotoPostManage">계좌 관리</v-tab>
+            <v-tab class="tabinfo navbarlistitemlink" @click="gotoPostManage">포스트 관리</v-tab>
           </v-tabs>
         </template>
       </v-toolbar>
@@ -64,7 +64,7 @@
           expand-on-hover
           left
           absolute
-          
+
         >
           <!-- <v-list>
             <v-list-item class="px-2">
