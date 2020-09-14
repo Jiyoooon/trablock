@@ -10,11 +10,18 @@
  	</select>
  	
  	<select id="getUserById" parameterType="long" resultType="User">
- 		SELECT id, nickname, email, dkf FROM User WHERE id = #{userid}
+ 		SELECT id, nickname, email FROM User WHERE id = #{userid}
  	</select>
  	
  	<select id="getUserByEmail" parameterType="string" resultType="User">
  		SELECT id, nickname, email, password FROM User WHERE email = #{email}
+ 	</select>
+ 	
+ 	<select id="selectUserByQuery" parameterType="string" resultType="User">
+ 		SELECT 	id, nickname, email 
+ 		FROM 	User 
+ 		WHERE 	email like CONCAT('%', #{query}, '%')
+ 			OR 	nickname like CONCAT('%', #{query}, '%')
  	</select>
 
 	<select id="getWallets" parameterType="long" resultType="Wallet">
