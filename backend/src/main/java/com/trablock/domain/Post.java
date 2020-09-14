@@ -1,14 +1,19 @@
 package com.trablock.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class Post {
     private long id;                    // 게시물아이디
-    private long id2;                   // 유저아이디
-    private long id3;                   // 모임아이디
+    private long userId;                   // 유저아이디
+    private long partyId;                   // 모임아이디
     private String title;               // 제목
     private String description;         // 내용
     private LocalDateTime created;      // 생성날짜
+    
+    private BigDecimal target;          // 기존 목표금액
+    private BigDecimal usedPrice;		// 실제 사용금액
+    private String destination;			// 여행지
 
     public Post() {
     }
@@ -21,20 +26,20 @@ public class Post {
         this.id = id;
     }
 
-    public long getId2() {
-        return id2;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setId2(long id2) {
-        this.id2 = id2;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
-    public long getId3() {
-        return id3;
+    public long getPartyId() {
+        return partyId;
     }
 
-    public void setId3(long id3) {
-        this.id3 = id3;
+    public void setPartyId(long partyId) {
+        this.partyId = partyId;
     }
 
     public String getTitle() {
@@ -60,16 +65,38 @@ public class Post {
     public void setCreated(LocalDateTime created) {
         this.created = created;
     }
+    
 
-    @Override
-    public String toString() {
-        return "Post{" +
-                "id=" + id +
-                ", id2=" + id2 +
-                ", id3=" + id3 +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", created=" + created +
-                '}';
-    }
+    public BigDecimal getTarget() {
+		return target;
+	}
+
+	public void setTarget(BigDecimal target) {
+		this.target = target;
+	}
+
+	public BigDecimal getUsedPrice() {
+		return usedPrice;
+	}
+
+	public void setUsedPrice(BigDecimal usedPrice) {
+		this.usedPrice = usedPrice;
+	}
+
+	public String getDestination() {
+		return destination;
+	}
+
+	public void setDestination(String destination) {
+		this.destination = destination;
+	}
+
+	@Override
+	public String toString() {
+		return "Post [id=" + id + ", userId=" + userId + ", partyId=" + partyId + ", title=" + title + ", description=" + description
+				+ ", created=" + created + ", target=" + target + ", usedPrice=" + usedPrice + ", destination="
+				+ destination + "]";
+	}
+
+	
 }
