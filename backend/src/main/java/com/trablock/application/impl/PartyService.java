@@ -22,6 +22,11 @@ public class PartyService implements IPartyService {
     }
 
     @Override
+    public List<Long> getByUserId(long userId) {
+        return this.partyRepository.getByUserId(userId);
+    }
+
+    @Override
     public Party get(long id) {
     	// id를 통해 특정 모임을 가져옴
         return this.partyRepository.searchById(id);
