@@ -66,15 +66,6 @@ public class UserController {
     }
 
     
-    @GetMapping("/test")
-    public void webHook() {
-         
-        SlackApi api =new SlackApi("https://meeting.ssafy.com/hooks/7rifsd8zajfj7xh5ewop5bwjee");    //웹훅URL
-        api.call(new SlackMessage("jiyooon","spring","연습~~~~"));
-         
-    }
-
-    
     //이메일 중복 체크 
   	@ApiOperation(value = "이메일 중복 체크", notes = "fail : 중복되는 이메일 있음 | success : 중복되는 이메일 없음")
   	@GetMapping("user/dup/email/{email}")
@@ -320,22 +311,17 @@ public class UserController {
 	      	
 	      	String result = "fail";
 	      	HttpStatus status = HttpStatus.ACCEPTED;
-	      	
-	      	try {
-	  			User user = userService.getUserInfo(Long.parseLong(id));
-	  			if(user == null) {
-	  				logger.error("NOT FOUND ID: ", id);
-	  				throw new NotFoundException("회원 정보 찾을 수 없음");
-	  			}else {
-	  				user.setPassword("");
-	  				result = "success";
-	  				map.put("data", user);
-	  			}
-	      	}catch(Exception e) {
-	      		throw new Exception("서버 오류");
-//	    		SlackApi api =new SlackApi("https://meeting.ssafy.com/hooks/7rifsd8zajfj7xh5ewop5bwjee");    //웹훅URL
-//	            api.call(new SlackMessage("jiyooon","spring",msg.toString()));
-	      	}
+	      
+  			User user = userService.getUserInfo(Long.parseLong(id));
+  			if(user == null) {
+  				logger.error("NOT FOUND ID: ", id);
+  				throw new NotFoundException("회원 정보 찾을 수 없음");
+  			}else {
+  				user.setPassword("");
+  				result = "success";
+  				map.put("data", user);
+  			}
+  			
   			map.put("result", result);
   			return new ResponseEntity<HashMap<String, Object>>(map, status);
       }

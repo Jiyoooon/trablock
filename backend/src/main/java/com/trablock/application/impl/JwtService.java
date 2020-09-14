@@ -59,17 +59,13 @@ public class JwtService implements IJwtService{
 
 	@Override
 	public boolean checkValid(String jwt) {
-		try{
-			Jws<Claims> claims = Jwts.parser().setSigningKey(salt.getBytes()).parseClaimsJws(jwt);
-			if(null != redisTemplate.opsForValue().get(jwt)) {
-				logger.info("this token is logout!!");
-				return false;//logout 상태
-			}
-			
-			return !claims.getBody().getExpiration().before(new Date());//만료 기간 체크
-		}catch(Exception e) {
-			return false;//파싱 못함 => 조작되거나 만료된 토큰
+		Jws<Claims> claims = Jwts.parser().setSigningKey(salt.getBytes()).parseClaimsJws(jwt);
+		if(null != redisTemplate.opsForValue().get(jwt)) {
+			logger.info("this token is logout!!");
+			return false;//logout 상태
 		}
+		
+		return !claims.getBody().getExpiration().before(new Date());//만료 기간 체크
 	}
 
 	@Override
