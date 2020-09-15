@@ -74,16 +74,16 @@ public class PostController {
     //id로 포스팅 조회
     @ApiOperation(value = "id로 포스팅 조회", notes = "Authorization header => 'Bearer <token>'")///token
     @GetMapping("/post/{postId}")
-    public ResponseEntity<HashMap<String, Object>> searchPostById(HttpServletRequest request, @PathVariable("postId") String postId) throws Exception {
+    public ResponseEntity<HashMap<String, Object>> searchPostById(HttpServletRequest request, @PathVariable("postId") long postId) throws Exception {
 	      	HashMap<String, Object> map = new HashMap<String, Object>();
 	      	
 	      	HttpStatus status = HttpStatus.ACCEPTED;
 	      	map.put("result", "success");
 	      	
-	      	Post post = postService.searchPostById(postId);
+	      	Post post = postService.searchPostById(Long.toString(postId));
 
 	      	if(post == null) {
-	      		throw new NotFoundException(postId+"번 포스팅 찾을 수 없음");
+	      		throw new NotFoundException("포스팅 찾을 수 없음");
 	      	}
 	      	
 	      	map.put("data", post);
@@ -113,9 +113,9 @@ public class PostController {
 	      	 
 	      	List<Post> post = postService.searchPosts(title, destination, range_start, range_end, userId, type);
 
-	      	if(post == null) {
-	      		throw new EmptyListException("조건에 맞는 포스팅이 없음");
-	      	}
+//	      	if(post.size() == 0) {
+//	      		throw new EmptyListException("조건에 맞는 포스팅이 없음");
+//	      	} 
 	      	
 	      	map.put("data", post);
 	  		return new ResponseEntity<HashMap<String, Object>>(map, status);
