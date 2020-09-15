@@ -14,7 +14,7 @@
     <select id="getWalletByOwnerId" parameterType="long" resultType="Wallet">
         select *
         from Wallet
-        where onwer_id = #{ownerId}
+        where owner_id = #{ownerId}
         ;
     </select>
 
@@ -33,6 +33,7 @@
         ) values (
             #{ownerId}, #{address}, #{balance}
         )
+        ;
     </insert>
     <!-- Create   -->
 
