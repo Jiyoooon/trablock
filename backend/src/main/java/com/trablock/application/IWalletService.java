@@ -21,6 +21,7 @@ import java.util.List;
 public interface IWalletService
 {
 	Wallet get(long userId);
+	Wallet get(String address);
 
 	@Transactional
 	Wallet register(Wallet wallet);

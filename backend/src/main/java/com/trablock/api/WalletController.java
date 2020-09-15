@@ -2,15 +2,8 @@ package com.trablock.api;
 
 import com.trablock.application.IWalletService;
 import com.trablock.domain.Wallet;
-import com.trablock.domain.exception.EmptyListException;
-import com.trablock.domain.exception.NotFoundException;
 
-import com.trablock.application.IWalletService;
-import com.trablock.domain.Wallet;
 import com.trablock.domain.exception.ApplicationException;
-import com.trablock.domain.exception.EmptyListException;
-import com.trablock.domain.exception.NotFoundException;
-import com.trablock.infrastructure.repository.WalletRepository;
 
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -20,7 +13,6 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -60,7 +52,7 @@ public class WalletController {
 	@ApiOperation(value = "Fetch wallet by address")
 	@RequestMapping(value = "/wallets/{address}", method = RequestMethod.GET)
 	public Wallet get(@PathVariable String address) {
-		Wallet searchWallet = new WalletRepository().get(address);
+		Wallet searchWallet = walletService.get(address);
 		if (searchWallet == null) {
 			throw new ApplicationException("지갑을 찾을 수 없습니다.");
 		}

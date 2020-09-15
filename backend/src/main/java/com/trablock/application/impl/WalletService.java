@@ -32,15 +32,15 @@ public class WalletService implements IWalletService
 {
 	private static final Logger log = LoggerFactory.getLogger(WalletService.class);
 
+	@Autowired
 	private IWalletRepository walletRepository;
+
 	private IEthereumService ethereumService;
 	private ICashContractService cashContractService;
 
 	@Autowired
-	public WalletService(IWalletRepository walletRepository,
-						 IEthereumService ethereumService,
+	public WalletService(IEthereumService ethereumService,
 						 ICashContractService cashContractService) {
-		this.walletRepository = walletRepository;
 		this.ethereumService = ethereumService;
 		this.cashContractService = cashContractService;
 	}
@@ -52,11 +52,27 @@ public class WalletService implements IWalletService
 	 */
 	@Override
 	public Wallet get(final long userId) {
-		Wallet wallet = walletRepository.get(userId);
+		Wallet wallet = walletRepository.getWalletByOwnerId(userId);
 		String walletAddress = wallet.getAddress();
 
 		// 주소로 정보검색 요청
 		BigInteger updatedBalance = ethereumService.getBalance(walletAddress);
+
+		// 잔액정보가 불일치하면 업데이트
+		if (updatedBalance != wallet.getBalance().toBigInteger()) {
+			wallet.setBalance(BigDecimal.valueOf(Long.parseLong(updatedBalance.toString())));
+		}
+
+		return wallet;
+	}
+
+
+	@Override
+	public Wallet get(String address) {
+		Wallet wallet = walletRepository.getWalletByWAddress(address);
+
+		// 주소로 정보검색 요청
+		BigInteger updatedBalance = ethereumService.getBalance(address);
 
 		// 잔액정보가 불일치하면 업데이트
 		if (updatedBalance != wallet.getBalance().toBigInteger()) {
@@ -74,7 +90,8 @@ public class WalletService implements IWalletService
 	@Override
 	public Wallet register(final Wallet wallet) {
 		long id = this.walletRepository.create(wallet);
-		return this.walletRepository.get(id);
+
+		return this.walletRepository.getWalletByOwnerId(id);
 	}
 
 	/**
@@ -97,7 +114,7 @@ public class WalletService implements IWalletService
 	@Override
 	public Wallet requestEth(String walletAddress) {
 		// 1. 일단 지갑주소를 가지고 지갑객체를 얻는다.
-		Wallet wallet = walletRepository.get(walletAddress);
+		Wallet wallet = walletRepository.getWalletByWAddress(walletAddress);
 
 		// 2. 지갑을 더 충전할 수 있는지 확인한다.
 		if (!wallet.canRequestEth()) {
