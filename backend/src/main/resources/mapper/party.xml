@@ -35,14 +35,14 @@
     <!--  Read  -->
 
     <!-- Create   -->
-    <insert id="create" parameterType="Party">
+    <insert id="create" parameterType="Party" useGeneratedKeys="true" keyProperty="id">
         insert into Party(
-            id, name, explanation, created,
+            name, explanation, created,
             target, pay_cycle, pay_date, pay_amount,
             image, start_date, end_date, destination,
             available, exit_fee
         ) values (
-            #{id}, #{name}, #{explanation}, #{created},
+            #{name}, #{explanation}, now(),
             #{target}, #{payCycle}, #{payDate}, #{payAmount},
             #{image}, #{startDate}, #{endDate}, #{destination},
             #{available}, #{exitFee}
