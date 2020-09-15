@@ -43,4 +43,7 @@ public interface IUserRepository {
 	void updatePasswordByEmail(String email, String password);
 	
 	long selectNextUserId();
+
+	//닉네임 또는 이메일로 유저 검색
+	List<User> selectUserByQuery(String query);
 }

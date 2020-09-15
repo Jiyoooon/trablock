@@ -73,7 +73,7 @@ public class UserService implements IUserService {
     		throw new NotFoundException("회원 정보 찾지 못함");
     	}
     	
-    	user.setPassword("");
+//    	user.setPassword("");
 	    user.setWallets(this.userRepository.getWallets(user.getId(), 0));
 	    user.setParties(this.userRepository.getParties(user.getId()));
     	
@@ -210,8 +210,14 @@ public class UserService implements IUserService {
 	@Override
 	public List<PartyMember> partyUserList(long partyId) throws Exception{
 		List<PartyMember> m = userRepository.userInParty(partyId);
-		System.out.println(m.size());
 		return m;
+	}
+
+
+	//이메일 또는 닉네임으로 회원 검색
+	@Override
+	public List<User> findUserByEmailOrNickname(String query) {
+		return userRepository.selectUserByQuery(query);
 	}
 
 }

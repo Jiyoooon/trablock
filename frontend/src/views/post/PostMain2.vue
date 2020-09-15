@@ -1,48 +1,10 @@
 <template>
-  <center>
-    <v-card height="100%">
-      <v-toolbar
-        color="green darken-1"
-        dark
-        flat
-        prominent
-      >
-        <div align="center" justify="center">
-          <v-toolbar-title>
-            <h1 class="my-15">TRABLOCK</h1>
-          </v-toolbar-title>
-        </div>
-        <v-spacer></v-spacer>
-
-        <v-btn icon>
-          <v-icon>far fa-user</v-icon>
-        </v-btn>
-
-        <v-btn icon>
-          <v-icon>far fa-bell</v-icon>
-        </v-btn>
-
-        <div class="my-2">
-            <router-link
-            :to="{path: 'group'}" class="py-0 text-center text-h6 text-decoration-none">
-                <v-btn large color="amber darken-1">Group</v-btn>
-            </router-link>
-        </div>
-
-        <template v-slot:extension>
-          <v-tabs
-            v-model="tab"
-            align-with-title
-          >
-            <v-tabs-slider color="yellow"></v-tabs-slider>
-
-            <v-tab class="tabinfo navbarlistitemlink" @click="gotoPostMain">포스트</v-tab>
-            <v-tab class="tabinfo navbarlistitemlink" @click="gotoPostManage">계좌 관리</v-tab>
-          </v-tabs>
-        </template>
-      </v-toolbar>
-
-      <v-tabs-items v-model="tab">
+<div id="postmain">
+    <div id="header">
+      <postheader/>
+    </div>
+    <div class="d-none d-sm-block">
+    <v-tabs-items v-model="tab">
         <v-tab-item>
           <v-card flat min-height="90vh">
             <v-row>
@@ -118,16 +80,17 @@
           </v-card>
         </v-tab-item>
       </v-tabs-items>
-    </v-card>
-  </center>
+  </div>
+</div>
 </template>
 
 <script>
+import PostHeader from './PostHeader.vue'
 
 export default {
-  name: 'GroupMain',
+  name: 'PostMain',
   components: {
-    
+    'postheader': PostHeader,
   },
   data () {
       return {
