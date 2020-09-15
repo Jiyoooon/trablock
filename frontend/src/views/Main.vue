@@ -309,7 +309,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 video {
 	position : fixed;
 	top : -100px; 
@@ -318,8 +318,6 @@ video {
 	min-height : 100%;
 	width : auto;
 	height : auto;
-	// width : auto;
-	// height : 100%;
 	z-index : 0;
   filter:opacity(70%);
 }
@@ -344,4 +342,5 @@ a.no-text-decoration {
   align-items: center;
   justify-content: center;
 }
+
 </style>

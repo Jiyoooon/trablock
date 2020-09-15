@@ -6,6 +6,7 @@ import groupCreate from "../views/group/GroupCreate.vue";
 
 // post
 import postMain from "../views/post/PostMain.vue";
+import postMain2 from "../views/post/PostMain2.vue";
 import postDetail from "../views/post/PostDetail.vue";
 import postManage from "../views/post/PostManage.vue";
 import postCreate from "../views/post/PostCreate.vue";
@@ -36,6 +37,11 @@ Vue.use(VueRouter)
       path: "/post",
       name: "postpmain",
       component: postMain,
+    },
+    {
+      path: "/post2",
+      name: "postpmain2",
+      component: postMain2,
     },
     // post CRUD
     {

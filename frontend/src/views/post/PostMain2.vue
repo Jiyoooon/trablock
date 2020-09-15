@@ -1,9 +1,12 @@
 <template>
-<div id="postmain">
+<v-app>
+  <v-card height="100%">
+<!-- <div id="postmain"> -->
     <div id="header">
       <postheader/>
     </div>
-    <div class="d-none d-sm-block">
+    <!-- <div class="d-none d-sm-block"> -->
+    
     <v-tabs-items v-model="tab">
         <v-tab-item>
           <v-card flat min-height="90vh">
@@ -80,8 +83,10 @@
           </v-card>
         </v-tab-item>
       </v-tabs-items>
-  </div>
-</div>
+    </v-card>
+  <!-- </div> -->
+<!-- </div> -->
+</v-app>
 </template>
 
 <script>

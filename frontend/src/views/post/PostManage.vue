@@ -1,15 +1,53 @@
 <template>
-<div id="postmanage">
-    <div id="header">
-      <postheader/>
-    </div>
+<center>
+    <v-card height="100%">
+      <v-toolbar
+        color="green darken-1"
+        dark
+        flat
+        prominent
+      >
+        <div align="center" justify="center">
+          <v-toolbar-title>
+            <h1 class="my-15">TRABLOCK</h1>
+          </v-toolbar-title>
+        </div>
+        <v-spacer></v-spacer>
+
+        <v-btn icon>
+          <v-icon>far fa-user</v-icon>
+        </v-btn>
+
+        <v-btn icon>
+          <v-icon>far fa-bell</v-icon>
+        </v-btn>
+
+        <div class="my-2">
+            <router-link
+            :to="{path: 'group'}" class="py-0 text-center text-h6 text-decoration-none">
+                <v-btn large color="amber darken-1">Group</v-btn>
+            </router-link>
+        </div>
+
+        <template v-slot:extension>
+          <v-tabs
+            v-model="tab"
+            align-with-title
+          >
+            <v-tabs-slider color="yellow"></v-tabs-slider>
+
+            <v-tab class="tabinfo navbarlistitemlink" @click="gotoPostMain">포스트</v-tab>
+            <v-tab class="tabinfo navbarlistitemlink" @click="gotoPostManage">포스트 관리</v-tab>
+          </v-tabs>
+        </template>
+      </v-toolbar>
 
       <v-tabs-items v-model="tab">
         <v-tab-item>
           <v-card flat min-height="90vh">
             <v-row>
               <v-col align="right">
-                <router-link :to="{path: 'post/create'}">
+                <router-link :to="{path: 'group/create'}">
                 <v-btn 
                   rounded color="grey" dark
                   class="mx-5"
@@ -26,7 +64,7 @@
           expand-on-hover
           left
           absolute
-
+          
         >
           <!-- <v-list>
             <v-list-item class="px-2">
@@ -74,15 +112,15 @@
             </v-card>
           </v-card>
         </v-tab-item>
-        <!-- <v-tab-item>
+        <v-tab-item>
           <v-card flat min-height="90vh">
             <v-card-text> 하이하이</v-card-text>
           </v-card>
-        </v-tab-item> -->
+        </v-tab-item>
       </v-tabs-items>
-</div>
-</template>
-
+    </v-card>
+  </center>
+</templete>
 <script>
 
 export default {

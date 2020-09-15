@@ -1,6 +1,6 @@
 <template>
     <!-- 큰화면일때 -->
-    <div class="d-none d-sm-block">
+    <!-- <div class="d-none d-sm-block"> -->
 
     <v-toolbar
         color="green darken-1"
@@ -42,7 +42,7 @@
           </v-tabs>
         </template>
       </v-toolbar>
-    </div>
+    <!-- </div> -->
 </template>
  
 <script>
