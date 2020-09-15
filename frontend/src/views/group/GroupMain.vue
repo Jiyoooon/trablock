@@ -9,7 +9,7 @@
       >
         <div align="center" justify="center">
           <v-toolbar-title>
-            <h1 class="my-15">TRABLOCK</h1>
+            <h1 class="my-15 mx-15">TRABLOCK</h1>
           </v-toolbar-title>
         </div>
         <v-spacer></v-spacer>
@@ -47,7 +47,7 @@
           <v-card flat min-height="90vh">
             <v-row>
               <v-col align="right">
-                <router-link :to="{path: 'group/create'}">
+                <router-link :to="{path: 'group/create'}" class="text-decoration-none">
                 <v-btn 
                   rounded color="grey" dark
                   class="mx-5"
