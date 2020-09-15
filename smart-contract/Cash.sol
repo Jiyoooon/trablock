@@ -90,6 +90,7 @@ contract Cash is IERC20{
      * @param _owner the onwer's address
      * @param _spender the delegator's address
      * @return the amount of allownace
+     * _owner가 _spender에게 인출을 허락한 토큰의 개수는 몇개인가?
      */
     function allowance(address _owner, address _spender) external view returns (uint)
     {
@@ -102,6 +103,7 @@ contract Cash is IERC20{
      * @param _spender the delegator's address
      * @param _amount the allowed amount of tokens
      * @return success or failure
+     * _spender에게  _amount 만큼의 토큰을 인출할 권리를 부여한다. 
      */    
     function approve(address _spender, uint _amount) external returns (bool)
     {
@@ -121,12 +123,14 @@ contract Cash is IERC20{
      * @param _recipient the receiver's address
      * @param _amount the amount of tokens
      * @return success of failure
+     * 남아있는 토큰을 누군가에게 보내는 과정
+     * _sender 의 계좌에서 _amount개의 토큰을 _recipient에게 보내라. 단, 이 함수는 approve 함수를 통해 인출할 권리를 받은 spender 만 실행할 수 있다.
      */     
     function transferFrom(address _sender, address _recipient, uint _amount) external returns (bool)
     {
         // todo
         //_transfer(_sender, _recipient, _amount)
-        //_approve(_sneder, msg.sender, _allowances[_sender][msg.sender].sub(_amount))
+        //_approve(_sender, msg.sender, _allowances[_sender][msg.sender].sub(_amount))
  
         require(_sender != address(0), "ERC20: transfer from the zero address");
         require(_recipient != address(0), "ERC20: transfer to the zero address");
@@ -148,7 +152,7 @@ contract Cash is IERC20{
     /**
      * @notice buy tokens
      * msg.value should be greater than or equal to 0.1 ether
-     * 1 eth = 100,000 cash
+     * 1 eth = 100,000 cash	
      * @return success or failure
      */      
     function buy() public payable returns(bool){
