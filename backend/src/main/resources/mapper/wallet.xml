@@ -8,21 +8,19 @@
     <!--  Read  -->
     <select id="list" resultType="Wallet">
         select *
-        from Wallet;
+        from Wallet
     </select>
 
     <select id="getWalletByOwnerId" parameterType="long" resultType="Wallet">
         select *
         from Wallet
         where owner_id = #{ownerId}
-        ;
     </select>
 
     <select id="getWalletByWAddress" parameterType="String" resultType="Wallet">
         select *
         from Wallet
         where address = #{wAddress}
-        ;
     </select>
     <!--  Read  -->
 
@@ -33,13 +31,12 @@
         ) values (
             #{ownerId}, #{address}, #{balance}
         )
-        ;
     </insert>
     <!-- Create   -->
 
     <!-- Update    -->
     <update id="update" parameterType="Wallet">
-        update Party
+        update Wallet
         set
             owner_id = #{ownerId},
             address = #{address},
