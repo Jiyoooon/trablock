@@ -1,5 +1,6 @@
 package com.trablock.api;
 
+import com.trablock.application.IPartyMemberService;
 import com.trablock.application.IPartyService;
 import com.trablock.domain.Party;
 import com.trablock.domain.exception.EmptyListException;
@@ -21,6 +22,9 @@ public class PartyController {
     public static final Logger logger = LoggerFactory.getLogger(PartyController.class);
 
     private IPartyService partyService;
+
+    @Autowired
+    private IPartyMemberService partyMemberService;
 
     @Autowired
     public PartyController(IPartyService partyService) {
@@ -53,7 +57,7 @@ public class PartyController {
         List<Party> partyList = new ArrayList<>();
 
         // 1. PartyMember에서 해당되는 모임 아이디들을 가져온다.
-        List<Long> partyIdList = partyService.getByUserId(id);
+        List<Long> partyIdList = partyMemberService.getPartyIdListByUserId(id);
 
         // 2. for문을 돌려서 해당되는 party객체들을 찾아 partyList에 채운다.
         for (long partyId:partyIdList) {
@@ -83,8 +87,8 @@ public class PartyController {
     // 모임등록
     @ApiOperation(value = "모임 등록")
     @PostMapping("/party")
-    public Party create(@RequestBody Party party) {
-        return partyService.add(party);
+    public Party create(@RequestBody Party party, @RequestBody List<Long> partyMemberIdList) {
+        return partyService.add(party, partyMemberIdList);
     }
 
 
