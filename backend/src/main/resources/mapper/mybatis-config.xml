@@ -10,6 +10,8 @@
    <mappers>
 	  <mapper resource="mapper/user.xml"/>
 	  <mapper resource="mapper/party.xml"/>
+	  <mapper resource="mapper/party-member.xml"/>
+	  <mapper resource="mapper/party-wallet.xml"/>
 	  <mapper resource="mapper/post.xml"/>
 	  <mapper resource="mapper/wallet.xml"/>
    </mappers>

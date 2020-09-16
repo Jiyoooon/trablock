@@ -15,6 +15,14 @@ public class PartyMember {
     public PartyMember() {
     }
 
+    public PartyMember(long userId, long partyId, BigDecimal payment, boolean chief, boolean warning) {
+        this.userId = userId;
+        this.partyId = partyId;
+        this.payment = payment;
+        this.chief = chief;
+        this.warning = warning;
+    }
+
     public long getUserId() {
         return userId;
     }
