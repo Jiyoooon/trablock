@@ -2,13 +2,11 @@ package com.trablock.application.impl;
 
 import com.trablock.application.ICashContractService;
 import com.trablock.application.IEthereumService;
-import com.trablock.application.IWalletService;
-import com.trablock.domain.Address;
+import com.trablock.application.IPartyWalletService;
+import com.trablock.domain.PartyWallet;
 import com.trablock.domain.Wallet;
-import com.trablock.domain.exception.ApplicationException;
-import com.trablock.domain.exception.NotFoundException;
+import com.trablock.domain.repository.IPartyWalletRepository;
 import com.trablock.domain.repository.IWalletRepository;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,47 +17,36 @@ import org.web3j.crypto.WalletUtils;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
 
-/**
- * TODO Sub PJT Ⅱ 과제 1, 과제 3
- * 과제 1: 지갑 관련 기능 구현
- * 1) 지갑 등록, 2) 지갑 조회, 3) 충전
- * 과제 3: 지갑 관련 기능 확장 구현
- * 1) 지갑 토큰 잔액 조회 추가
- *
- * IWalletService를 implements 하여 구현합니다.
- */
 @Service
-public class WalletService implements IWalletService
+public class PartyWalletService implements IPartyWalletService
 {
-	private static final Logger log = LoggerFactory.getLogger(WalletService.class);
+	private static final Logger log = LoggerFactory.getLogger(PartyWalletService.class);
 
 	@Autowired
-	private IWalletRepository walletRepository;
+	private IPartyWalletRepository partyWalletRepository;
 
 	private IEthereumService ethereumService;
 	private ICashContractService cashContractService;
 
 	@Autowired
-	public WalletService(IEthereumService ethereumService,
-						 ICashContractService cashContractService) {
+	public PartyWalletService(IEthereumService ethereumService, ICashContractService cashContractService) {
 		this.ethereumService = ethereumService;
 		this.cashContractService = cashContractService;
 	}
 
 	/**
 	 * 사용자 id로 지갑을 조회한다.
-	 * @param ownerId
+	 * @param partyId
 	 * @return
 	 */
 	@Override
-	public Wallet get(final long ownerId) {
-		Wallet wallet = walletRepository.getWalletByOwnerId(ownerId);
+	public PartyWallet get(long partyId) {
+		PartyWallet wallet = this.partyWalletRepository.getPartyWalletByPartyId(partyId);
 		String walletAddress = wallet.getAddress();
 
 		// 주소로 정보검색 요청
-		BigInteger updatedBalance = ethereumService.getBalance(walletAddress);
+		BigInteger updatedBalance = this.ethereumService.getBalance(walletAddress);
 
 		// 잔액정보가 불일치하면 업데이트
 		if (updatedBalance != wallet.getBalance().toBigInteger()) {
@@ -71,11 +58,11 @@ public class WalletService implements IWalletService
 
 
 	@Override
-	public Wallet get(String address) {
-		Wallet wallet = walletRepository.getWalletByWAddress(address);
+	public PartyWallet get(String address) {
+		PartyWallet wallet = this.partyWalletRepository.getPartyWalletByAddress(address);
 
 		// 주소로 정보검색 요청
-		BigInteger updatedBalance = ethereumService.getBalance(address);
+		BigInteger updatedBalance = this.ethereumService.getBalance(address);
 
 		// 잔액정보가 불일치하면 업데이트
 		if (updatedBalance != wallet.getBalance().toBigInteger()) {
@@ -86,14 +73,15 @@ public class WalletService implements IWalletService
 	}
 
 	/**
-	 * 지갑을 DB에 등록한다.
-	 * @param wallet
+	 * 모임지갑을 DB에 등록한다.
+	 * @param partyWallet
 	 * @return
 	 */
 	@Override
-	public Wallet register(final Wallet wallet) {
+	public PartyWallet register(final PartyWallet partyWallet) {
+
 		String walletPassword = "1234";
-		String walletDirectory = "./src/main/resources/wallet";
+		String walletDirectory = "./src/main/resources/partywallet";
 
 		String walletName = null;
 		try {
@@ -114,10 +102,10 @@ public class WalletService implements IWalletService
 		String accountAddress = credentials.getAddress();
 		System.out.println("Account address: " + credentials.getAddress());
 
-		wallet.setAddress(credentials.getAddress());
-		this.walletRepository.create(wallet);
+		partyWallet.setAddress(credentials.getAddress());
+		this.partyWalletRepository.create(partyWallet);
 
-		return get(wallet.getOwnerId());
+		return get(partyWallet.getAddress());
 	}
 
 	/**
@@ -126,7 +114,7 @@ public class WalletService implements IWalletService
 	 * @return Wallet
 	 */
 	@Override
-	public Wallet syncBalance(final String walletAddress, final BigDecimal balance, final int cash) {
+	public PartyWallet syncBalance(final String walletAddress, final BigDecimal balance, final int cash) {
 
 		return null;
 	}
@@ -138,14 +126,9 @@ public class WalletService implements IWalletService
 	 * @return Wallet
 	 */
 	@Override
-	public Wallet requestEth(String walletAddress) {
+	public PartyWallet requestEth(String walletAddress) {
 		// 1. 일단 지갑주소를 가지고 지갑객체를 얻는다.
-		Wallet wallet = walletRepository.getWalletByWAddress(walletAddress);
-
-		// 2. 지갑을 더 충전할 수 있는지 확인한다.
-		if (!wallet.canRequestEth()) {
-			return wallet;	// 2-1. 더 이상 충전할 수 없다면 원래 지갑 정보를 반환
-		}
+		PartyWallet wallet = partyWalletRepository.getPartyWalletByAddress(walletAddress);
 
 		// 2-2. 지갑에 5eth를 더 충전하도록 한다.
 		ethereumService.requestEth(walletAddress);

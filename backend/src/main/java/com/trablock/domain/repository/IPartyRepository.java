@@ -10,7 +10,6 @@ public interface IPartyRepository {
 
     // R
     List<Party> searchAll();
-    List<Long> getByUserId(long userId);
     Party searchById(long id);
     List<Party> searchByName(String name);
 

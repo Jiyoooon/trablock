@@ -8,29 +8,20 @@
     <!--  Read  -->
     <select id="searchAll" resultType="Party">
         select *
-        from Party;
+        from Party
     </select>
 
-    <!--  PartyMember의 party_id 가져오기  -->
-    <select id="getByUserId" parameterType="long" resultType="Long">
-        select party_id
-        from PartyMember
-        where user_id = #{userId}
-        ;
-    </select>
 
     <select id="searchById" parameterType="long" resultType="Party">
         select *
         from Party
         where id = #{id}
-        ;
     </select>
 
     <select id="searchByName" parameterType="String" resultType="Party">
         select *
         from Party
         where name like concat('%', #{name}, '%')
-        ;
     </select>
     <!--  Read  -->
 
