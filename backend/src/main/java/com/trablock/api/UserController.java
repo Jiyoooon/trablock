@@ -65,7 +65,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    
     //이메일 중복 체크 
   	@ApiOperation(value = "이메일 중복 체크", notes = "fail : 중복되는 이메일 있음 | success : 중복되는 이메일 없음")
   	@GetMapping("user/dup/email/{email}")
@@ -73,8 +72,6 @@ public class UserController {
   		HashMap<String, Object> map = new HashMap<String, Object>();
   		
 		if(userService.isDupEmail(email)) {//이미 존재하는 계정
-//			map.put("result", "fail");
-//			map.put("cause", "이미 가입한 계정");
 			throw new BadRequestException("이미 가입한 계정");
 		}else {
 			map.put("result", "success");
@@ -92,15 +89,10 @@ public class UserController {
   		//email이 중복됐는지 확인
   		if(userService.isDupEmail(email)) {
   			throw new BadRequestException("이미 가입한 계정");
-//  			map.put("cause", "이미 가입한 계정");
-//  			return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
   		}
-  		
   		//인증코드 한번만 보낼 수 있게
   		if(userService.isConfirmedEmail(email)) {
   			throw new BadRequestException("인증코드 발송함");
-//  			map.put("cause", "인증코드 발송함");
-//  			return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
   		}
   		
   		userService.sendConfirmMail(email);
@@ -139,7 +131,6 @@ public class UserController {
   		}
   	}
     
-  	
   	
     //전체 유저 리스트
     @RequestMapping(value = "users", method = RequestMethod.GET)
@@ -227,8 +218,6 @@ public class UserController {
 	  	  if (user == null) {
 	  		  throw new NotFoundException("회원 정보 찾을 수 없음");
 		  } else {
-			  System.out.println(SHA256.testSHA256(login.getPassword()));
-			  System.out.println(user.getPassword());
 			  if (!SHA256.testSHA256(login.getPassword()).equals(user.getPassword()))
 				  throw new NotFoundException("비밀번호 불일치");
 			  user.setPassword("");
@@ -244,7 +233,7 @@ public class UserController {
       
      
       //로그아웃
-      @ApiOperation(value = "로그아웃", notes = "Authorization header => 'Bearer <token>'")///token
+      @ApiOperation(value = "로그아웃", notes = "Authorization header => 'Bearer [token]'")///token
       @GetMapping("/token/user/logout")
 	     	public ResponseEntity<HashMap<String, Object>> signoutUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
 	      	HashMap<String, Object> map = new HashMap<String, Object>();
@@ -265,7 +254,7 @@ public class UserController {
      	}
       
       //회원탈퇴
-      @ApiOperation(value = "회원탈퇴", notes = "Authorization header => 'Bearer <token>'")///token
+      @ApiOperation(value = "회원탈퇴", notes = "Authorization header => 'Bearer [token]'")///token
       @DeleteMapping("/token/user")
       public ResponseEntity<HashMap<String, Object>> deleteUser(HttpServletRequest request) throws Exception {
 	      	HashMap<String, Object> map = new HashMap<String, Object>();
@@ -284,7 +273,7 @@ public class UserController {
       }
       
       //회원정보 조회
-      @ApiOperation(value = "내 정보 가져오기", notes = "Authorization header => 'Bearer <token>'")///token
+      @ApiOperation(value = "내 정보 가져오기", notes = "Authorization header => 'Bearer [token]'")///token
       @GetMapping("/token/user")
       public ResponseEntity<HashMap<String, Object>> getUserInfo(HttpServletRequest request) throws Exception {
 	      	HashMap<String, Object> map = new HashMap<String, Object>();
@@ -353,7 +342,7 @@ public class UserController {
       
       
       //회원정보 수정
-      @ApiOperation(value = "회원정보 수정하기", notes = "Authorization header => 'Bearer <token>'")///token
+      @ApiOperation(value = "회원정보 수정하기", notes = "Authorization header => 'Bearer [token]'")///token
       @PutMapping("/token/user")
       public ResponseEntity<HashMap<String, Object>> reviseUser(@ModelAttribute("user") User user, HttpServletRequest request) throws Exception {
 	      	HashMap<String, Object> map = new HashMap<String, Object>();
@@ -372,7 +361,7 @@ public class UserController {
 
       
       //비밀번호 확인
-      @ApiOperation(value = "비밀번호 확인", notes = "- Authorization header => 'Bearer <token>'\n"
+      @ApiOperation(value = "비밀번호 확인", notes = "- Authorization header => 'Bearer [token]'\n"
       											+ "- {'passowrd': '~~'} 형식으로 requestbody 보내주세요")///token
       @PostMapping("/token/user/password")
       public ResponseEntity<HashMap<String, Object>> checkPassword(@RequestBody Map<String, Object> param, HttpServletRequest request) throws Exception {
@@ -415,7 +404,7 @@ public class UserController {
      }
       
       //비밀번호 찾기
-      @ApiOperation(value = "모임별 유저 정보", notes = "Authorization header => 'Bearer <token>'")
+      @ApiOperation(value = "모임별 유저 정보", notes = "Authorization header => 'Bearer [token]'")
       @GetMapping("/token/user/party/{partyId}")
       public ResponseEntity<HashMap<String, Object>> getUserInParty(@PathVariable("partyId") String partyId, HttpServletRequest request) throws Exception {
 	  		HashMap<String, Object> map = new HashMap<String, Object>();

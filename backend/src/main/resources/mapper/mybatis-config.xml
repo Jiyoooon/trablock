@@ -14,5 +14,6 @@
 	  <mapper resource="mapper/party-wallet.xml"/>
 	  <mapper resource="mapper/post.xml"/>
 	  <mapper resource="mapper/wallet.xml"/>
+	  <mapper resource="mapper/memo.xml"/>
    </mappers>
 </configuration>

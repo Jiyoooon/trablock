@@ -19,11 +19,11 @@ import net.gpedro.integrations.slack.SlackMessage;
 
 @ControllerAdvice
 @RestController
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler{
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = NotFoundException.class)
-    public HashMap<String, Object> handleNotFoundException(NotFoundException e) {
+    public HashMap<String, Object> handleNotFoundException(Exception e) {
 //    	e.printStackTrace();
     	HashMap<String, Object> map = new HashMap<String, Object>();
 		
@@ -35,9 +35,8 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ExceptionHandler(value = EmptyListException.class)
-    public HashMap<String, Object> handleEmptyListException(EmptyListException e) {
+    public HashMap<String, Object> handleEmptyListException(Exception e) {
 //    	e.printStackTrace();
-    	
     	HashMap<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("result", "fail");
@@ -85,8 +84,8 @@ public class GlobalExceptionHandler {
 		msg.append("**ERROR**\t").append(e.toString()).append("\n");
 		msg.append("**URL**\t\t").append(req.getRequestURL()).append("\n");
   
-//		SlackApi api =new SlackApi("https://meeting.ssafy.com/hooks/7rifsd8zajfj7xh5ewop5bwjee");    //웹훅URL
-//        api.call(new SlackMessage("jiyooon","spring",msg.toString()));
+		SlackApi api =new SlackApi("https://meeting.ssafy.com/hooks/7rifsd8zajfj7xh5ewop5bwjee");    //웹훅URL
+        api.call(new SlackMessage("jiyooon","spring",msg.toString()));
 		
 		return map;
     }
