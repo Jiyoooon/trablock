@@ -227,7 +227,6 @@ public class CashContract extends Contract {
 	}
 
 	public static CashContract load(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider gasProvider) {
-		
 		return new CashContract(contractAddress, web3j, credentials, gasProvider);
 	}
 
