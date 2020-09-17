@@ -39,18 +39,20 @@
                               </v-btn>
                           </div>
                           <v-text-field
-                            id="username"
-                            v-model="login"
-                            label="Username"
-                            name="Username"
+                            placeholder="ID를 입력해주세요"
+                            id="email"
+                            v-model="user.email"
+                            label="email"
+                            name="email"
                             type="text"
                             :color="bgColor1"
                           />
                           <v-text-field
+                            placeholder="비밀번호를 입력해주세요"
                             id="password"
-                            v-model="password"
-                            label="Password"
-                            name="Password"
+                            v-model="user.password"
+                            label="password"
+                            name="password"
                             type="password"
                             :color="bgColor1"
                           />
@@ -65,7 +67,7 @@
                             </a>
                           </div>
                           <div class="text-center mt-6">
-                            <v-btn type="submit" large :color="bgColor1" dark
+                            <v-btn @click="handleLogin" type="submit" large :color="bgColor1" dark
                               >Sign In</v-btn
                             >
                           </div>
@@ -137,28 +139,28 @@
                           </div>
                         <v-form class="signup-form-form" @submit.prevent="signup">
                           <v-text-field
-                            id="username"
-                            v-model="username"
-                            label="Username"
-                            name="username"
-                            type="text"
-                          />
-                          <v-text-field
                             id="email"
-                            v-model="email"
-                            label="eMail"
+                            v-model="user2.email"
+                            label="email"
                             name="email"
                             type="email"
                           />
                           <v-text-field
                             id="password"
-                            v-model="password"
-                            label="Password"
+                            v-model="user2.password"
+                            label="password"
                             name="password"
                             type="password"
                           />
+                          <v-text-field
+                            id="nickname"
+                            v-model="user2.nickname"
+                            label="nickname"
+                            name="nickname"
+                            type="text"
+                          />
                           <div class="text-center mt-6">
-                            <v-btn type="submit" large :color="bgColor2" dark>
+                            <v-btn @click="handleRegister" large :color="bgColor2" dark>
                               Sign Up</v-btn
                             >
                           </div>
@@ -228,6 +230,8 @@
 </template>
 
 <script>
+import User from '../models/user';
+// import http from '@/util/http-common.js'
 // import Notification from './Notification'
 export default {
   name: 'Main',
@@ -270,9 +274,74 @@ export default {
     login: '',
     snackbarType: 'success',
     snackbarMessage: '',
-    snackbar: false
+    snackbar: false,
+    user: new User('', '', ''),
+    user2: new User('', '', ''),
   }),
   methods: {
+    handleLogin() {
+      alert("로그인 버튼 눌림!");
+      if (this.user.email && this.user.password) {
+        this.$store.dispatch('auth/login', this.user).then(
+          () => {
+            this.$store.state.auth.status.loggedIn = true
+            this.$router.push('/group');
+          },
+          error => {
+            this.loading = false;
+            this.message =
+              (error.response && error.response.data) ||
+              error.message ||
+              error.toString();
+            this.$dialog.notify.error("없는 유저거나 비밀번호가 틀렸습니다.", {
+              position: "bottom-right",
+              timeout: 3000,
+            });
+
+            this.$router.push("/")
+
+          }
+        )
+        .catch(() => {
+          this.$router.push("/error")
+        })
+      }
+    },
+
+    handleRegister() {
+      this.user = this.user2;
+      console.log(this.user);
+      console.log(this.user2);
+      alert(this.user2.email + " " + this.user2.password + " " + this.user2.nickname);
+      alert(this.user.email + " " + this.user.password + " " + this.user.nickname);
+      this.$store.dispatch('auth/register', this.user).then(
+          () => {
+          //this.message = data.message;
+          this.successful = true;
+          
+      },
+      error => {    
+      this.message = 
+          (error.response && error.response.data) ||
+          error.message ||
+          error.toString();
+          console.log(this.message.message);
+          if(typeof(this.message.message) != 'undefined'){
+                this.$dialog.notify.error(this.message.message, {
+              position: "bottom-right",
+              timeout: 3000,
+              });
+          }
+          else{
+            this.$dialog.notify.success("회원가입 완료", {
+              position: "bottom-right", timeout: 3000, });
+              this.$router.push('/');
+          }
+      },
+      );
+      },
+
+
     signup() {
       this.$auth
         .signup({
