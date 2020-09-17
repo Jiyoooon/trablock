@@ -104,7 +104,7 @@
 	<select id="checkPassword" parameterType="string" resultType="int">
 		SELECT count(id)
 		FROM User
-		WHERE id = #{userid} AND password = #{password}
+		WHERE id = #{userId} AND password = #{password}
 	</select>
 	
 	<update id="updatePasswordByEmail" parameterType="string">
@@ -119,5 +119,9 @@
 		FROM information_schema.tables
 		WHERE table_name = 'User'
 		AND table_schema = DATABASE()
+	</select>
+	
+	<select id="selectPassword"	parameterType="string" resultType="string">
+		SELECT password FROM User WHERE id = #{userId}
 	</select>
 </mapper>

@@ -16,6 +16,12 @@ public class Wallet {
 	private int receivingCount = 0;
 	private int cash = 0;
 
+	public Wallet(){}
+	public Wallet(long ownerId,String address, BigDecimal balance){
+		this.ownerId = ownerId;
+		this.address = address;
+		this.balance = balance;
+	}
 	public long getId() {
 		return id;
 	}

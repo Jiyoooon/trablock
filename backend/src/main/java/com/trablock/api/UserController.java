@@ -147,7 +147,7 @@ public class UserController {
     //회원가입
   	@ApiOperation(value = "회원가입", notes = "회원가입 후 'jwt-token'으로 access token 넘겨줌")
   	@PostMapping(value = "user/join")
-  	public ResponseEntity<HashMap<String, Object>> signupUser2(@ModelAttribute("user") User user, HttpServletResponse response)throws Exception {
+  	public ResponseEntity<HashMap<String, Object>> signupUser2(@RequestBody User user, HttpServletResponse response)throws Exception {
       	HashMap<String, Object> map = new HashMap<String, Object>();
       	
       	System.out.println(user);

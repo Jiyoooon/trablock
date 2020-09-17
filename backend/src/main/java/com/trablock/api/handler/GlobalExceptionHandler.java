@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trablock.domain.exception.ApplicationException;
 import com.trablock.domain.exception.BadRequestException;
 import com.trablock.domain.exception.EmptyListException;
 import com.trablock.domain.exception.NotFoundException;
@@ -24,6 +25,18 @@ public class GlobalExceptionHandler{
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = NotFoundException.class)
     public HashMap<String, Object> handleNotFoundException(Exception e) {
+    	e.printStackTrace();
+    	HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		map.put("result", "fail");
+		map.put("cause", e.getMessage());
+		
+		return map;
+    }
+    
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(value = ApplicationException.class)
+    public HashMap<String, Object> handleApplicationException(Exception e) {
     	e.printStackTrace();
     	HashMap<String, Object> map = new HashMap<String, Object>();
 		

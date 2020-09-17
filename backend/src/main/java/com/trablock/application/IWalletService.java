@@ -24,7 +24,7 @@ public interface IWalletService
 	Wallet get(String address);
 
 	@Transactional
-	Wallet register(Wallet wallet);
+	Wallet register(String userId);
 
 	@Transactional
 	Wallet syncBalance(String walletAddress, BigDecimal balance, int cash);
