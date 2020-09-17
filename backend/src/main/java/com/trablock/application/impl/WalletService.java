@@ -4,9 +4,11 @@ import com.trablock.application.ICashContractService;
 import com.trablock.application.IEthereumService;
 import com.trablock.application.IWalletService;
 import com.trablock.domain.Address;
+import com.trablock.domain.User;
 import com.trablock.domain.Wallet;
 import com.trablock.domain.exception.ApplicationException;
 import com.trablock.domain.exception.NotFoundException;
+import com.trablock.domain.repository.IUserRepository;
 import com.trablock.domain.repository.IWalletRepository;
 
 import org.slf4j.Logger;
@@ -37,6 +39,9 @@ public class WalletService implements IWalletService
 
 	@Autowired
 	private IWalletRepository walletRepository;
+	
+	@Autowired
+	private IUserRepository userRepository;
 
 	private IEthereumService ethereumService;
 	private ICashContractService cashContractService;
@@ -63,7 +68,10 @@ public class WalletService implements IWalletService
 
 		// 잔액정보가 불일치하면 업데이트
 		if (updatedBalance != wallet.getBalance().toBigInteger()) {
-			wallet.setBalance(BigDecimal.valueOf(Long.parseLong(updatedBalance.toString())));
+			wallet.setBalance(new BigDecimal(updatedBalance.toString()));
+
+			//db에 지갑 잔액 업데이트
+			walletRepository.update(wallet);
 		}
 
 		return wallet;
@@ -79,9 +87,13 @@ public class WalletService implements IWalletService
 
 		// 잔액정보가 불일치하면 업데이트
 		if (updatedBalance != wallet.getBalance().toBigInteger()) {
-			wallet.setBalance(BigDecimal.valueOf(Long.parseLong(updatedBalance.toString())));
+			wallet.setBalance(new BigDecimal(updatedBalance.toString()));
+
+			//db에 지갑 잔액 업데이트
+			walletRepository.update(wallet);
 		}
 
+		
 		return wallet;
 	}
 
@@ -92,7 +104,9 @@ public class WalletService implements IWalletService
 	 */
 	@Override
 	public Wallet register(final Wallet wallet) {
-		String walletPassword = "1234";
+		
+		User curUser = this.userRepository.getUserById(wallet.getOwnerId());
+		String walletPassword = curUser.getPassword();
 		String walletDirectory = "./src/main/resources/wallet";
 
 		String walletName = null;
@@ -102,7 +116,6 @@ public class WalletService implements IWalletService
 			e.printStackTrace();
 		}
 		System.out.println("wallet location: " + walletDirectory + "/" + walletName);
-
 
 		Credentials credentials = null;
 		try {
@@ -115,6 +128,8 @@ public class WalletService implements IWalletService
 		System.out.println("Account address: " + credentials.getAddress());
 
 		wallet.setAddress(credentials.getAddress());
+		wallet.setOwnerId(curUser.getId());
+		
 		this.walletRepository.create(wallet);
 
 		return get(wallet.getOwnerId());

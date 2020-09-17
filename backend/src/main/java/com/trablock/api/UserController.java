@@ -150,6 +150,7 @@ public class UserController {
   	public ResponseEntity<HashMap<String, Object>> signupUser2(@ModelAttribute("user") User user, HttpServletResponse response)throws Exception {
       	HashMap<String, Object> map = new HashMap<String, Object>();
       	
+      	System.out.println(user);
 //      	String namePt = "^[a-zA-Z0-9가-힣]{2,12}$";
       	String pwPt = "^[0-9a-zA-Z~`!@#$%\\\\^&*()-]{8,12}$";//특수,대소문자,숫자 포함 8자리 이상
       	String emailPt = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
@@ -169,20 +170,20 @@ public class UserController {
       		map.put("cause", "비밀번호 입력 필수");
       		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
       	}
-      	if(!user.getPassword().matches(pwPt)) {
-      		map.put("cause", "비밀번호 형식 오류");
-      		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
-      	}
+//      	if(!user.getPassword().matches(pwPt)) {
+//      		map.put("cause", "비밀번호 형식 오류");
+//      		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
+//      	}
       	
       	
       	if(user.getEmail() == null || user.getEmail().equals("")) {
       		map.put("cause", "이메일 입력 필수");
       		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
       	}
-      	if(!user.getEmail().matches(emailPt)) {
-      		map.put("cause", "이메일 형식 오류");
-      		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
-      	}
+//      	if(!user.getEmail().matches(emailPt)) {
+//      		map.put("cause", "이메일 형식 오류");
+//      		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
+//      	}
       	if(userService.isDupEmail(user.getEmail())) {
       		map.put("cause", "이메일 중복");
       		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
@@ -213,7 +214,7 @@ public class UserController {
 	      HttpStatus status = null;
 	      	
 	      response.setHeader("Access-Control-Allow-Headers", "jwt-token");//token
-	      	
+	      	System.out.println(login.getEmail()+", "+login.getPassword());
 		  User user = userService.getUserInfo(login.getEmail());
 	  	  if (user == null) {
 	  		  throw new NotFoundException("회원 정보 찾을 수 없음");

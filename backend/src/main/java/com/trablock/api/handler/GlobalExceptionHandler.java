@@ -24,7 +24,7 @@ public class GlobalExceptionHandler{
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = NotFoundException.class)
     public HashMap<String, Object> handleNotFoundException(Exception e) {
-//    	e.printStackTrace();
+    	e.printStackTrace();
     	HashMap<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("result", "fail");
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler{
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ExceptionHandler(value = EmptyListException.class)
     public HashMap<String, Object> handleEmptyListException(Exception e) {
-//    	e.printStackTrace();
+    	e.printStackTrace();
     	HashMap<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("result", "fail");
@@ -49,7 +49,7 @@ public class GlobalExceptionHandler{
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(value = SecurityException.class)
     public HashMap<String, Object> unAuthorizedExceptionHandler(Exception e){
-//    	e.printStackTrace();
+    	e.printStackTrace();
     	HashMap<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("result", "fail");
@@ -61,7 +61,7 @@ public class GlobalExceptionHandler{
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = BadRequestException.class)
     public HashMap<String, Object> badRequestHandleException(Exception e){
-//    	e.printStackTrace();
+    	e.printStackTrace();
     	HashMap<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("result", "fail");
