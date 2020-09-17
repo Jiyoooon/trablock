@@ -65,6 +65,7 @@
               :right="right"
               :permanent="permanent"
               absolute
+              width="40vh"
             >
               <v-list
                 dense
@@ -82,7 +83,7 @@
                 <v-list-item
                   v-for="item in items"
                   :key="item.title"
-                  link
+                  link :to="{name: 'groupdetail',query: { groupId: item.id }}"
                 >
                   <v-list-item-icon>
                     <v-icon>{{ item.icon }}</v-icon>
@@ -94,7 +95,7 @@
                 </v-list-item>
               </v-list>
             </v-navigation-drawer>
-            <v-card min-height="40vh" class="mx-10">
+            <v-card min-height="40vh" class="mx-15">
               <h1>HOW TO USE TRABLCOK</h1>
             </v-card>
           </v-card>
@@ -121,9 +122,9 @@ export default {
         tab: null,
         drawer: true,
         items: [
-          { title: '홍콩여행', icon: 'mdi-view-dashboard' },
-          { title: '부산여행', icon: 'mdi-view-dashboard' },
-          { title: '3일만에 세계일주', icon: 'mdi-view-dashboard' },
+          { id:1,title: '홍콩여행', icon: 'mdi-view-dashboard' },
+          { id:2,title: '부산여행', icon: 'mdi-view-dashboard' },
+          { id:3,title: '3일만에 세계일주', icon: 'mdi-view-dashboard' },
         ],
         color: 'primary',
 
