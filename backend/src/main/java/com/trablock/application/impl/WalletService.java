@@ -79,7 +79,7 @@ public class WalletService implements IWalletService
 
 		// 잔액정보가 불일치하면 업데이트
 		if (updatedBalance != wallet.getBalance().toBigInteger()) {
-			wallet.setBalance(BigDecimal.valueOf(Long.parseLong(updatedBalance.toString())));
+			wallet.setBalance(new BigDecimal(updatedBalance.toString()));
 		}
 
 		return wallet;
