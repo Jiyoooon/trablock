@@ -11,12 +11,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.web3j.abi.datatypes.Address;
+import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletUtils;
+import org.web3j.exceptions.MessageDecodingException;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.tx.ClientTransactionManager;
+import org.web3j.tx.Contract;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class CashContractService implements ICashContractService {
@@ -27,7 +36,7 @@ public class CashContractService implements ICashContractService {
 
     @Value("${eth.admin.address}")
     private String ADMIN_ADDRESS;
-
+    
     @Value("${eth.admin.wallet.filename}")
     private String WALLET_RESOURCE;
 
@@ -40,6 +49,19 @@ public class CashContractService implements ICashContractService {
 
     @Autowired
     private Web3j web3j;
+    
+    public CashContractService() {
+    	try {
+			this.credentials = WalletUtils.loadCredentials("sp199191", "keyStore1");
+		} catch (IOException | CipherException e) {
+			e.printStackTrace();
+		}
+//    	CashContract.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue, totalSupply, tokenName, decimalUnits, tokenSymbol)
+    	this.cashContract = CashContract.load(ERC20_TOKEN_CONTRACT, web3j, credentials, contractGasProvider);
+    	
+    	String deployedContractAddress = cashContract.getContractAddress();
+    	System.out.println("deployedContractAddress : " + deployedContractAddress);
+	}
 
     /**
      * TODO Sub PJT Ⅱ 과제 3
@@ -49,6 +71,22 @@ public class CashContractService implements ICashContractService {
      */
     @Override
     public int getBalance(String eoa) {
-        return -1;
+        int balance = 0;
+        try {
+        	balance = cashContract.balanceOf(new Address(eoa)).getValue().intValueExact();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return balance;
+    }
+    
+    public void getTokenInfromation() throws InterruptedException, ExecutionException, IOException {
+    	String symbol = cashContract.symbol().get().getValue();
+    	String name = cashContract.name().get().getValue();
+    	BigInteger decimal = cashContract.decimals().getValue();
+
+    	System.out.println("symbol: " + symbol);
+    	System.out.println("name: " + name);	
+    	System.out.println("decimal: " + decimal.intValueExact());
     }
 }
