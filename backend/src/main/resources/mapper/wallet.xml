@@ -7,18 +7,18 @@
 
     <!--  Read  -->
     <select id="list" resultType="Wallet">
-        select *
+        select id, owner_id as 'ownerId', address, balance
         from Wallet
     </select>
 
     <select id="getWalletByOwnerId" parameterType="long" resultType="Wallet">
-        select *
+        select id, owner_id as 'ownerId', address, balance
         from Wallet
         where owner_id = #{ownerId}
     </select>
 
     <select id="getWalletByWAddress" parameterType="String" resultType="Wallet">
-        select *
+        select id, owner_id as 'ownerId', address, balance
         from Wallet
         where address = #{wAddress}
     </select>

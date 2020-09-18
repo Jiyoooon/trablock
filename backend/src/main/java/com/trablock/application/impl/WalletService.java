@@ -2,12 +2,16 @@ package com.trablock.application.impl;
 
 import com.trablock.application.ICashContractService;
 import com.trablock.application.IEthereumService;
+import com.trablock.application.IJwtService;
 import com.trablock.application.IWalletService;
 import com.trablock.domain.Address;
+import com.trablock.domain.User;
 import com.trablock.domain.Wallet;
 import com.trablock.domain.exception.ApplicationException;
 import com.trablock.domain.exception.NotFoundException;
+import com.trablock.domain.repository.IUserRepository;
 import com.trablock.domain.repository.IWalletRepository;
+import com.trablock.util.SHA256;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +24,8 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * TODO Sub PJT Ⅱ 과제 1, 과제 3
@@ -37,13 +43,17 @@ public class WalletService implements IWalletService
 
 	@Autowired
 	private IWalletRepository walletRepository;
+	
+	@Autowired
+	private IUserRepository userRepository;
 
 	private IEthereumService ethereumService;
 	private ICashContractService cashContractService;
 
 	@Autowired
 	public WalletService(IEthereumService ethereumService,
-						 ICashContractService cashContractService) {
+						 ICashContractService cashContractService,
+						 IJwtService jwtService) {
 		this.ethereumService = ethereumService;
 		this.cashContractService = cashContractService;
 	}
@@ -56,6 +66,8 @@ public class WalletService implements IWalletService
 	@Override
 	public Wallet get(final long ownerId) {
 		Wallet wallet = walletRepository.getWalletByOwnerId(ownerId);
+		
+		if(wallet == null) return null;
 		String walletAddress = wallet.getAddress();
 
 		// 주소로 정보검색 요청
@@ -63,7 +75,10 @@ public class WalletService implements IWalletService
 
 		// 잔액정보가 불일치하면 업데이트
 		if (updatedBalance != wallet.getBalance().toBigInteger()) {
-			wallet.setBalance(BigDecimal.valueOf(Long.parseLong(updatedBalance.toString())));
+			wallet.setBalance(new BigDecimal(updatedBalance.toString()));
+
+			//db에 지갑 잔액 업데이트
+			walletRepository.update(wallet);
 		}
 
 		return wallet;
@@ -74,12 +89,16 @@ public class WalletService implements IWalletService
 	public Wallet get(String address) {
 		Wallet wallet = walletRepository.getWalletByWAddress(address);
 
+		if(wallet == null) return null;
 		// 주소로 정보검색 요청
 		BigInteger updatedBalance = ethereumService.getBalance(address);
 
 		// 잔액정보가 불일치하면 업데이트
 		if (updatedBalance != wallet.getBalance().toBigInteger()) {
 			wallet.setBalance(new BigDecimal(updatedBalance.toString()));
+
+			//db에 지갑 잔액 업데이트
+			walletRepository.update(wallet);
 		}
 
 		return wallet;
@@ -91,8 +110,8 @@ public class WalletService implements IWalletService
 	 * @return
 	 */
 	@Override
-	public Wallet register(final Wallet wallet) {
-		String walletPassword = "1234";
+	public Wallet register(final String userId) {
+		String walletPassword = this.userRepository.selectPassword(userId);
 		String walletDirectory = "./src/main/resources/wallet";
 
 		String walletName = null;
@@ -102,7 +121,6 @@ public class WalletService implements IWalletService
 			e.printStackTrace();
 		}
 		System.out.println("wallet location: " + walletDirectory + "/" + walletName);
-
 
 		Credentials credentials = null;
 		try {
@@ -114,7 +132,8 @@ public class WalletService implements IWalletService
 		String accountAddress = credentials.getAddress();
 		System.out.println("Account address: " + credentials.getAddress());
 
-		wallet.setAddress(credentials.getAddress());
+		
+		Wallet wallet = new Wallet(Long.parseLong(userId), accountAddress, new BigDecimal(0));
 		this.walletRepository.create(wallet);
 
 		return get(wallet.getOwnerId());
@@ -149,7 +168,11 @@ public class WalletService implements IWalletService
 
 		// 2-2. 지갑에 5eth를 더 충전하도록 한다.
 		ethereumService.requestEth(walletAddress);
-
-		return wallet;
+		
+		
+		
+		return get(wallet.getAddress());
 	}
+	
+	
 }
