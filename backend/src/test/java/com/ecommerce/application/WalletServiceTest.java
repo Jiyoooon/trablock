@@ -1,8 +1,10 @@
 package com.ecommerce.application;
 
-import com.ecommerce.Application;
-import com.ecommerce.domain.Wallet;
 import com.fasterxml.jackson.databind.node.BigIntegerNode;
+import com.trablock.Application;
+import com.trablock.application.IWalletService;
+import com.trablock.domain.Wallet;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,20 +25,20 @@ public class WalletServiceTest
 	private static String testAddress = "fakeaddress00";
 	private static String tempAddress = "fakeaddress01";
 
-	@Transactional
-	@Test
-	public void testRegister(){
-		Wallet w = new Wallet();
-		w.setAddress(tempAddress);
-		w.setOwnerId(15);
-		w.setBalance(BigDecimal.valueOf(1000));
-
-		Wallet walletRegistered = this.walletService.register(w);
-
-		assert walletRegistered != null;
-		assert walletRegistered.getOwnerId() == w.getOwnerId();
-		assert walletRegistered.getAddress().equals(tempAddress);
-	}
+//	@Transactional
+//	@Test
+//	public void testRegister(){
+//		Wallet w = new Wallet();
+//		w.setAddress(tempAddress);
+//		w.setOwnerId(15);
+//		w.setBalance(BigDecimal.valueOf(1000));
+//
+//		Wallet walletRegistered = this.walletService.register(w);
+//
+//		assert walletRegistered != null;
+//		assert walletRegistered.getOwnerId() == w.getOwnerId();
+//		assert walletRegistered.getAddress().equals(tempAddress);
+//	}
 
 
 	@Transactional

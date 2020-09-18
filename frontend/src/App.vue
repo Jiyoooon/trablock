@@ -1,36 +1,42 @@
 <template>
-  <div>
-    <!-- <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div> -->
+<v-app>
+  <v-content>
     <router-view />
-  </div>
+  </v-content>
+</v-app>
 </template>
 
+<script>
+
+export default {
+  name: 'App',
+  components: {
+    
+  },
+  data: () => ({
+    
+  }),
+  methods: {
+    
+  },
+};
+</script>
 <style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #292321;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-
-.form-group .content {
-  font-size: 1.2rem;
+.jb-box { width: 100%; height: 500px; overflow: hidden;margin: 0px auto; position: relative; }
+video { 
+  position : fixed;
+	top : 0; 
+	left : 0;
+	min-width : 100%;
+	min-height : 100%;
+	width : auto;
+	height : auto;
+	z-index : 0;
+ }
+/* #background {
+  background: url(../public/timesquare2.jpg);
+} */
+.container{
+  z-index : 2;
 }
 </style>
