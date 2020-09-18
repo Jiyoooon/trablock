@@ -9,7 +9,9 @@
       >
         <div align="center" justify="center">
           <v-toolbar-title>
-            <h1 class="my-15 mx-15">TRABLOCK</h1>
+            <router-link  :to="{name: 'groupmain'}" class="text-decoration-none">
+              <h1 class="my-15 mx-15" style="color:white;">TRABLOCK</h1>
+            </router-link>
           </v-toolbar-title>
         </div>
         <v-spacer></v-spacer>
@@ -84,12 +86,21 @@
               </v-col>
               <v-col  cols="12" sm="10">
                 <v-card min-height="40vh" class="mx-15">
-              <v-list three-line subheader>
+                  <v-list three-line subheader>
                     <v-list-item>
                       <v-list-item-content>
                         <v-row>
                           <v-col cols="12" sm="3">
-                            <v-text-field label="모임 이름을 입력해 주세요." v-model="groupName" class="mt-3 ml-15"></v-text-field>
+                            <v-select
+                              :items="groupTypes"
+                              v-model="groupType"
+                              label="어떤 모임인가요?"
+                              outlined
+                              class="mt-3 ml-15"
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="3">
+                            <v-text-field label="모임 이름을 입력해 주세요." v-model="groupName" class="mt-3"></v-text-field>
                           </v-col>
                         </v-row>
                         <v-row>
@@ -98,95 +109,15 @@
                           </v-col>
                         </v-row>
                         <v-row>
-                          <v-col cols="12" sm="3">
-                            <div class="subheading ml-10"><small>회비를 모을 기간을 선택해 주세요.</small></div>
-                            <v-date-picker v-model="dates" range color="amber darken-1" class="ml-15"></v-date-picker>
-                          </v-col>
-                          <v-col cols="12" sm="9">
-                            <v-row>
-                              <v-col cols="12" sm="4">
-                                <v-text-field label="여행지를 입력해 주세요." v-model="groupDestinationCountry" class="ml-15" hint="국가명"></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="4">
-                                <v-text-field v-model="groupDestinationCity" hint="도시명"></v-text-field>
-                              </v-col>
-                            </v-row>
-                            <v-row>
-                              <v-col cols="12" sm="4">
-                                <v-text-field v-model="dateRangeText" label="Date range" readonly class="ml-15"></v-text-field>
-                              </v-col>
-                            </v-row>
-                            <v-row>
-                              <v-col cols="12" sm="4">
-                                <v-text-field 
-                                  label="목표금액을 입력해 주세요." 
-                                  v-model="groupTarget" 
-                                  class="ml-15"
-                                  @change="updateRegularPay()"
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="2">
-                                <v-select
-                                  :items="cycle"
-                                  label="납입 주기"
-                                  v-model="groupCycle"
-                                ></v-select>
-                              </v-col>
-                              <v-col cols="12" sm="2" v-if="groupCycle == '월간'">
-                                <v-select
-                                  :items="month"
-                                  v-model="groupPayDate"
-                                  label="일 선택"
-                                ></v-select>
-                              </v-col>
-                              <v-col cols="12" sm="2" v-if="groupCycle == '주간'">
-                                <v-select
-                                  :items="week"
-                                  label="요일 선택"
-                                  v-model="groupPayDate"
-                                ></v-select>
-                              </v-col>
-                            </v-row>
-                            <v-row v-if="groupCycle == '월간'">
-                              <v-col cols="12" sm="4" >
-                                <v-text-field label="월간 납입금액" v-model="groupRegularPay" class="ml-15" readonly></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="3">
-                                <v-text-field 
-                                  label="퇴출 수수료" 
-                                  v-model="groupExitPay" 
-                                  suffix="%" 
-                                  hint="0부터 10 사이로 선택해 주세요."
-                                  @change="checkExitPay()"
-                                ></v-text-field>
-                              </v-col>
-                            </v-row>
-                            <v-row v-if="groupCycle == '주간'">
-                              <v-col cols="12" sm="5" >
-                                <v-text-field label="주간 납입금액" v-model="groupRegularPay" class="ml-15" readonly></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="2">
-                                <v-text-field 
-                                  label="퇴출 수수료" 
-                                  v-model="groupExitPay" 
-                                  suffix="%" 
-                                  hint="0부터 10 사이로 선택해 주세요."
-                                  @change="checkExitPay()"
-                                ></v-text-field>
-                              </v-col>
-                            </v-row>
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col cols="12" sm="4" class="ml-10">
+                          <v-col cols="12" sm="4" class="ml-3">
                             함께 여행 갈 회원들을 추가해 주세요.
                             <v-btn icon color="green" class="mb-1" @click="dialogUser=true;">
                               <v-icon>mdi-plus</v-icon>
                             </v-btn>
                           </v-col>
-                          <v-col cols="12" sm="9" class="ml-10" align="left">
+                          <v-col cols="12" sm="7" align="left">
                             <v-chip
-                              class="ma-2"
+                              class="mx-1"
                               label
                               v-for="(item, i) in pickedFriend" v-bind:key="i"
                             >
@@ -230,6 +161,104 @@
                           </v-dialog>
                         </v-row>
                         <v-row>
+                          <v-col cols="12" sm="3">
+                            <div class="subheading ml-14"><small>정기 납부를 종료할 날짜를 선택해 주세요.</small></div>
+                            <v-date-picker v-model="finished" color="amber darken-1" class="ml-15" @change="updategroupDates()"></v-date-picker>
+                          </v-col>
+                          <v-col cols="12" sm="9">
+                            <v-row>
+                              <v-col cols="12" sm="4">
+                                <v-text-field v-model="groupDateRangeText" label="Date range" readonly class="ml-15"></v-text-field>
+                              </v-col>
+                            </v-row>
+                            <v-row>
+                              <v-col cols="12" sm="4">
+                                <v-text-field 
+                                  label="목표금액을 입력해 주세요." 
+                                  v-model="groupTarget" 
+                                  class="ml-15"
+                                  @change="updateRegularPay()"
+                                  suffix="원"
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="2">
+                                <v-select
+                                  :items="cycle"
+                                  label="납입 주기"
+                                  v-model="groupCycle"
+                                ></v-select>
+                              </v-col>
+                              <v-col cols="12" sm="2" v-if="groupCycle == '월간'">
+                                <v-select
+                                  :items="month"
+                                  v-model="groupPayDate"
+                                  label="일 선택"
+                                  @change="updateRegularPay()"
+                                ></v-select>
+                              </v-col>
+                              <v-col cols="12" sm="2" v-if="groupCycle == '주간'">
+                                <v-select
+                                  :items="week"
+                                  label="요일 선택"
+                                  v-model="groupPayDate"
+                                  @change="updateRegularPay()"
+                                ></v-select>
+                              </v-col>
+                            </v-row>
+                            <v-row v-if="groupCycle == '월간'">
+                              <v-col cols="12" sm="4" >
+                                <v-text-field label="월간 납입금액" v-model="groupRegularPay" class="ml-15" suffix="원"></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="3">
+                                <v-text-field 
+                                  label="퇴출 수수료" 
+                                  v-model="groupExitPay" 
+                                  suffix="%" 
+                                  hint="0부터 10 사이로 선택해 주세요."
+                                  @change="checkExitPay()"
+                                ></v-text-field>
+                              </v-col>
+                            </v-row>
+                            <v-row v-if="groupCycle == '주간'">
+                              <v-col cols="12" sm="5" >
+                                <v-text-field label="주간 납입금액" v-model="groupRegularPay" class="ml-15"></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="2">
+                                <v-text-field 
+                                  label="퇴출 수수료" 
+                                  v-model="groupExitPay" 
+                                  suffix="%" 
+                                  hint="0부터 10 사이로 선택해 주세요."
+                                  @change="checkExitPay()"
+                                ></v-text-field>
+                              </v-col>
+                            </v-row>
+                          </v-col>
+                        </v-row>
+                        <v-divider></v-divider>
+                        <v-row v-if="groupType=='여행'">
+                          <v-col cols="12" sm="3" class="mt-15">
+                            <div class="subheading"><small>여행 기간을 선택해 주세요.</small></div>
+                            <v-date-picker v-model="travelDates" range color="green" class="ml-15"></v-date-picker>
+                          </v-col>
+                          <v-col cols="12" sm="9" class="mt-15">
+                            <v-row>
+                              <v-col cols="12" sm="4">
+                                <v-text-field label="여행지를 입력해 주세요." v-model="groupDestinationCountry" class="ml-15" hint="국가명"></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="4">
+                                <v-text-field v-model="groupDestinationCity" hint="도시명"></v-text-field>
+                              </v-col>
+                            </v-row>
+                            <v-row>
+                              <v-col cols="12" sm="4">
+                                <v-text-field v-model="travelDateRangeText" label="Date range" readonly class="ml-15"></v-text-field>
+                              </v-col>
+                            </v-row>
+                          </v-col>
+                        </v-row>
+                        <v-divider></v-divider>
+                        <v-row>
                           <v-col align="right">
                             <router-link :to="{name: 'groupmain'}" class="text-decoration-none">
                               <v-btn color="amber darken-3" text @click="dialogUser = false"><h3>Close</h3></v-btn>
@@ -260,7 +289,7 @@
 </template>
 
 <script>
-
+import moment from "moment";
 export default {
   name: 'GroupMain',
   components: {
@@ -293,10 +322,14 @@ export default {
         groupDestinationCountry : '',
         groupDestinationCity : '',
         groupExitPay : '',
+        groupTypes : [ "여행", "기타"],
+        groupType : '',
 
         week : ['월요일','화요일','수요일','목요일','금요일','토요일','일요일'],
         month : [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28],
-        dates: ['2019-09-10', '2019-09-20'],
+        groupDates: [],
+        finished : '',
+        travelDates : [],
 
         dialogUser:false,
         friend: '',
@@ -352,12 +385,26 @@ export default {
     },
     checkExitPay() {
 
+    },
+    updategroupDates() {
+      this.groupDates = []
+      this.groupDates.push(moment(new Date()).format("YYYY-MM-DD"))
+      this.groupDates.push(this.finished)
     }
+  },
+  filters: {
+    updateRegularPay(val) {
+      var stringval = ''+val;
+      return stringval.substr(0, 10)
+    },
   },
 
   computed: {
-    dateRangeText () {
-      return this.dates.join(' ~ ')
+    groupDateRangeText () {
+      return this.groupDates.join(' ~ ')
+    },
+    travelDateRangeText () {
+      return this.travelDates.join(' ~ ')
     },
   },
 };
