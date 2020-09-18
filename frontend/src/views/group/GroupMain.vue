@@ -74,7 +74,7 @@
               >
                 <v-list-item :class="miniVariant && 'px-0'">
                   <v-list-item-content class="elevation-5 mt-5 mb-2">
-                    <v-list-item-title><h3>나의 모임</h3></v-list-item-title>
+                    <v-list-item-title><h3 class="my-2">나의 모임</h3></v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
 
