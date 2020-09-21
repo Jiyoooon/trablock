@@ -10,6 +10,11 @@ import postDetail from "../views/post/PostDetail.vue";
 import postManage from "../views/post/PostManage.vue";
 import postCreate from "../views/post/PostCreate.vue";
 
+// accout
+import Profile from "../views/account/Profile.vue";
+
+import { auth } from '@/store/auth.module';
+
 
 Vue.use(VueRouter)
 
@@ -52,6 +57,19 @@ Vue.use(VueRouter)
       path: "/post/create",
       name: "postcreate",
       component: postCreate,
+    },
+    // account
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: Profile,
+      beforeEnter(from, to, next) {
+        if (!auth.state.status.loggedIn) {
+          next('/auth')
+        } else {
+          next()
+        }
+      }
     },
   ]
 
