@@ -19,3 +19,6 @@ Backend for Blockchain based E-Commerce Platform
 
 
 
+9/21
+
+DB 설정 README 문서 - https://www.notion.so/DB-d438dcf3a36b444f90c8164aa53ff1e0
