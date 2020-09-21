@@ -15,11 +15,11 @@
         <v-spacer></v-spacer>
 
         <v-btn icon>
-          <v-icon>mdi-account-outline</v-icon>
+          <v-icon>far fa-user</v-icon>
         </v-btn>
 
-        <v-btn icon>
-          <v-icon>mdi-blinds</v-icon>
+        <v-btn icon @click="gotomypage">
+          <v-icon>far fa-bell</v-icon>
         </v-btn>
 
         <div class="my-2">
@@ -136,7 +136,9 @@ export default {
       }
     },
   methods: {
-    
+    gotomypage() {
+        this.$router.push('/profile')
+    },
   },
 };
 </script>
