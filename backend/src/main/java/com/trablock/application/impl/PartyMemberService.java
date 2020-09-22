@@ -31,7 +31,7 @@ public class PartyMemberService implements IPartyMemberService {
     @Override
     public List<Long> getPartyIdListByUserId(long userId) {
         List<Long> partyIdList = partyMemberRepository.getPartyIdListByUserId(userId);
-        if (partyIdList == null || partyIdList.size() == 0)
+        if (partyIdList == null)
             throw new NotFoundException("userId에 대응되는 partyId가 없습니다.");
         return partyIdList;
     }
