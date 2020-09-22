@@ -40,7 +40,7 @@ import io.reactivex.Flowable;
 
 public class CashContract extends Contract {
 
-	private static final String BINARY = "contract binary key";
+	private static final String BINARY = "0x1b210a00cb267f868c803b0dd7f12697a289c1ff";
 	
 	// 생성자
 	protected CashContract(String contractAddress, Web3j web3j, Credentials credentials,
@@ -177,6 +177,9 @@ public class CashContract extends Contract {
 		Function function = new Function("balanceOf", Arrays.<Type>asList(_owner),
 				Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
 				}));
+		System.out.println("_owner : " + _owner);
+		Uint256 ss = executeCallSingleValueReturn(function);
+		System.out.println("uint256 ss : " + ss);
 		return executeCallSingleValueReturn(function);
 	}
 
@@ -224,6 +227,13 @@ public class CashContract extends Contract {
 				.encodeConstructor(Arrays.<Type>asList(totalSupply, tokenName, decimalUnits, tokenSymbol));
 		return deployRemoteCall(CashContract.class, web3j, transactionManager, gasPrice, gasLimit, BINARY,
 				encodedConstructor, initialWeiValue);
+	}
+	
+	public static RemoteCall<CashContract> deploy(Web3j web3j, Credentials credentials, ContractGasProvider gasProvider, Uint256 totalSupply, Utf8String tokenName,
+			Uint8 decimalUnits, Utf8String tokenSymbol) {
+		String encodedConstructor = FunctionEncoder
+				.encodeConstructor(Arrays.<Type>asList(totalSupply, tokenName, decimalUnits, tokenSymbol));
+		return deployRemoteCall(CashContract.class, web3j, credentials, gasProvider, BINARY, encodedConstructor);
 	}
 
 	public static CashContract load(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider gasProvider) {
