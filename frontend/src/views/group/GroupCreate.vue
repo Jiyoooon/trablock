@@ -67,7 +67,7 @@
                 <v-divider></v-divider>
 
                 <v-list-item
-                  v-for="item in items"
+                  v-for="item in groups"
                   :key="item.title"
                   link :to="{name: 'groupdetail',query: { groupId: item.id }}"
                 >
@@ -300,11 +300,7 @@ export default {
       return {
         tab: null,
         drawer: true,
-        items: [
-          { id:1,title: '홍콩여행', icon: 'mdi-view-dashboard' },
-          { id:2,title: '부산여행', icon: 'mdi-view-dashboard' },
-          { id:3,title: '3일만에 세계일주', icon: 'mdi-view-dashboard' },
-        ],
+        groups: [],
         color: 'primary',
 
         right: false,
@@ -334,35 +330,36 @@ export default {
 
         dialogUser:false,
         friend: '',
-        userList : [
-          {
-            id : 1,
-            nickname : "지윤",
-            email : "ganzi@gmail.com"
-          },
-          {
-            id : 2,
-            nickname : "지훈",
-            email : "imjihoon@gmail.com"
-          }
-        ],
-        sUserList : [
-          {
-            id : 1,
-            nickname : "지윤",
-            email : "ganzi@gmail.com"
-          },
-          {
-            id : 2,
-            nickname : "지훈",
-            email : "imjihoon@gmail.com"
-          }
-        ],
+        userList : [],
+        sUserList : [],
         pickedFriend : [],
+        pickedFrinedId : [],
       }
     },
   created(){
-    //userList, sUserList 초기화
+    //userList 가져오기
+    http.get('users')
+    .then(({data}) => {
+      this.userList = data
+      this.sUserList = data
+    })
+
+    http.get('/party/searchId', {
+      params : {
+        id : 1 //사용자 id로 바꿔줘야해.
+      }
+    }).then(({ data }) => {
+      this.groups = data;
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.$router.push("servererror")
+      } else if(error.request) {
+        this.$router.push("error")
+      } else{
+        this.$router.push("/404");
+      }                          
+    });
   },
   methods: {
     searchUser () {
@@ -409,16 +406,38 @@ export default {
         if(canMake){
           var ok = confirm("모임을 생성하시겠습니까?")
           if(ok) {
-            http.post('/party', {
-              name : this.groupName,
-              explanation : this.groupExplanation,
-              created : moment(new Date()).format("YYYY-MM-DD"),
-              target : this.groupTarget,
-              totalAmount : 0,
-              payCycle : this.groupCycle,
-              payDate : this.groupPayDate,
+            this.pickedFriend.forEach(element => {
+              this.userList.forEach(element2 => {
+                if(element == element2.nickname){
+                  this.pickedFrinedId.push(element2.id)
+                }
+              });
+            });
+            this.pickedFrinedId.push(3); //나의 아이디 넣어줘야해
+            console.log(this.pickedFrinedId)
+
+            http.post('/party', 
+              {
+                name : this.groupName,
+                    explanation : this.groupExplanation,
+                    created : moment(new Date()).format("YYYY-MM-DD"),
+                    target : this.groupTarget,
+                    totalAmount : 0,
+                    payCycle : true,
+                    payDate : this.groupPayDate,
+                    payAmount : this.groupRegularPay,
+                    image : " ",
+                    startDate : this.travelDates[0],
+                    endDate : this.travelDates[1],
+                    destination : this.groupDestinationCountry+" "+this.groupDestinationCity,
+                    available : true,
+                    exitFee : this.groupExitPay,
+                    //finished : this.finished
+                    //type : this.groupType
+                partyMemberIdList : this.pickedFrinedId,
+              },
               
-            })
+            )
           }
         }
       }

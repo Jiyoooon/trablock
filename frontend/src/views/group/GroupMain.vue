@@ -81,7 +81,7 @@
                 <v-divider></v-divider>
 
                 <v-list-item
-                  v-for="item in items"
+                  v-for="item in groups"
                   :key="item.title"
                   link :to="{name: 'groupdetail',query: { groupId: item.id }}"
                 >
@@ -111,7 +111,7 @@
 </template>
 
 <script>
-
+import http from "@/util/http-common.js";
 export default {
   name: 'GroupMain',
   components: {
@@ -121,11 +121,7 @@ export default {
       return {
         tab: null,
         drawer: true,
-        items: [
-          { id:1,title: '홍콩여행', icon: 'mdi-view-dashboard' },
-          { id:2,title: '부산여행', icon: 'mdi-view-dashboard' },
-          { id:3,title: '3일만에 세계일주', icon: 'mdi-view-dashboard' },
-        ],
+        groups: [],
         color: 'primary',
 
         right: false,
@@ -135,6 +131,26 @@ export default {
         background: false,
       }
     },
+  created(){
+    // 모임 가져오기
+    http.get('/party/searchId', {
+      params : {
+        id : 1 //사용자 id로 바꿔줘야해.
+      }
+    }).then(({ data }) => {
+      this.groups = data;
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.$router.push("servererror")
+      } else if(error.request) {
+        this.$router.push("error")
+      } else{
+        this.$router.push("/404");
+      }                          
+    });
+  },
+  
   methods: {
     
   },

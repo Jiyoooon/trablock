@@ -2,23 +2,25 @@ package com.trablock.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Party {
     private long id;                    // 모임 아이디
     private String name;                // 모임 명
     private String explanation;         // 모임 설명
-    private LocalDateTime created;      // 모임 생성날짜(기본 : 현재 시간)
+    private String created;      // 모임 생성날짜(기본 : 현재 시간)
     private BigDecimal target;          // 모임 목표금액
     private BigDecimal totalAmount;     // 모임 실제금액
     private boolean payCycle;           // 모임 납입주기(false : 월단위, true : 주단위)
     private int payDate;                // 모임 납입날짜(월단위시 일을 의미하고, 주단위시 1=월요일 ~ 7=일요일을 의미)
     private BigDecimal payAmount;       // 모임 납입금
     private String image;               // 사진
-    private LocalDateTime startDate;    // 여행 시작 날짜(기본)
-    private LocalDateTime endDate;      // 여행 종료 날짜(기본)
+    private String startDate;    // 여행 시작 날짜(기본)
+    private String endDate;      // 여행 종료 날짜(기본)
     private String destination;         // 여행지
     private boolean available;          // 완료 여부(기본 : false)
     private BigDecimal exitFee;         // 퇴출수수료
+    private List<Long> members;
 
     public long getId() {
         return id;
@@ -42,14 +44,6 @@ public class Party {
 
     public void setExplanation(String explanation) {
         this.explanation = explanation;
-    }
-
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
     }
 
     public BigDecimal getTarget() {
@@ -92,22 +86,6 @@ public class Party {
         this.image = image;
     }
 
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
-    }
-
     public String getDestination() {
         return destination;
     }
@@ -131,8 +109,49 @@ public class Party {
     public void setExitFee(BigDecimal exitFee) {
         this.exitFee = exitFee;
     }
+    
 
-    @Override
+    public BigDecimal getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public List<Long> getMembers() {
+		return members;
+	}
+
+	public void setMembers(List<Long> members) {
+		this.members = members;
+	}
+
+	public String getCreated() {
+		return created;
+	}
+
+	public void setCreated(String created) {
+		this.created = created;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	@Override
     public String toString() {
         return "Party{" +
                 "id=" + id +
