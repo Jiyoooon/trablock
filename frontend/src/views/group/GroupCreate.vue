@@ -155,7 +155,7 @@
                               <v-divider></v-divider>
                               <v-card-actions>
                                 <v-btn color="blue darken-1" text @click="dialogUser = false; pickedFriend = []">Close</v-btn>
-                                <v-btn color="blue darken-1" text @click="dialogUser = false">Save</v-btn>
+                                <v-btn color="blue darken-1" text @click="dialogUser = false; updateRegularPay()">Save</v-btn>
                               </v-card-actions>
                             </v-card>
                           </v-dialog>
@@ -220,8 +220,8 @@
                               </v-col>
                             </v-row>
                             <v-row v-if="groupCycle == '주간'">
-                              <v-col cols="12" sm="5" >
-                                <v-text-field label="주간 납입금액" v-model="groupRegularPay" class="ml-15"></v-text-field>
+                              <v-col cols="12" sm="4" >
+                                <v-text-field label="주간 납입금액" v-model="groupRegularPay" class="ml-15" suffix="원"></v-text-field>
                               </v-col>
                               <v-col cols="12" sm="2">
                                 <v-text-field 
@@ -290,6 +290,7 @@
 
 <script>
 import moment from "moment";
+import http from '@/util/http-common.js';
 export default {
   name: 'GroupMain',
   components: {
@@ -373,34 +374,165 @@ export default {
       });
     },
     createGroup() {
-      //그룹을 만드는 곳
-      alert(this.groupName+" 모임이 생성되었습니다.")
+      if(this.groupType.length == ''){
+        alert("어떤 모임인지 선택해주세요.")
+      }else if(this.groupName.length == ''){
+        alert("모임 이름을 작성해 주세요.")
+      }else if(this.finished.length == ''){
+        alert("정기 납부를 종료할 날짜를 선택해주세요.")
+      }else if(this.groupTarget.length == ''){
+        alert("목표 금액을 입력해주세요.")
+      }else if(this.groupCycle.length == ''){
+        alert("정기납부 주기를 월간과 주간 중에 선택해주세요.")
+      }else if(this.groupCycle.length == ''){
+        alert("정기납부 주기를 월간과 주간 중에 선택해주세요.")
+      }else if(this.groupPayDate.length == ''){
+        alert("정기납부할 날짜를 선택해주세요.")
+      }else if(this.groupExitPay.length == ''){
+        alert("퇴출 수수료를 입력해주세요. 퇴출 수수료는 무단으로 모임을 나가거나 장기적으로 정기납부를 하지 않은 인원에게 부가되는 수수료입니다. 이러한 인원이 퇴출 시 현재까지 낸 금액의 퇴출수수료(%)만큼 제하고 퇴출 처리 됩니다.")
+      }else{
+        var canMake = false
+        if(this.groupType == '여행'){
+          if(this.travelDates.length == 0){
+            alert('여행 기간을 선택해주세요.')
+          }else if(this.groupDestinationCountry.length == ''){
+            alert('여행지(국가명)을 입력해주세요.')
+          }else if(this.groupDestinationCity.length == ''){
+            alert('여행지(도시명)을 입력해주세요.')
+          }else{
+            canMake = true
+          }
+        }else{
+          canMake = true
+        }
+
+        if(canMake){
+          var ok = confirm("모임을 생성하시겠습니까?")
+          if(ok) {
+            http.post('/party', {
+              name : this.groupName,
+              explanation : this.groupExplanation,
+              created : moment(new Date()).format("YYYY-MM-DD"),
+              target : this.groupTarget,
+              totalAmount : 0,
+              payCycle : this.groupCycle,
+              payDate : this.groupPayDate,
+              
+            })
+          }
+        }
+      }
+      
     },
     updateRegularPay() {
       if(this.groupCycle =='월간'){
-        this.groupRegularPay = Math.round(this.groupTarget/30)
+        let created = moment(new Date()).format("YYYY-MM-DD")
+        var sy = created.slice(0,4)
+        var sm = created.slice(5,7)
+        var sd = created.slice(8.10)
+
+        var ey = this.finished.slice(0,4)
+        var em = this.finished.slice(5,7)
+        var ed = this.finished.slice(8,10)
+
+        var cnt = 0
+        if(ey > sy){
+          cnt += Number(ey - sy - 1)*12
+          if(sd > this.groupPayDate){
+            cnt += Number(12 - sm)
+          }else{
+            cnt += Number(12 - sm + 1)
+          }
+
+          if(ed >= this.groupPayDate){
+            cnt += Number(em)
+          }else{
+            cnt += Number(em + 1)
+          }
+        }else{
+          if(ed >= this.groupPayDate){
+            cnt += Number(em)
+          }else{
+            cnt += Number(em + 1)
+          }
+
+          if(sd > this.groupPayDate){
+            cnt -= Number(sm)
+          }else{
+            cnt -= Number(sm - 1)
+          }
+        }
+        if(cnt == 0) this.groupRegularPay = '모금 기간을 늘려주세요.'
+        else this.groupRegularPay = Math.round((this.groupTarget/cnt) / (this.pickedFriend.length+1))
       }else if(this.groupCycle == '주간'){
-        this.groupRegularPay = this.groupTarget/7
+        var yoil = moment(new Date()).format('dddd')
+        var curYoilIndex = 0
+        if(yoil == 'Monday') {
+          curYoilIndex = 1
+        }else if(yoil == 'Tuesday'){
+          curYoilIndex = 2
+        }else if(yoil == 'Wendnesday'){
+          curYoilIndex = 3
+        }else if(yoil == 'Thursday'){
+          curYoilIndex = 4
+        }else if(yoil == 'Friday'){
+          curYoilIndex = 5
+        }else if(yoil == 'Sunday'){
+          curYoilIndex = 6
+        }else{
+          curYoilIndex = 7
+        }
+
+        var pickedYoilIndex = 0
+        if(this.groupPayDate == '월요일'){
+          pickedYoilIndex = 1
+        }else if(this.groupPayDate == '화요일'){
+          pickedYoilIndex = 2
+        }else if(this.groupPayDate == '수요일'){
+          pickedYoilIndex = 3
+        }else if(this.groupPayDate == '목요일'){
+          pickedYoilIndex = 4
+        }else if(this.groupPayDate == '금요일'){
+          pickedYoilIndex = 5
+        }else if(this.groupPayDate == '토요일'){
+          pickedYoilIndex = 6
+        }else if(this.groupPayDate == '일요일'){
+          pickedYoilIndex = 7
+        }
+
+        var created = moment(new Date()).format("YYYY-MM-DD")
+
+        var date1 = new Date(created);
+        var date2 = new Date(this.finished);
+        var diff = date2.getTime() - date1.getTime();
+        diff = Math.ceil(diff / (1000 * 3600 * 24))+1;
+        
+        if(pickedYoilIndex > curYoilIndex){
+          diff -= (pickedYoilIndex - curYoilIndex)
+        }else if(pickedYoilIndex < curYoilIndex){
+          diff -= (8 - curYoilIndex)
+          diff -= pickedYoilIndex
+        }
+
+        this.groupRegularPay = Math.round((this.groupTarget/parseInt((diff+6)/7)) / (this.pickedFriend.length+1))
       }
     },
     checkExitPay() {
-
+      if(this.groupExitPay > 10 || this.groupExitPay < 0){
+        alert("퇴출 수수료는 0 이상 10 이하로 작성하셔야 합니다.")
+        this.groupExitPay = 10
+      }
     },
     updategroupDates() {
       this.groupDates = []
       this.groupDates.push(moment(new Date()).format("YYYY-MM-DD"))
       this.groupDates.push(this.finished)
-    }
-  },
-  filters: {
-    updateRegularPay(val) {
-      var stringval = ''+val;
-      return stringval.substr(0, 10)
     },
   },
 
   computed: {
     groupDateRangeText () {
+      this.updateRegularPay()
       return this.groupDates.join(' ~ ')
     },
     travelDateRangeText () {
