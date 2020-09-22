@@ -51,8 +51,8 @@ public class PartyController {
      */
     // 특정 id의 모임 검색
     @ApiOperation(value = "특정 id의 모임 검색")
-    @GetMapping("/party/searchId/{id}")
-    public List<Party> get(@PathVariable int id) {
+    @GetMapping("/party/searchId")
+    public List<Party> get(int id) {
 
         List<Party> partyList = new ArrayList<>();
 
