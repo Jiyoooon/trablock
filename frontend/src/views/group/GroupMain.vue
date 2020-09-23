@@ -81,7 +81,7 @@
                 <v-divider></v-divider>
 
                 <v-list-item
-                  v-for="item in items"
+                  v-for="item in groups"
                   :key="item.title"
                   link :to="{name: 'groupdetail',query: { groupId: item.id }}"
                 >
@@ -270,8 +270,7 @@
 </template>
 
 <script>
-// import http from '@/util/http-common.js'
-
+import http from "@/util/http-common.js";
 export default {
   name: 'GroupMain',
   components: {
@@ -281,11 +280,7 @@ export default {
       return {
         tab: null,
         drawer: true,
-        items: [
-          { id:1,title: '홍콩여행', icon: 'mdi-view-dashboard' },
-          { id:2,title: '부산여행', icon: 'mdi-view-dashboard' },
-          { id:3,title: '3일만에 세계일주', icon: 'mdi-view-dashboard' },
-        ],
+        groups: [],
         color: 'primary',
 
         right: false,
@@ -311,36 +306,26 @@ export default {
         // wCheck: false,
       }
     },
-    created() {
-      console.log(this.$store.state.auth.user);
-      // this.U.email = this.$store.state.auth.user.email
-      // this.U.password = this.$store.state.auth.user.password
-      // this.U.nickname= this.$store.state.auth.user.nickname
-      
-      // // 북마크
-      // http.get('/wallets',{
-      //   // params : {
-      //   //   uid : this.$store.state.auth.user.id,
-      //   // }
-      // }).then(({data}) => {
-      //    this.Wallets = data;
-      // })
-      // .catch((error) => {
-      //     if(error.response) {
-      //       this.$router.push("servererror")
-      //     } else if(error.request) {
-      //       this.$router.push("error")
-      //     } else{
-      //       this.$router.push("/404");
-      //     }                          
-      //   });
-
-      //   if(this.Wallets != null){
-      //     this.wCheck = true;
-      //   }
-
-     },
-
+  created(){
+    // 모임 가져오기
+    http.get('/party/searchId', {
+      params : {
+        id : 1 //사용자 id로 바꿔줘야해.
+      }
+    }).then(({ data }) => {
+      this.groups = data;
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.$router.push("servererror")
+      } else if(error.request) {
+        this.$router.push("error")
+      } else{
+        this.$router.push("/404");
+      }                          
+    });
+  },
+  
   methods: {
     createWallet() {
 
