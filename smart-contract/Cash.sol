@@ -45,10 +45,11 @@ contract Cash is IERC20{
      * @notice constructor
      * totalSupply(inital supply), minter(owner)
      */
-    constructor(string memory name, string memory symbol, uint8 decimals) public {
+    constructor(uint _supply, string memory name, string memory symbol, uint8 decimals) public {
         _name = name;
         _symbol = symbol;
         _decimals = decimals;
+        balanceOf[msg.sender] = _supply;
     }
 
     /**
