@@ -30,18 +30,25 @@ contract Cash is IERC20{
     
     string private _name;
     string private _symbol;
-    unit8 private _decimals;
+    uint8 private _decimals;
+    
+    uint256 private _totalSupply;
+
+    /**
+     * @dev `IERC20.totalSupply`를 참조하세요.
+     */
+    function totalSupply() public view returns (uint256) {
+        return _totalSupply;
+    }
     
     /**
      * @notice constructor
      * totalSupply(inital supply), minter(owner)
      */
     constructor(string memory name, string memory symbol, uint8 decimals) public {
-       _name = name;
-       _symbol = symbol;
-       _decimals = decimals;
-       
-       
+        _name = name;
+        _symbol = symbol;
+        _decimals = decimals;
     }
 
     /**
@@ -52,7 +59,11 @@ contract Cash is IERC20{
      */
     function mint(address _receiver, uint256 _amount) external 
     {
-        // todo 
+        require(_receiver != address(0), "ERC20: mint to the zero address");
+
+        _totalSupply = _totalSupply.add(_amount);
+        _balances[_receiver] = _balances[_receiver].add(_amount);
+        emit Transfer(address(0), _receiver, _amount);
     }
     
     /**
@@ -63,7 +74,7 @@ contract Cash is IERC20{
     function balanceOf(address _account) external view returns (uint)		
     {
         // todo 
-        return _balanceOf[_account];
+        return _balances[_account];
     }
     
     /**
@@ -95,7 +106,7 @@ contract Cash is IERC20{
     function allowance(address _owner, address _spender) external view returns (uint)
     {
         // todo 
-        return _allowance[_owner][_spender];	
+        return _allowances[_owner][_spender];	
     }  
 
     /**

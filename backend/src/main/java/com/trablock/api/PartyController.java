@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -51,8 +52,8 @@ public class PartyController {
      */
     // 특정 id의 모임 검색
     @ApiOperation(value = "특정 id의 모임 검색")
-    @GetMapping("/party/searchId/{id}")
-    public List<Party> get(@PathVariable int id) {
+    @GetMapping("/party/searchId")
+    public List<Party> get(int id) {
 
         List<Party> partyList = new ArrayList<>();
 
@@ -62,11 +63,6 @@ public class PartyController {
         // 2. for문을 돌려서 해당되는 party객체들을 찾아 partyList에 채운다.
         for (long partyId:partyIdList) {
             partyList.add(partyService.get(partyId));
-        }
-
-        if (partyList.size() == 0) {
-            logger.error("NOT FOUND ID: ", id);
-            throw new NotFoundException(id + " 모임 정보를 찾을 수 없습니다.");
         }
 
         return partyList;
@@ -87,8 +83,9 @@ public class PartyController {
     // 모임등록
     @ApiOperation(value = "모임 등록")
     @PostMapping("/party")
-    public Party create(@RequestBody Party party, @RequestBody List<Long> partyMemberIdList) {
-        return partyService.add(party, partyMemberIdList);
+    public Party create(@RequestBody Party party) {
+    	System.out.println("-----");
+        return partyService.add(party, party.getMembers());
     }
 
 

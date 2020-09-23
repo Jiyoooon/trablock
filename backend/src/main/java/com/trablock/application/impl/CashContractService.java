@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.generated.Uint256;
+import org.web3j.abi.datatypes.generated.Uint8;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
@@ -52,15 +55,19 @@ public class CashContractService implements ICashContractService {
     
     public CashContractService() {
     	try {
-			this.credentials = WalletUtils.loadCredentials("sp199191", "keyStore1");
-		} catch (IOException | CipherException e) {
+			this.credentials = WalletUtils.loadCredentials("sp199191", "admin.wallet");
+			
+//			this.cashContract = CashContract.deploy(web3j, credentials, contractGasProvider, new Uint256(100L), new Utf8String("TraBlockCoin"), new Uint8(18L), new Utf8String("TBC")).send();
+			this.cashContract = CashContract.load("0x1b210a00cb267f868c803b0dd7f12697a289c1ff", web3j, credentials, contractGasProvider);
+			
+	    	String deployedContractAddress = cashContract.getContractAddress();
+	    	
+	    	cashContract.balanceOf(new Address("0x1b210a00cb267f868c803b0dd7f12697a289c1ff"));
+	    	System.out.println("deployedContractAddress : " + deployedContractAddress);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-//    	CashContract.deploy(web3j, credentials, gasPrice, gasLimit, initialWeiValue, totalSupply, tokenName, decimalUnits, tokenSymbol)
-    	this.cashContract = CashContract.load(ERC20_TOKEN_CONTRACT, web3j, credentials, contractGasProvider);
     	
-    	String deployedContractAddress = cashContract.getContractAddress();
-    	System.out.println("deployedContractAddress : " + deployedContractAddress);
 	}
 
     /**
