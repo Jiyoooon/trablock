@@ -259,7 +259,29 @@
           <v-row v-else>
             <v-col cols="12">
             <v-card class="mx-auto" flat min-height="70vh">
-              <v-btn color="blue" text small class="font-weight-bold" @click="createWallet">계좌 생성</v-btn>
+              <br><br><br><br>
+              <v-chip
+              class="ma-2"
+              color="grey darken-3"
+              label
+              outlined
+            >
+              개인 지갑이 생성되지 않았습니다.
+            </v-chip>
+            <br>
+              <v-chip
+              class="ma-2"
+              color="grey darken-3"
+              label
+              outlined
+            >
+              <v-icon left>mdi-label</v-icon>
+              계좌 생성하기
+            </v-chip>
+              <br><br>
+              <v-btn color="orange" class="font-weight-bold" fab x-large dark @click="createWallet">
+                <v-icon>fas fa-wallet</v-icon>
+              </v-btn>
             </v-card>
             </v-col>
           </v-row>
