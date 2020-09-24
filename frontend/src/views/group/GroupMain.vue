@@ -149,35 +149,6 @@ export default {
         this.$router.push("/404");
       }                          
     });
-    
-    // 유저정보 가져오기
-    console.log(this.$store.state.auth.user);
-      // this.U.email = this.$store.state.auth.user.email
-      // this.U.password = this.$store.state.auth.user.password
-      // this.U.nickname= this.$store.state.auth.user.nickname
-      
-      // // 북마크
-      // http.get('/wallets',{
-      //   // params : {
-      //   //   uid : this.$store.state.auth.user.id,
-      //   // }
-      // }).then(({data}) => {
-      //    this.Wallets = data;
-      // })
-      // .catch((error) => {
-      //     if(error.response) {
-      //       this.$router.push("servererror")
-      //     } else if(error.request) {
-      //       this.$router.push("error")
-      //     } else{
-      //       this.$router.push("/404");
-      //     }                          
-      //   });
-
-      //   if(this.Wallets != null){
-      //     this.wCheck = true;
-      //   }
-
   },
   
   methods: {
