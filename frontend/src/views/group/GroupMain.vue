@@ -81,7 +81,7 @@
                 <v-divider></v-divider>
 
                 <v-list-item
-                  v-for="item in items"
+                  v-for="item in groups"
                   :key="item.title"
                   link :to="{name: 'groupdetail',query: { groupId: item.id }}"
                 >
@@ -101,17 +101,176 @@
           </v-card>
         </v-tab-item>
         <v-tab-item>
-          <v-card flat min-height="90vh">
-            <v-card-text> 하이하이</v-card-text>
-          </v-card>
+          <v-row v-if="wCheck==true">
+            <v-col cols="2">
+                    <v-card class="mx-auto">
+                        <v-card-subtitle class="pt-5 pb-0 text-center text-h5">사용자 정보</v-card-subtitle>
+                        <v-card-text class="grey--text text-center pb-0">
+                        <div>{{U.email}}</div>
+                        </v-card-text>
+                        <v-card-text class="grey--text text-center">
+                            <v-divider></v-divider>
+                            <v-row>
+                                <v-col cols="5" class="text-left py-1 pl-5">닉네임</v-col>
+                                <v-col cols="7" class="text-right py-1 pr-5">{{U.nickname}}</v-col>
+                            </v-row>
+                            <v-divider></v-divider>
+                            <v-row>
+                                <v-col cols="5" class="text-left py-1 pl-5 pr-0">가입일</v-col>
+                                <v-col cols="7" class="text-right py-1 pr-5 pl-0">{{U.created}}</v-col>
+                            </v-row>
+                            <v-divider></v-divider>
+                        </v-card-text>
+                        <v-card-actions class="d-flex justify-end pt-0">
+                            <v-btn color="blue" text small class="font-weight-bold" @click.stop="dialog = true">update</v-btn>
+                            <!-- 수정모달 -->
+                            <v-dialog v-model="dialog" max-width="400">
+                                  <v-card>
+                                    <v-card-title class="headline">Edit Profile</v-card-title>
+                                    <v-card-text class="pb-0">
+                                      <v-col cols="12" class="py-0 mt-10">
+                                        <v-text-field
+                                          label="Nickname" :placeholder="U.nickname" v-model="U.nickname"
+                                          filled rounded dense></v-text-field>
+                                      </v-col>
+                                      <v-col cols="12" class="py-0">
+                                        <v-text-field
+                                          type="password"
+                                          label="Password" :placeholder="U.password" v-model="U.password"
+                                          hint="이전 비밀번호 혹은 변경할 비밀번호를 입력해주세요(필수)"
+                                          :rules="[v => !!v  || 'Password is required', v => v.length >= 5 || 'Password is too short']"
+                                          required
+                                          persistent-hint                                          
+                                          filled rounded dense></v-text-field>
+                                      </v-col>
+                                    </v-card-text>
+
+                                    <v-card-actions class="pt-5">
+                                      <v-spacer></v-spacer>
+                                      <v-btn color="orange" text @click="editProfile" >Edit</v-btn>
+                                      <v-btn color="grey" text @click="dialog = false" >Close</v-btn>
+                                    </v-card-actions>
+                                  </v-card>
+                                </v-dialog>
+                        </v-card-actions>
+                    </v-card>
+                    <!-- <v-card class="mx-auto mt-5">
+                        <div v-if="mygroups.length >= 1">
+                            <v-expansion-panels accordion>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>Groups</v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-row  v-for="(item,i) in mygroups" :key="i">
+                                    <v-col cols="5" class="d-flex justify-center py-1 pl-5">
+                                        <v-card :color="item.clColor" class="transparent--text text-right" height="20" style="width:20px;">색</v-card>
+                                    </v-col>
+                                    <v-col cols="7" class="text-left text-caption py-1 pr-5 text-truncate pl-0">{{ item.clName }}</v-col>
+                                </v-row>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                            </v-expansion-panels>
+                        </div>
+                        <div v-else>
+                            <v-expansion-panels accordion>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>Groups</v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-row>
+                                        <v-col cols="12" class="grey--text text-caption text-center">가입한 그룹이 없습니다 :)</v-col>
+                                    </v-row>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                            </v-expansion-panels>
+                        </div>
+                    </v-card> -->
+                    <v-card class="mx-auto mt-2">
+                        <v-expansion-panels accordion>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header>more...</v-expansion-panel-header>
+                            <v-expansion-panel-content class="px-0">
+                                <v-row class="text-center">
+                                    <v-col cols="12" class="py-0">
+                                        <v-btn small color="orange" @click="logOut" block dark>Log out</v-btn>                                   
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-btn small color="red" block dark @click.stop="dialogforwithdraw = true">withdraw</v-btn>                                   
+                                    </v-col>
+                                    <v-dialog v-model="dialogforwithdraw" max-width="290" >
+                                          <v-card>
+                                            <v-card-title class="headline">Alert</v-card-title>
+                                            <v-card-text>
+                                              정말 탈퇴하시겠습니까?
+                                            </v-card-text>
+
+                                            <v-card-actions>
+                                              <v-spacer></v-spacer>
+
+                                              <v-btn color="red" text @click="confirmwithdraw" >
+                                                Yes
+                                              </v-btn>
+
+                                              <v-btn color="grey" text @click="dialogforwithdraw = false" >
+                                                No
+                                              </v-btn>
+                                            </v-card-actions>
+                                          </v-card>
+                                        </v-dialog>
+                                </v-row>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card>
+                </v-col>
+                <v-col cols="10">
+                    <v-card class="mx-auto" height="71vh">
+                      <v-container>
+                        <v-row>
+            <v-col cols="12" class="py-1 text-h5">PROFILE</v-col>
+            <v-col cols="12" class="py-1 text-h4 font-weight-bold">MY Wallet</v-col>
+          </v-row>
+          <v-row class="mt-10">
+            <v-col cols="12" class="py-1 text-h6">wallet 이름</v-col>
+            <v-col cols="4" class="ml-1 mt-3">
+                <img src="@/assets/user.png" alt="user-image" class="profile-image">
+            </v-col>
+            <br>
+            <v-col cols="12">
+              <v-simple-table dense>
+                <template v-slot:default>
+                  <tbody>
+                  <tr>
+                      <td>지갑 주소</td>
+                      <td>{{Wallet.address}}</td>
+                    </tr>
+                    <tr>
+                      <td>잔액</td>
+                      <td>{{Wallet.balance}}</td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>              
+            </v-col>
+          </v-row>
+                      </v-container>
+                    </v-card>
+                </v-col>
+          </v-row>
+
+          <v-row v-else>
+            <v-col cols="12">
+            <v-card class="mx-auto" flat min-height="70vh">
+              <v-btn color="blue" text small class="font-weight-bold" @click="createWallet">계좌 생성</v-btn>
+            </v-card>
+            </v-col>
+          </v-row>
         </v-tab-item>
-      </v-tabs-items>
+      </v-tabs-items>                        
     </v-card>
   </center>
 </template>
 
 <script>
-
+import http from "@/util/http-common.js";
 export default {
   name: 'GroupMain',
   components: {
@@ -121,11 +280,7 @@ export default {
       return {
         tab: null,
         drawer: true,
-        items: [
-          { id:1,title: '홍콩여행', icon: 'mdi-view-dashboard' },
-          { id:2,title: '부산여행', icon: 'mdi-view-dashboard' },
-          { id:3,title: '3일만에 세계일주', icon: 'mdi-view-dashboard' },
-        ],
+        groups: [],
         color: 'primary',
 
         right: false,
@@ -133,10 +288,56 @@ export default {
         miniVariant: false,
         expandOnHover: false,
         background: false,
+
+        // 프로필 수정
+        U: {
+          email: 'kimin0412@gmail.com',
+          password: '123456',
+          nickname: '김민지',
+          created: "2020-09-23"
+        },
+        Wallet : {
+          address: "dasdasdasd",
+          balance: "10ETH"
+        },
+        dialog: false,
+
+        wCheck: true,
+        // wCheck: false,
       }
     },
+  created(){
+    // 모임 가져오기
+    http.get('/party/searchId', {
+      params : {
+        id : 1 //사용자 id로 바꿔줘야해.
+      }
+    }).then(({ data }) => {
+      this.groups = data;
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.$router.push("servererror")
+      } else if(error.request) {
+        this.$router.push("error")
+      } else{
+        this.$router.push("/404");
+      }                          
+    });
+  },
+  
   methods: {
-    
+    createWallet() {
+
+    },
+
+    editProfile() {
+          
+        },
+    logOut() {
+        this.$store.dispatch('auth/logout');
+        this.$router.go();
+      },
   },
 };
 </script>

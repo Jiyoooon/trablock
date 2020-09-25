@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://460af2995189.ngrok.io/api/user/';
-// const API_URL = 'http://localhost:8080/api/user';
+// const API_URL = 'http://j3a101.p.ssafy.io/api/user/';
+const API_URL = 'http://localhost:8080/api/user/';
 // id, email, password, created, nickname
 class AuthService {
   login(user) {
