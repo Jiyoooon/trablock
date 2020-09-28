@@ -280,7 +280,7 @@ export default {
   }),
   methods: {
     handleLogin() {
-      alert("로그인 버튼 눌림!");
+      console.log("USER : " + this.user);
       if (this.user.email && this.user.password) {
         this.$store.dispatch('auth/login', this.user).then(
           () => {
@@ -310,10 +310,6 @@ export default {
 
     handleRegister() {
       this.user = this.user2;
-      console.log(this.user);
-      console.log(this.user2);
-      alert(this.user2.email + " " + this.user2.password + " " + this.user2.nickname);
-      alert(this.user.email + " " + this.user.password + " " + this.user.nickname);
       this.$store.dispatch('auth/register', this.user).then(
           () => {
           //this.message = data.message;
@@ -333,9 +329,11 @@ export default {
               });
           }
           else{
-            this.$dialog.notify.success("회원가입 완료", {
-              position: "bottom-right", timeout: 3000, });
-              this.$router.push('/');
+            alert("회원가입 완료");
+            this.step = 1;
+            // this.$dialog.notify.success("회원가입 완료", {
+            //   position: "bottom-right", timeout: 3000, });
+            //   this.$router.push('/');
           }
       },
       );
