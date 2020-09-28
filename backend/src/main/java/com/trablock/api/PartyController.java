@@ -84,7 +84,7 @@ public class PartyController {
     @ApiOperation(value = "모임 등록")
     @PostMapping("/party")
     public Party create(@RequestBody Party party) {
-    	System.out.println("-----");
+    	System.out.println(party.getMembers().size());
         return partyService.add(party, party.getMembers());
     }
 

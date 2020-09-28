@@ -59,10 +59,10 @@ public class PartyService implements IPartyService {
 
         // 2. PartyWallet 추가
         //  1) PartyWallet 객체 생성 및 partyId 초기화
-        PartyWallet partyWallet = new PartyWallet();
-        partyWallet.setPartyId(party.getId());
+        //PartyWallet partyWallet = new PartyWallet();
+        //partyWallet.setPartyId(party.getId());
         //  2) 모임지갑 생성(JSON 파일 생성) 및 table insert
-        this.partyWalletService.register(partyWallet);
+        //this.partyWalletService.register(partyWallet);
 
         // 3. PartyMember 추가
         //  모임인원 추가하는 부분 구현

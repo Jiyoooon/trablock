@@ -69,17 +69,18 @@
 
                 <v-divider></v-divider>
 
+                <div v-if="groups.length == 0" class="mt-3">등록한 모임이 없습니다. </div>
                 <v-list-item
-                  v-for="item in items"
+                  v-for="item in groups"
                   :key="item.title"
-                  link  :to="{name: 'groupdetail',query: { groupId: item.id }}"
+                  link :to="{name: 'groupdetail',query: { groupId: item.id }}"
                 >
                   <v-list-item-icon>
-                    <v-icon>{{ item.icon }}</v-icon>
+                    <v-icon>mdi-view-dashboard</v-icon>
                   </v-list-item-icon>
 
                   <v-list-item-content>
-                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                    <v-list-item-title>{{ item.name }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
@@ -235,11 +236,7 @@ export default {
       return {
         tab: null,
         drawer: true,
-        items: [
-          { id:1,title: '홍콩여행', icon: 'mdi-view-dashboard' },
-          { id:2,title: '부산여행', icon: 'mdi-view-dashboard' },
-          { id:3,title: '3일만에 세계일주', icon: 'mdi-view-dashboard' },
-        ],
+        groups : [],
         color: 'primary',
 
         right: false,
