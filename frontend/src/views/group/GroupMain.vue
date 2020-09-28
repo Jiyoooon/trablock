@@ -106,13 +106,13 @@
                     <v-card class="mx-auto">
                         <v-card-subtitle class="pt-5 pb-0 text-center text-h5">사용자 정보</v-card-subtitle>
                         <v-card-text class="grey--text text-center pb-0">
-                        <div>{{U.email}}</div>
+                        <div>{{currentUser.email}}</div>
                         </v-card-text>
                         <v-card-text class="grey--text text-center">
                             <v-divider></v-divider>
                             <v-row>
                                 <v-col cols="5" class="text-left py-1 pl-5">닉네임</v-col>
-                                <v-col cols="7" class="text-right py-1 pr-5">{{U.nickname}}</v-col>
+                                <v-col cols="7" class="text-right py-1 pr-5">{{currentUser.nickname}}</v-col>
                             </v-row>
                             <v-divider></v-divider>
                             <v-row>
@@ -313,10 +313,10 @@ export default {
 
         // 프로필 수정
         U: {
-          email: 'kimin0412@gmail.com',
-          password: '123456',
-          nickname: '김민지',
-          created: "2020-09-23"
+          email: '',
+          password: '',
+          nickname: '',
+          created: ""
         },
         Wallet : {
           address: "dasdasdasd",
@@ -324,11 +324,24 @@ export default {
         },
         dialog: false,
 
-        wCheck: true,
+        wCheck: false,
         // wCheck: false,
+
+        access_token: this.$store.state.auth.user.accessToken,
       }
     },
   created(){
+    this.U.email = this.$store.state.auth.user.email;
+    this.U.password = this.$store.state.auth.user.password
+    this.U.nickname= this.$store.state.auth.user.nickname
+    console.log(this.$store.state.auth.user);
+    console.log(this.$store.state.auth.user.accessToken);
+    http.get('/token/wallets/id', {
+      params : {
+        id : this.$store.state.auth.user.data.id
+      }
+    });
+
     // 모임 가져오기
     http.get('/party/searchId', {
       params : {
@@ -361,6 +374,12 @@ export default {
         this.$router.go();
       },
   },
+
+  computed: {
+      currentUser(){
+        return this.$store.state.auth.user.data;
+      },
+    },
 };
 </script>
 <style>
