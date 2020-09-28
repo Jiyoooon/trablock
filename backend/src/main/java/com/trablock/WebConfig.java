@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer{
                 .allowedOrigins("*")
                 .allowedMethods("*")
                 .allowCredentials(true)
-                .exposedHeaders("jwt-token")
+                .exposedHeaders("token")
                 .maxAge(3600);
         
     }

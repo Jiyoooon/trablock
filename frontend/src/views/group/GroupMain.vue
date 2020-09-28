@@ -259,6 +259,7 @@
           <v-row v-else>
             <v-col cols="12">
             <v-card class="mx-auto" flat min-height="70vh">
+
               <br><br><br><br>
               <v-chip
               class="ma-2"
@@ -293,6 +294,11 @@
 
 <script>
 import http from "@/util/http-common.js";
+import Web3 from 'web3';
+import authHeader from '@/services/auth-header.js';
+// var web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/98aa6777fadd45949e67403767091144"));
+// var web3 = new Web3(new Web3.providers.HttpProvider('https://api.infura.io/v1/jsonrpc/ropsten'));
+var web3 = new Web3(new Web3.providers.HttpProvider('http://192.168.50.11:8545'));
 export default {
   name: 'GroupMain',
   components: {
@@ -324,9 +330,8 @@ export default {
         },
         dialog: false,
 
+        // wCheck: true,
         wCheck: false,
-        // wCheck: false,
-
         access_token: this.$store.state.auth.user.accessToken,
       }
     },
@@ -336,11 +341,19 @@ export default {
     this.U.nickname= this.$store.state.auth.user.nickname
     console.log(this.$store.state.auth.user);
     console.log(this.$store.state.auth.user.accessToken);
-    http.get('/token/wallets/id', {
-      params : {
-        id : this.$store.state.auth.user.data.id
-      }
-    });
+    // http.get('/token/wallets/id', {
+    //   params : {
+    //     id : this.$store.state.auth.user.data.id
+    //   }
+    // });
+    // console.log(authHeader());
+
+    //내 계좌 정보 가져오기
+    http.get('/token/wallets', { 
+        headers: authHeader() 
+    }).then(({ data }) => {
+      console.log(data)
+    })
 
     // 모임 가져오기
     http.get('/party/searchId', {
@@ -363,6 +376,12 @@ export default {
   
   methods: {
     createWallet() {
+      const account = web3.eth.accounts.create();
+
+      console.log(account)
+      console.log(`Account : ${account.address}`);
+      console.log(`Private key  : ${account.privateKey}`);
+
 
     },
 
