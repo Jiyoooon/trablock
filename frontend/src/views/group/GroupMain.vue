@@ -107,13 +107,13 @@
                     <v-card class="mx-auto">
                         <v-card-subtitle class="pt-5 pb-0 text-center text-h5">사용자 정보</v-card-subtitle>
                         <v-card-text class="grey--text text-center pb-0">
-                        <div>{{U.email}}</div>
+                        <div>{{currentUser.email}}</div>
                         </v-card-text>
                         <v-card-text class="grey--text text-center">
                             <v-divider></v-divider>
                             <v-row>
                                 <v-col cols="5" class="text-left py-1 pl-5">닉네임</v-col>
-                                <v-col cols="7" class="text-right py-1 pr-5">{{U.nickname}}</v-col>
+                                <v-col cols="7" class="text-right py-1 pr-5">{{currentUser.nickname}}</v-col>
                             </v-row>
                             <v-divider></v-divider>
                             <v-row>
@@ -155,35 +155,6 @@
                                 </v-dialog>
                         </v-card-actions>
                     </v-card>
-                    <!-- <v-card class="mx-auto mt-5">
-                        <div v-if="mygroups.length >= 1">
-                            <v-expansion-panels accordion>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>Groups</v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-row  v-for="(item,i) in mygroups" :key="i">
-                                    <v-col cols="5" class="d-flex justify-center py-1 pl-5">
-                                        <v-card :color="item.clColor" class="transparent--text text-right" height="20" style="width:20px;">색</v-card>
-                                    </v-col>
-                                    <v-col cols="7" class="text-left text-caption py-1 pr-5 text-truncate pl-0">{{ item.clName }}</v-col>
-                                </v-row>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            </v-expansion-panels>
-                        </div>
-                        <div v-else>
-                            <v-expansion-panels accordion>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>Groups</v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-row>
-                                        <v-col cols="12" class="grey--text text-caption text-center">가입한 그룹이 없습니다 :)</v-col>
-                                    </v-row>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            </v-expansion-panels>
-                        </div>
-                    </v-card> -->
                     <v-card class="mx-auto mt-2">
                         <v-expansion-panels accordion>
                         <v-expansion-panel>
@@ -261,7 +232,29 @@
           <v-row v-else>
             <v-col cols="12">
             <v-card class="mx-auto" flat min-height="70vh">
-              <v-btn color="blue" text small class="font-weight-bold" @click="createWallet">계좌 생성</v-btn>
+              <br><br><br><br>
+              <v-chip
+              class="ma-2"
+              color="grey darken-3"
+              label
+              outlined
+            >
+              개인 지갑이 생성되지 않았습니다.
+            </v-chip>
+            <br>
+              <v-chip
+              class="ma-2"
+              color="grey darken-3"
+              label
+              outlined
+            >
+              <v-icon left>mdi-label</v-icon>
+              계좌 생성하기
+            </v-chip>
+              <br><br>
+              <v-btn color="orange" class="font-weight-bold" fab x-large dark @click="createWallet">
+                <v-icon>fas fa-wallet</v-icon>
+              </v-btn>
             </v-card>
             </v-col>
           </v-row>
@@ -273,6 +266,11 @@
 
 <script>
 import http from "@/util/http-common.js";
+import Web3 from 'web3';
+import authHeader from '@/services/auth-header.js';
+// var web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/98aa6777fadd45949e67403767091144"));
+// var web3 = new Web3(new Web3.providers.HttpProvider('https://api.infura.io/v1/jsonrpc/ropsten'));
+var web3 = new Web3(new Web3.providers.HttpProvider('http://192.168.50.10:8545'));
 export default {
   name: 'GroupMain',
   components: {
@@ -293,10 +291,10 @@ export default {
 
         // 프로필 수정
         U: {
-          email: 'kimin0412@gmail.com',
-          password: '123456',
-          nickname: '김민지',
-          created: "2020-09-23"
+          email: '',
+          password: '',
+          nickname: '',
+          created: ""
         },
         Wallet : {
           address: "",
@@ -304,8 +302,8 @@ export default {
         },
         dialog: false,
 
-        wCheck: true,
-        // wCheck: false,
+        // wCheck: true,
+        wCheck: false,
         access_token: this.$store.state.auth.user.accessToken,
       }
     },
@@ -334,7 +332,7 @@ export default {
     // 모임 가져오기
     http.get('/party/searchId', {
       params : {
-        id : this.$store.state.auth.user.id
+        id : this.$store.state.auth.user.data.id
       }
     }).then(({ data }) => {
       this.groups = data;
@@ -358,7 +356,7 @@ export default {
       console.log(`Account : ${account.address}`);
       console.log(`Private key  : ${account.privateKey}`);
 
-       //내 계좌 생성하기
+      //내 계좌 생성하기
       http.post('/token/wallets', 
       {//data
         "address": account.address
@@ -380,7 +378,9 @@ export default {
       }).then(({ data }) => {
         console.log(data);
       })
+
     },
+
     editProfile() {
           
         },
@@ -389,6 +389,12 @@ export default {
         this.$router.go();
       },
   },
+
+  computed: {
+      currentUser(){
+        return this.$store.state.auth.user.data;
+      },
+    },
 };
 </script>
 <style>
