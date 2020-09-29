@@ -42,14 +42,16 @@ public class WalletController {
 	 */
 	@ApiOperation(value = "Register wallet of user")
 	@RequestMapping(value = "/wallets", method = RequestMethod.POST)
-	public Wallet register(HttpServletRequest request) {
+	public Wallet register(HttpServletRequest request, @RequestBody Wallet wallet) {
 		String userId = getLoginId(request);
 		
 		Wallet existedWallet = this.walletService.get(Long.parseLong(userId));
 		if(existedWallet != null) {
 			throw new ApplicationException("이미 등록한 지갑이 있습니다.");
 		}
-		Wallet newWallet = this.walletService.register(userId);
+		
+		wallet.setOwnerId(Long.parseLong(userId));
+		Wallet newWallet = this.walletService.register(wallet);
 		if(newWallet == null) {
 			throw new ApplicationException("지갑 정보를 등록할 수 없습니다.");
 		}
@@ -70,11 +72,25 @@ public class WalletController {
 		}
 		return searchWallet;
 	}
+//	
+//	/**
+//	 * TODO Sub PJT Ⅱ 과제 1
+//	 * 지갑 조회 by user id
+//	 * @param address 지갑 주소
+//	 */
+//	@ApiOperation(value = "Fetch wallet by id")
+//	@RequestMapping(value = "/wallets/id/{id}", method = RequestMethod.GET)
+//	public Wallet get(@PathVariable Long id) {
+//		Wallet searchWallet = walletService.get(id);
+//		if (searchWallet == null) {
+//			throw new ApplicationException("지갑을 찾을 수 없습니다.");
+//		}
+//		return searchWallet;
+//	}
 
 	/**
 	 * TODO Sub PJT Ⅱ 과제 1
-	 * 지갑 조회 by user's id
-	 * @param uid 사용자 id
+	 * 지갑 조회 by login user's id
 	 */
 	@ApiOperation(value = "Fetch wallet of user")
 	@RequestMapping(value = "/wallets", method = RequestMethod.GET)

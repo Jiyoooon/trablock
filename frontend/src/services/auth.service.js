@@ -11,8 +11,10 @@ class AuthService {
         password: user.password
       })
       .then(response => {
-        if (response.data.accessToken) {
+        console.log(response.headers.token)
+        if (response.data) {
           localStorage.setItem('user', JSON.stringify(response.data));
+          localStorage.setItem('token', response.headers.token);
         }
         if(response.status == 401){
           //console.log();
