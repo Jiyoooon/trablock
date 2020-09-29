@@ -246,6 +246,7 @@
                     <tr>
                       <td>잔액</td>
                       <td>{{Wallet.balance}}</td>
+                      <td><v-btn @click="charge">충전</v-btn></td>
                     </tr>
                   </tbody>
                 </template>
@@ -298,16 +299,38 @@ export default {
           created: "2020-09-23"
         },
         Wallet : {
-          address: "dasdasdasd",
-          balance: "10ETH"
+          address: "",
+          balance: ""
         },
         dialog: false,
 
         wCheck: true,
         // wCheck: false,
+        access_token: this.$store.state.auth.user.accessToken,
       }
     },
   created(){
+    this.U.email = this.$store.state.auth.user.email;
+    this.U.password = this.$store.state.auth.user.password
+    this.U.nickname= this.$store.state.auth.user.nickname
+    console.log(this.$store.state.auth.user);
+    console.log(this.$store.state.auth.user.accessToken);
+    // http.get('/token/wallets/id', {
+    //   params : {
+    //     id : this.$store.state.auth.user.data.id
+    //   }
+    // });
+    // console.log(authHeader());
+
+    //내 계좌 정보 가져오기
+    http.get('/token/wallets', { 
+        headers: authHeader() 
+    }).then(({ data }) => {
+      console.log(data)
+      this.Wallet.address = data.address;
+      this.Wallet.balance = data.balance;
+    })
+
     // 모임 가져오기
     http.get('/party/searchId', {
       params : {
@@ -329,9 +352,35 @@ export default {
   
   methods: {
     createWallet() {
+      const account = web3.eth.accounts.create();
 
+      console.log(account)
+      console.log(`Account : ${account.address}`);
+      console.log(`Private key  : ${account.privateKey}`);
+
+       //내 계좌 생성하기
+      http.post('/token/wallets', 
+      {//data
+        "address": account.address
+      },
+      {//header 
+          headers: authHeader() 
+      }).then(({ data }) => {
+        console.log(data.address+", "+data.balance);
+        this.Wallet.address = data.address;
+        this.Wallet.balance = data.balance;
+      })
     },
-
+    charge(){
+      // console.log(this.Wallet.address);
+       //내 계좌 충전하기
+      http.put(`/token/wallets/${this.Wallet.address}`, null,
+      {//header 
+          headers: authHeader() 
+      }).then(({ data }) => {
+        console.log(data);
+      })
+    },
     editProfile() {
           
         },

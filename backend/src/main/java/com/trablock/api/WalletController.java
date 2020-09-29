@@ -44,6 +44,7 @@ public class WalletController {
 	@RequestMapping(value = "/wallets", method = RequestMethod.POST)
 	public Wallet register(HttpServletRequest request, @RequestBody Wallet wallet) {
 		String userId = getLoginId(request);
+		System.out.println(wallet);
 		
 		Wallet existedWallet = this.walletService.get(Long.parseLong(userId));
 		if(existedWallet != null) {

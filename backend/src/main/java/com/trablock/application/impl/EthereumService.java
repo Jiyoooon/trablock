@@ -33,6 +33,7 @@ import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -106,7 +107,8 @@ public class EthereumService implements IEthereumService {
 		try {
 			String privatetKey = "";
 			// 1-1. keystore-비밀번호를 통해 복호화 -> PrivateKey(개인키)를 구함 ; 자격증명
-			Credentials credentials =  WalletUtils.loadCredentials("sp199191", "keyStore1");
+//			Credentials credentials =  WalletUtils.loadCredentials("sp199191", "keyStore1");
+			Credentials credentials =  WalletUtils.loadCredentials("ssafy", "./src/main/resources/wallet/admin.json");
 
 			// 1-2. 또는 keystore파일이 없을경우 사용자가 직접 privatekey를 입력함
 			//String privateKey = "입력받은값";
