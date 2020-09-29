@@ -39,18 +39,18 @@ public class CashContractService implements ICashContractService {
 	private CashContract cashContract;
 	private ContractGasProvider contractGasProvider = new DefaultGasProvider();
 	private Credentials credentials;
-
+	
 	@Autowired
 	private Web3j web3j;
 
 	public CashContractService() {
 		try {
-			credentials = WalletUtils.loadCredentials("sp199191", "admin.wallet");
+			credentials = WalletUtils.loadCredentials(PASSWORD, WALLET_RESOURCE);
 		} catch (IOException | CipherException e) {
 			e.printStackTrace();
 		}
 //			cashContract = CashContract.deploy(web3j, credentials, contractGasProvider).send();
-		cashContract = CashContract.load("0xAC62e8bc3c1DB6366147e9EbBd8c6076de53F1f7", web3j, credentials, contractGasProvider);
+		cashContract = CashContract.load(ERC20_TOKEN_CONTRACT, web3j, credentials, contractGasProvider);
 	}
 
 	/**
@@ -75,6 +75,7 @@ public class CashContractService implements ICashContractService {
 	}
 
 	public void getTokenInfromation() {
+		
 		try {
 			System.out.println(credentials.getAddress());
 			System.out.println(cashContract.totalSupply());
