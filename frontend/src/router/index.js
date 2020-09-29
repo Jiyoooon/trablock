@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Main from "../views/Main.vue";
 import groupMain from "../views/group/GroupMain.vue";
 import groupCreate from "../views/group/GroupCreate.vue";
+import groupDetail from "../views/group/GroupDetail.vue";
 
 // post
 import postMain from "../views/post/PostMain.vue";
@@ -34,6 +35,12 @@ Vue.use(VueRouter)
       path: "/group/create",
       name: "groupcreate",
       component: groupCreate,
+    },
+
+    {
+      path: "/group/detail",
+      name: "groupdetail",
+      component: groupDetail,
     },
 
     // post

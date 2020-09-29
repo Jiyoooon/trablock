@@ -110,30 +110,29 @@ public class WalletService implements IWalletService
 	 * @return
 	 */
 	@Override
-	public Wallet register(final String userId) {
-		String walletPassword = this.userRepository.selectPassword(userId);
-		String walletDirectory = "./src/main/resources/wallet";
+	public Wallet register(final Wallet wallet) {
+//		String walletPassword = this.userRepository.selectPassword(wallet.getOwnerId());
+//		String walletDirectory = "./src/main/resources/wallet";
 
-		String walletName = null;
-		try {
-			walletName = WalletUtils.generateNewWalletFile(walletPassword, new File(walletDirectory));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("wallet location: " + walletDirectory + "/" + walletName);
+//		String walletName = null;
+//		try {
+//			walletName = WalletUtils.generateNewWalletFile(walletPassword, new File(walletDirectory));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println("wallet location: " + walletDirectory + "/" + walletName);
+//
+//		Credentials credentials = null;
+//		try {
+//			credentials = WalletUtils.loadCredentials(walletPassword, walletDirectory + "/" + walletName);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 
-		Credentials credentials = null;
-		try {
-			credentials = WalletUtils.loadCredentials(walletPassword, walletDirectory + "/" + walletName);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		String accountAddress = credentials.getAddress();
-		System.out.println("Account address: " + credentials.getAddress());
-
-		
-		Wallet wallet = new Wallet(Long.parseLong(userId), accountAddress, new BigDecimal(0));
+//		String accountAddress = credentials.getAddress();
+//		System.out.println("Account address: " + credentials.getAddress());
+//
+//		Wallet wallet = new Wallet(Long.parseLong(userId), accountAddress, new BigDecimal(0));
 		this.walletRepository.create(wallet);
 
 		return get(wallet.getOwnerId());

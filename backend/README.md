@@ -19,3 +19,21 @@ Backend for Blockchain based E-Commerce Platform
 
 
 
+9/21
+
+DB 설정 README 문서 - https://www.notion.so/DB-d438dcf3a36b444f90c8164aa53ff1e0
+
+
+
+9/23
+
+이더리움 내용 조사 - https://www.notion.so/038ffa83e02c47f4bc1ceac2bbe9b530
+
+
+
+9/28
+
+이더리움 영상 및 source 파일 링크
+
+- https://www.notion.so/b35eaac8551548a4bc725e06f7db0c1e
+- https://drive.google.com/drive/folders/1-Bb8Ur_oF9xHHMhl3k1pNIcVI_JVKjmf?usp=sharing

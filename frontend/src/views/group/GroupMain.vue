@@ -80,17 +80,18 @@
 
                 <v-divider></v-divider>
 
+                <div v-if="groups.length == 0" class="mt-3">등록한 모임이 없습니다. </div>
                 <v-list-item
                   v-for="item in groups"
                   :key="item.title"
                   link :to="{name: 'groupdetail',query: { groupId: item.id }}"
                 >
                   <v-list-item-icon>
-                    <v-icon>{{ item.icon }}</v-icon>
+                    <v-icon>mdi-view-dashboard</v-icon>
                   </v-list-item-icon>
 
                   <v-list-item-content>
-                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                    <v-list-item-title>{{ item.name }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
@@ -106,13 +107,13 @@
                     <v-card class="mx-auto">
                         <v-card-subtitle class="pt-5 pb-0 text-center text-h5">사용자 정보</v-card-subtitle>
                         <v-card-text class="grey--text text-center pb-0">
-                        <div>{{currentUser.email}}</div>
+                        <div>{{U.email}}</div>
                         </v-card-text>
                         <v-card-text class="grey--text text-center">
                             <v-divider></v-divider>
                             <v-row>
                                 <v-col cols="5" class="text-left py-1 pl-5">닉네임</v-col>
-                                <v-col cols="7" class="text-right py-1 pr-5">{{currentUser.nickname}}</v-col>
+                                <v-col cols="7" class="text-right py-1 pr-5">{{U.nickname}}</v-col>
                             </v-row>
                             <v-divider></v-divider>
                             <v-row>
@@ -245,6 +246,7 @@
                     <tr>
                       <td>잔액</td>
                       <td>{{Wallet.balance}}</td>
+                      <td><v-btn @click="charge">충전</v-btn></td>
                     </tr>
                   </tbody>
                 </template>
@@ -259,29 +261,7 @@
           <v-row v-else>
             <v-col cols="12">
             <v-card class="mx-auto" flat min-height="70vh">
-              <br><br><br><br>
-              <v-chip
-              class="ma-2"
-              color="grey darken-3"
-              label
-              outlined
-            >
-              개인 지갑이 생성되지 않았습니다.
-            </v-chip>
-            <br>
-              <v-chip
-              class="ma-2"
-              color="grey darken-3"
-              label
-              outlined
-            >
-              <v-icon left>mdi-label</v-icon>
-              계좌 생성하기
-            </v-chip>
-              <br><br>
-              <v-btn color="orange" class="font-weight-bold" fab x-large dark @click="createWallet">
-                <v-icon>fas fa-wallet</v-icon>
-              </v-btn>
+              <v-btn color="blue" text small class="font-weight-bold" @click="createWallet">계좌 생성</v-btn>
             </v-card>
             </v-col>
           </v-row>
@@ -313,20 +293,19 @@ export default {
 
         // 프로필 수정
         U: {
-          email: '',
-          password: '',
-          nickname: '',
-          created: ""
+          email: 'kimin0412@gmail.com',
+          password: '123456',
+          nickname: '김민지',
+          created: "2020-09-23"
         },
         Wallet : {
-          address: "dasdasdasd",
-          balance: "10ETH"
+          address: "",
+          balance: ""
         },
         dialog: false,
 
-        wCheck: false,
+        wCheck: true,
         // wCheck: false,
-
         access_token: this.$store.state.auth.user.accessToken,
       }
     },
@@ -335,17 +314,27 @@ export default {
     this.U.password = this.$store.state.auth.user.password
     this.U.nickname= this.$store.state.auth.user.nickname
     console.log(this.$store.state.auth.user);
-    console.log(this.$store.state.auth.accessToken.accessToken);
-    http.get('/token/wallets/id', {
-      params : {
-        id : this.$store.state.auth.user.data.id
-      }
-    });
+    console.log(this.$store.state.auth.user.accessToken);
+    // http.get('/token/wallets/id', {
+    //   params : {
+    //     id : this.$store.state.auth.user.data.id
+    //   }
+    // });
+    // console.log(authHeader());
+
+    //내 계좌 정보 가져오기
+    http.get('/token/wallets', { 
+        headers: authHeader() 
+    }).then(({ data }) => {
+      console.log(data)
+      this.Wallet.address = data.address;
+      this.Wallet.balance = data.balance;
+    })
 
     // 모임 가져오기
     http.get('/party/searchId', {
       params : {
-        id : 1 //사용자 id로 바꿔줘야해.
+        id : this.$store.state.auth.user.id
       }
     }).then(({ data }) => {
       this.groups = data;
@@ -363,9 +352,35 @@ export default {
   
   methods: {
     createWallet() {
+      const account = web3.eth.accounts.create();
 
+      console.log(account)
+      console.log(`Account : ${account.address}`);
+      console.log(`Private key  : ${account.privateKey}`);
+
+       //내 계좌 생성하기
+      http.post('/token/wallets', 
+      {//data
+        "address": account.address
+      },
+      {//header 
+          headers: authHeader() 
+      }).then(({ data }) => {
+        console.log(data.address+", "+data.balance);
+        this.Wallet.address = data.address;
+        this.Wallet.balance = data.balance;
+      })
     },
-
+    charge(){
+      // console.log(this.Wallet.address);
+       //내 계좌 충전하기
+      http.put(`/token/wallets/${this.Wallet.address}`, null,
+      {//header 
+          headers: authHeader() 
+      }).then(({ data }) => {
+        console.log(data);
+      })
+    },
     editProfile() {
           
         },
@@ -374,12 +389,6 @@ export default {
         this.$router.go();
       },
   },
-
-  computed: {
-      currentUser(){
-        return this.$store.state.auth.user.data;
-      },
-    },
 };
 </script>
 <style>

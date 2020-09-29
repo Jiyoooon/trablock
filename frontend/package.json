@@ -27,7 +27,8 @@
     "vue-wordcloud": "^1.1.1",
     "vuetify": "^2.2.11",
     "vuetify-dialog": "^2.0.9",
-    "vuex": "^3.5.1"
+    "vuex": "^3.5.1",
+    "web3": "^1.3.0"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.14.0",

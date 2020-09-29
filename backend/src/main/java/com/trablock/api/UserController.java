@@ -189,7 +189,7 @@ public class UserController {
       		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
       	}
       	
-      	response.setHeader("Access-Control-Allow-Headers", "jwt-token");//token
+      	response.setHeader("Access-Control-Allow-Headers", "token");//token
       	
       	User me = userService.add(user);
   		
@@ -197,7 +197,7 @@ public class UserController {
       		String token = jwtService.create(Long.toString(me.getId()));
       		map.put("result", "success");
       		map.put("data", me);
-      		response.addHeader("jwt-token", token);
+      		response.addHeader("token", token);
       		
       		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
       	}else {
@@ -213,8 +213,8 @@ public class UserController {
 	      HashMap<String, Object> map = new HashMap<String, Object>();
 	      HttpStatus status = null;
 	      	
-	      response.setHeader("Access-Control-Allow-Headers", "jwt-token");//token
-	      	System.out.println(login.getEmail()+", "+login.getPassword());
+	      response.setHeader("Access-Control-Allow-Headers", "token");//token
+//	      	System.out.println(login.getEmail()+", "+login.getPassword());
 		  User user = userService.getUserInfo(login.getEmail());
 	  	  if (user == null) {
 	  		  throw new NotFoundException("회원 정보 찾을 수 없음");
@@ -223,9 +223,10 @@ public class UserController {
 				  throw new NotFoundException("비밀번호 불일치");
 			  user.setPassword("");
 			  String token = jwtService.create(Long.toString(user.getId()));
+
 			  map.put("result", "success");
 			  map.put("data", user);
-			  response.addHeader("jwt-token", token);
+			  response.addHeader("token", token);
 		  }
 	  	  
 	  	  status = HttpStatus.ACCEPTED;

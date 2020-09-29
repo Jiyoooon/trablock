@@ -2,6 +2,7 @@ package com.trablock.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Party {
@@ -171,5 +172,7 @@ public class Party {
                 '}';
     }
 
-    public Party() { }
+    public Party() {
+    	members = new LinkedList<>();
+    }
 }

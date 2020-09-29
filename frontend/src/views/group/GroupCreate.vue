@@ -334,6 +334,7 @@ export default {
         sUserList : [],
         pickedFriend : [],
         pickedFrinedId : [],
+        pickedYoilIndex : '',
       }
     },
   created(){
@@ -406,6 +407,7 @@ export default {
         if(canMake){
           var ok = confirm("모임을 생성하시겠습니까?")
           if(ok) {
+            this.pickedFrinedId.push(this.$store.state.auth.user.id); //나의 아이디 넣어줘야해
             this.pickedFriend.forEach(element => {
               this.userList.forEach(element2 => {
                 if(element == element2.nickname){
@@ -413,31 +415,34 @@ export default {
                 }
               });
             });
-            this.pickedFrinedId.push(3); //나의 아이디 넣어줘야해
+
             console.log(this.pickedFrinedId)
 
             http.post('/party', 
               {
                 name : this.groupName,
-                    explanation : this.groupExplanation,
-                    created : moment(new Date()).format("YYYY-MM-DD"),
-                    target : this.groupTarget,
-                    totalAmount : 0,
-                    payCycle : true,
-                    payDate : this.groupPayDate,
-                    payAmount : this.groupRegularPay,
-                    image : " ",
-                    startDate : this.travelDates[0],
-                    endDate : this.travelDates[1],
-                    destination : this.groupDestinationCountry+" "+this.groupDestinationCity,
-                    available : true,
-                    exitFee : this.groupExitPay,
-                    //finished : this.finished
-                    //type : this.groupType
-                partyMemberIdList : this.pickedFrinedId,
+                explanation : this.groupExplanation,
+                created : moment(new Date()).format("YYYY-MM-DD"),
+                target : this.groupTarget,
+                totalAmount : 0,
+                payCycle : true,
+                payDate : this.pickedYoilIndex,
+                payAmount : this.groupRegularPay,
+                image : " ",
+                startDate : this.travelDates[0],
+                endDate : this.travelDates[1],
+                destination : this.groupDestinationCountry+" "+this.groupDestinationCity,
+                available : true,
+                exitFee : this.groupExitPay,
+                //finished : this.finished
+                //type : this.groupType
+                members : this.pickedFrinedId,
               },
               
-            )
+            ).then(({ data }) => {
+              console.log(data)
+              this.$router.push("/group");
+            });
           }
         }
       }
@@ -502,21 +507,21 @@ export default {
           curYoilIndex = 7
         }
 
-        var pickedYoilIndex = 0
+        this.pickedYoilIndex = 0
         if(this.groupPayDate == '월요일'){
-          pickedYoilIndex = 1
+          this.pickedYoilIndex = 1
         }else if(this.groupPayDate == '화요일'){
-          pickedYoilIndex = 2
+          this.pickedYoilIndex = 2
         }else if(this.groupPayDate == '수요일'){
-          pickedYoilIndex = 3
+          this.pickedYoilIndex = 3
         }else if(this.groupPayDate == '목요일'){
-          pickedYoilIndex = 4
+          this.pickedYoilIndex = 4
         }else if(this.groupPayDate == '금요일'){
-          pickedYoilIndex = 5
+          this.pickedYoilIndex = 5
         }else if(this.groupPayDate == '토요일'){
-          pickedYoilIndex = 6
+          this.pickedYoilIndex = 6
         }else if(this.groupPayDate == '일요일'){
-          pickedYoilIndex = 7
+          this.pickedYoilIndex = 7
         }
 
         var created = moment(new Date()).format("YYYY-MM-DD")
@@ -526,11 +531,11 @@ export default {
         var diff = date2.getTime() - date1.getTime();
         diff = Math.ceil(diff / (1000 * 3600 * 24))+1;
         
-        if(pickedYoilIndex > curYoilIndex){
-          diff -= (pickedYoilIndex - curYoilIndex)
-        }else if(pickedYoilIndex < curYoilIndex){
+        if(this.pickedYoilIndex > curYoilIndex){
+          diff -= (this.pickedYoilIndex - curYoilIndex)
+        }else if(this.pickedYoilIndex < curYoilIndex){
           diff -= (8 - curYoilIndex)
-          diff -= pickedYoilIndex
+          diff -= this.pickedYoilIndex
         }
 
         this.groupRegularPay = Math.round((this.groupTarget/parseInt((diff+6)/7)) / (this.pickedFriend.length+1))
