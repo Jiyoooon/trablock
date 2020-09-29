@@ -335,7 +335,7 @@ export default {
     this.U.password = this.$store.state.auth.user.password
     this.U.nickname= this.$store.state.auth.user.nickname
     console.log(this.$store.state.auth.user);
-    console.log(this.$store.state.auth.user.accessToken);
+    console.log(this.$store.state.auth.accessToken.accessToken);
     http.get('/token/wallets/id', {
       params : {
         id : this.$store.state.auth.user.data.id
