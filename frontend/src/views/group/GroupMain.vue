@@ -245,6 +245,7 @@
                     <tr>
                       <td>잔액</td>
                       <td>{{Wallet.balance}}</td>
+                      <td><v-btn @click="charge">충전</v-btn></td>
                     </tr>
                   </tbody>
                 </template>
@@ -325,13 +326,13 @@ export default {
           created: ""
         },
         Wallet : {
-          address: "dasdasdasd",
-          balance: "10ETH"
+          address: "",
+          balance: ""
         },
         dialog: false,
 
-        // wCheck: true,
-        wCheck: false,
+        wCheck: true,
+        // wCheck: false,
         access_token: this.$store.state.auth.user.accessToken,
       }
     },
@@ -353,6 +354,8 @@ export default {
         headers: authHeader() 
     }).then(({ data }) => {
       console.log(data)
+      this.Wallet.address = data.address;
+      this.Wallet.balance = data.balance;
     })
 
     // 모임 가져오기
@@ -382,9 +385,29 @@ export default {
       console.log(`Account : ${account.address}`);
       console.log(`Private key  : ${account.privateKey}`);
 
-
+       //내 계좌 생성하기
+      http.post('/token/wallets', 
+      {//data
+        "address": account.address
+      },
+      {//header 
+          headers: authHeader() 
+      }).then(({ data }) => {
+        console.log(data.address+", "+data.balance);
+        this.Wallet.address = data.address;
+        this.Wallet.balance = data.balance;
+      })
     },
-
+    charge(){
+      // console.log(this.Wallet.address);
+       //내 계좌 충전하기
+      http.put(`/token/wallets/${this.Wallet.address}`, null,
+      {//header 
+          headers: authHeader() 
+      }).then(({ data }) => {
+        console.log(data);
+      })
+    },
     editProfile() {
           
         },

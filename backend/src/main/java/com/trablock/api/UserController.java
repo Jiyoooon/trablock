@@ -214,7 +214,7 @@ public class UserController {
 	      HttpStatus status = null;
 	      	
 	      response.setHeader("Access-Control-Allow-Headers", "token");//token
-	      	System.out.println(login.getEmail()+", "+login.getPassword());
+//	      	System.out.println(login.getEmail()+", "+login.getPassword());
 		  User user = userService.getUserInfo(login.getEmail());
 	  	  if (user == null) {
 	  		  throw new NotFoundException("회원 정보 찾을 수 없음");
@@ -223,6 +223,7 @@ public class UserController {
 				  throw new NotFoundException("비밀번호 불일치");
 			  user.setPassword("");
 			  String token = jwtService.create(Long.toString(user.getId()));
+
 			  map.put("result", "success");
 			  map.put("data", user);
 			  response.addHeader("token", token);
