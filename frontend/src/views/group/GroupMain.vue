@@ -80,17 +80,18 @@
 
                 <v-divider></v-divider>
 
+                <div v-if="groups.length == 0" class="mt-3">등록한 모임이 없습니다. </div>
                 <v-list-item
                   v-for="item in groups"
                   :key="item.title"
                   link :to="{name: 'groupdetail',query: { groupId: item.id }}"
                 >
                   <v-list-item-icon>
-                    <v-icon>{{ item.icon }}</v-icon>
+                    <v-icon>mdi-view-dashboard</v-icon>
                   </v-list-item-icon>
 
                   <v-list-item-content>
-                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                    <v-list-item-title>{{ item.name }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
@@ -106,13 +107,13 @@
                     <v-card class="mx-auto">
                         <v-card-subtitle class="pt-5 pb-0 text-center text-h5">사용자 정보</v-card-subtitle>
                         <v-card-text class="grey--text text-center pb-0">
-                        <div>{{currentUser.email}}</div>
+                        <div>{{U.email}}</div>
                         </v-card-text>
                         <v-card-text class="grey--text text-center">
                             <v-divider></v-divider>
                             <v-row>
                                 <v-col cols="5" class="text-left py-1 pl-5">닉네임</v-col>
-                                <v-col cols="7" class="text-right py-1 pr-5">{{currentUser.nickname}}</v-col>
+                                <v-col cols="7" class="text-right py-1 pr-5">{{U.nickname}}</v-col>
                             </v-row>
                             <v-divider></v-divider>
                             <v-row>
@@ -260,30 +261,7 @@
           <v-row v-else>
             <v-col cols="12">
             <v-card class="mx-auto" flat min-height="70vh">
-
-              <br><br><br><br>
-              <v-chip
-              class="ma-2"
-              color="grey darken-3"
-              label
-              outlined
-            >
-              개인 지갑이 생성되지 않았습니다.
-            </v-chip>
-            <br>
-              <v-chip
-              class="ma-2"
-              color="grey darken-3"
-              label
-              outlined
-            >
-              <v-icon left>mdi-label</v-icon>
-              계좌 생성하기
-            </v-chip>
-              <br><br>
-              <v-btn color="orange" class="font-weight-bold" fab x-large dark @click="createWallet">
-                <v-icon>fas fa-wallet</v-icon>
-              </v-btn>
+              <v-btn color="blue" text small class="font-weight-bold" @click="createWallet">계좌 생성</v-btn>
             </v-card>
             </v-col>
           </v-row>
@@ -295,11 +273,6 @@
 
 <script>
 import http from "@/util/http-common.js";
-import Web3 from 'web3';
-import authHeader from '@/services/auth-header.js';
-// var web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/98aa6777fadd45949e67403767091144"));
-// var web3 = new Web3(new Web3.providers.HttpProvider('https://api.infura.io/v1/jsonrpc/ropsten'));
-var web3 = new Web3(new Web3.providers.HttpProvider('http://192.168.50.11:8545'));
 export default {
   name: 'GroupMain',
   components: {
@@ -320,10 +293,10 @@ export default {
 
         // 프로필 수정
         U: {
-          email: '',
-          password: '',
-          nickname: '',
-          created: ""
+          email: 'kimin0412@gmail.com',
+          password: '123456',
+          nickname: '김민지',
+          created: "2020-09-23"
         },
         Wallet : {
           address: "",
@@ -361,7 +334,7 @@ export default {
     // 모임 가져오기
     http.get('/party/searchId', {
       params : {
-        id : 1 //사용자 id로 바꿔줘야해.
+        id : this.$store.state.auth.user.id
       }
     }).then(({ data }) => {
       this.groups = data;
@@ -416,12 +389,6 @@ export default {
         this.$router.go();
       },
   },
-
-  computed: {
-      currentUser(){
-        return this.$store.state.auth.user.data;
-      },
-    },
 };
 </script>
 <style>
