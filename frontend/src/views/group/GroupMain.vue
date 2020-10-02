@@ -23,10 +23,7 @@
         </v-btn>
 
         <div class="my-2">
-          <router-link
-            :to="{path: 'group'}">
-            <v-btn large color="green darken-1">Blog</v-btn>
-          </router-link>
+            <v-btn large color="red darken-1" @click="handleLogout">Logout</v-btn>
         </div>
 
         <template v-slot:extension>
@@ -308,6 +305,7 @@ export default {
       }
     },
   created(){
+    console.log(this.$store.state.auth.status.loggedIn);
     this.U.email = this.$store.state.auth.user.email;
     this.U.password = this.$store.state.auth.user.password
     this.U.nickname= this.$store.state.auth.user.nickname
@@ -384,9 +382,9 @@ export default {
     editProfile() {
           
         },
-    logOut() {
+    handleLogout() {
         this.$store.dispatch('auth/logout');
-        this.$router.go();
+        this.$router.push('/');
       },
   },
 
