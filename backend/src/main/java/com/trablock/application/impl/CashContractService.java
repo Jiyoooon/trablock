@@ -45,7 +45,7 @@ public class CashContractService implements ICashContractService {
 
 	public CashContractService() {
 		try {
-			credentials = WalletUtils.loadCredentials(PASSWORD, WALLET_RESOURCE);
+			credentials = WalletUtils.loadCredentials("1234", "src/main/resources/admin.wallet");
 		} catch (IOException | CipherException e) {
 			e.printStackTrace();
 		}

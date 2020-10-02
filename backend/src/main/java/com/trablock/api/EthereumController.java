@@ -1,5 +1,6 @@
 package com.trablock.api;
 
+import com.trablock.application.ICashContractService;
 import com.trablock.application.IEthereumService;
 import com.trablock.domain.Address;
 import com.trablock.domain.exception.NotFoundException;
@@ -19,11 +20,13 @@ public class EthereumController {
     public static final Logger log = LoggerFactory.getLogger(EthereumController.class);
 
     private IEthereumService etherService;
+    private ICashContractService cashContractService;
 
     @Autowired
-    public EthereumController(IEthereumService etherService) {
+    public EthereumController(IEthereumService etherService, ICashContractService cashContractService) {
         Assert.notNull(etherService, "explorerService 개체가 반드시 필요!");
         this.etherService = etherService;
+        this.cashContractService = cashContractService;
     }
 
     /**
@@ -36,6 +39,8 @@ public class EthereumController {
     @GetMapping("/address/{addr}")
     public Address getAddress(@PathVariable String addr)
     {
+        cashContractService.getTokenInfromation();
+
         Address address = this.etherService.getAddress(addr);
 
         if(address == null)
