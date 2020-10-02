@@ -278,6 +278,16 @@ export default {
     user: new User('', '', ''),
     user2: new User('', '', ''),
   }),
+  computed: {
+    loggedIn() {
+      return this.$store.state.auth.status.loggedIn;
+    }
+  },
+  created() {
+    if (this.$store.state.auth.status.loggedIn) {
+      this.$router.push('/group');
+    }
+  },
   methods: {
     handleLogin() {
       console.log("USER : " + this.user);
@@ -285,6 +295,7 @@ export default {
         this.$store.dispatch('auth/login', this.user).then(
           () => {
             this.$store.state.auth.status.loggedIn = true
+            console.log(this.$store.state.auth.status.loggedIn);
             this.$router.push('/group');
           },
           error => {
