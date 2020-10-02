@@ -129,47 +129,6 @@
                           @click:date="viewDay"
                           @change="updateRange"
                         ></v-calendar>
-                        <v-menu
-                          v-model="selectedOpen"
-                          :close-on-content-click="false"
-                          :activator="selectedElement"
-                          offset-x
-                        >
-                          <v-card
-                            color="grey lighten-4"
-                            min-width="350px"
-                            flat
-                          >
-                            <v-toolbar
-                              :color="selectedEvent.color"
-                              dark
-                            >
-                              <v-btn icon>
-                                <v-icon>mdi-pencil</v-icon>
-                              </v-btn>
-                              <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
-                              <v-spacer></v-spacer>
-                              <v-btn icon>
-                                <v-icon>mdi-heart</v-icon>
-                              </v-btn>
-                              <v-btn icon>
-                                <v-icon>mdi-dots-vertical</v-icon>
-                              </v-btn>
-                            </v-toolbar>
-                            <v-card-text>
-                              <span v-html="selectedEvent.details"></span>
-                            </v-card-text>
-                            <v-card-actions>
-                              <v-btn
-                                text
-                                color="secondary"
-                                @click="selectedOpen = false"
-                              >
-                                Cancel
-                              </v-btn>
-                            </v-card-actions>
-                          </v-card>
-                        </v-menu>
                       </v-sheet>
                       <v-dialog
                         v-model="dialogMemo"
@@ -178,79 +137,24 @@
                       >
                         <v-card>
                           <v-card-title>
+                            <v-btn icon>
+                              <v-icon color="green">mdi-pencil</v-icon>
+                            </v-btn>
                             <span class="headline">{{pickedDate}} Memo</span>
                           </v-card-title>
                           <v-card-text>
                             <v-container>
                               <v-row>
-                                <v-col
-                                  cols="12"
-                                  sm="6"
-                                  md="4"
-                                >
-                                  <v-text-field
-                                    label="Legal first name*"
-                                    required
-                                  ></v-text-field>
-                                </v-col>
-                                <v-col
-                                  cols="12"
-                                  sm="6"
-                                  md="4"
-                                >
-                                  <v-text-field
-                                    label="Legal middle name"
-                                    hint="example of helper text only on focus"
-                                  ></v-text-field>
-                                </v-col>
-                                <v-col
-                                  cols="12"
-                                  sm="6"
-                                  md="4"
-                                >
-                                  <v-text-field
-                                    label="Legal last name*"
-                                    hint="example of persistent helper text"
-                                    persistent-hint
-                                    required
-                                  ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                  <v-text-field
-                                    label="Email*"
-                                    required
-                                  ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                  <v-text-field
-                                    label="Password*"
-                                    type="password"
-                                    required
-                                  ></v-text-field>
-                                </v-col>
-                                <v-col
-                                  cols="12"
-                                  sm="6"
-                                >
-                                  <v-select
-                                    :items="['0-17', '18-29', '30-54', '54+']"
-                                    label="Age*"
-                                    required
-                                  ></v-select>
-                                </v-col>
-                                <v-col
-                                  cols="12"
-                                  sm="6"
-                                >
-                                  <v-autocomplete
-                                    :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                                    label="Interests"
-                                    multiple
-                                  ></v-autocomplete>
+                                <v-col>
+                                  <v-textarea
+                                    outlined
+                                    name="input-7-4"
+                                    label="자유롭게 기록하세요."
+                                    v-model="groupMemo"
+                                  ></v-textarea>
                                 </v-col>
                               </v-row>
                             </v-container>
-                            <small>*indicates required field</small>
                           </v-card-text>
                           <v-card-actions>
                             <v-spacer></v-spacer>
@@ -264,7 +168,7 @@
                             <v-btn
                               color="blue darken-1"
                               text
-                              @click="dialog = false"
+                              @click="saveMemo()"
                             >
                               Save
                             </v-btn>
@@ -364,13 +268,28 @@ export default {
         dialogPay : false,
         dialogMemo : false,
         pickedDate : '',
+        groupMemo : '',
+        group : {},
       }
     },
   mounted () {
     this.$refs.calendar.checkChange()
   },
   created() {
+    //모임 정보 가져오기
+    // http.get('users', {
 
+    // })
+    // .then(({data}) => {
+    //   this.group = data
+    // })
+    //여행 일자 표시하기(띠)
+    // http.get('users', {
+
+    // })
+    // .then(({data}) => {
+    //   this.group = data
+    // })
   },
 
   methods: {
@@ -436,6 +355,10 @@ export default {
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
       },
+    saveMemo(){
+
+      alert(this.groupMemo)
+    }
   },
 };
 </script>
