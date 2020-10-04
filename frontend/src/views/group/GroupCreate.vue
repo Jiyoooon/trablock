@@ -17,15 +17,15 @@
         <v-spacer></v-spacer>
 
         <v-btn icon>
-          <v-icon>mdi-account-outline</v-icon>
+          <v-icon>far fa-user</v-icon>
         </v-btn>
 
-        <v-btn icon>
+        <!-- <v-btn icon>
           <v-icon>mdi-blinds</v-icon>
-        </v-btn>
+        </v-btn> -->
 
         <div class="my-2">
-          <v-btn large color="green darken-1">Blog</v-btn>
+            <v-btn large color="red darken-1" @click="handleLogout">Logout</v-btn>
         </div>
 
         <template v-slot:extension>
@@ -551,6 +551,11 @@ export default {
       this.groupDates = []
       this.groupDates.push(moment(new Date()).format("YYYY-MM-DD"))
       this.groupDates.push(this.finished)
+    },
+
+    handleLogout() {
+      this.$store.dispatch('auth/logout');
+      this.$router.push('/');
     },
   },
 

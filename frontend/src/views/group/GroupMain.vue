@@ -15,12 +15,12 @@
         <v-spacer></v-spacer>
 
         <v-btn icon>
-          <v-icon>mdi-account-outline</v-icon>
+          <v-icon>far fa-user</v-icon>
         </v-btn>
 
-        <v-btn icon>
+        <!-- <v-btn icon>
           <v-icon>mdi-blinds</v-icon>
-        </v-btn>
+        </v-btn> -->
 
         <div class="my-2">
             <v-btn large color="red darken-1" @click="handleLogout">Logout</v-btn>
@@ -197,6 +197,8 @@
             <v-col cols="12" class="py-1 text-h5">PROFILE</v-col>
             <v-col cols="12" class="py-1 text-h4 font-weight-bold">MY Wallet</v-col>
           </v-row>
+
+          
           <v-row class="mt-10">
             <v-col cols="12" class="py-1 text-h6">wallet 이름</v-col>
             <v-col cols="4" class="ml-1 mt-3">
@@ -311,6 +313,7 @@ export default {
     this.U.nickname= this.$store.state.auth.user.nickname
     console.log(this.$store.state.auth.user);
     console.log(this.$store.state.auth.user.accessToken);
+    console.log(authHeader());
     // http.get('/token/wallets/id', {
     //   params : {
     //     id : this.$store.state.auth.user.data.id
@@ -322,9 +325,15 @@ export default {
     http.get('/token/wallets', { 
         headers: authHeader() 
     }).then(({ data }) => {
-      console.log(data)
-      this.Wallet.address = data.address;
-      this.Wallet.balance = data.balance;
+      console.log(data);
+      if(data.result == "fail"){
+        this.wCheck = false;
+      }
+      else {
+        this.wCheck = true;
+        this.Wallet.address = data.address;
+        this.Wallet.balance = data.balance;
+      }
     })
 
     // 모임 가져오기
@@ -365,6 +374,12 @@ export default {
         console.log(data.address+", "+data.balance);
         this.Wallet.address = data.address;
         this.Wallet.balance = data.balance;
+        // this.$dialog.notify.success("계좌 생성에 성공했습니다! 😃", {
+        //   position: "bottom-right",
+        //   timeout: 3000,
+        // });
+        alert("계좌 생성에 성공했습니다! 😃");
+        this.$router.go();
       })
     },
     charge(){
