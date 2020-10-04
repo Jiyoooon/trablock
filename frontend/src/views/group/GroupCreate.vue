@@ -36,7 +36,7 @@
             <v-tabs-slider color="yellow"></v-tabs-slider>
 
             <v-tab>모임 관리</v-tab>
-            <v-tab>계좌 관리</v-tab>
+            <!-- <v-tab>계좌 관리</v-tab> -->
           </v-tabs>
         </template>
       </v-toolbar>
@@ -278,11 +278,11 @@
             
           </v-card>
         </v-tab-item>
-        <v-tab-item>
+        <!-- <v-tab-item>
           <v-card flat min-height="90vh">
             <v-card-text> 하이하이</v-card-text>
           </v-card>
-        </v-tab-item>
+        </v-tab-item> -->
       </v-tabs-items>
     </v-card>
   </center>

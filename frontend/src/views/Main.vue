@@ -1,6 +1,6 @@
 <template>
-    <body>
-      <div class="jb-box">
+    <body class="fill-height">
+      <div class="fill-height">
         <video muted autoplay loop>
           <source src="../assets/preview1.mp4" type="video/mp4">
           <strong>Your browser does not support the video tag.</strong>
