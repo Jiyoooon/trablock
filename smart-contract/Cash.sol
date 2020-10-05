@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.4.24;
+pragma solidity ^0.7.2;
 
 import "./SafeMath.sol";
+import "./Ownable.sol";
 
 interface IERC20 {
 
     function totalSupply() external view returns (uint256);
-    function balanceOf(address account) external view returns (uint256);
     function transfer(address recipient, uint256 amount) external returns (bool);
     function allowance(address owner, address spender) external view returns (uint256);
     function approve(address spender, uint256 amount) external returns (bool);
@@ -20,12 +20,12 @@ interface IERC20 {
  * @title Cash
  * @notice Cash follows the erc20 standard and is used in the ecommerce service.
  */
-contract Cash is IERC20{
+
+contract Cash is Ownable, IERC20{
     
     using SafeMath for uint256;
     
     mapping (address => uint256) private _balances;
-    
     mapping (address => mapping (address => uint256)) private _allowances;
     
     string private _name = "TraBlcokCoin";
@@ -34,18 +34,6 @@ contract Cash is IERC20{
     uint public buyPrice = 10000;
     
     uint256 private _totalSupply;
-
-    /**
-     * @dev `IERC20.totalSupply`를 참조하세요.
-     */
-    function totalSupply() public view returns (uint256) {
-        return _totalSupply;
-    }
-    
-    /**
-     * @notice constructor
-     * totalSupply(inital supply), minter(owner)
-     */
 
     function name() public view returns (string memory) {
         return _name;
@@ -81,7 +69,7 @@ contract Cash is IERC20{
     /**
      * @dev `IERC20.totalSupply`를 참조하세요.
      */
-    function totalSupply() public view returns (uint256) {
+    function totalSupply() override public view returns (uint256) {
         return _totalSupply;
     }
 
@@ -100,7 +88,7 @@ contract Cash is IERC20{
      * - `recipient`는 영 주소(0x0000...0)가 될 수 없습니다.
      * - 호출자의 잔고는 적어도 `amount` 이상이어야 합니다.
      */
-    function transfer(address recipient, uint256 amount) external returns (bool) {
+    function transfer(address recipient, uint256 amount) override external returns (bool) {
         _transfer(msg.sender, recipient, amount);
         return true;
     }
@@ -108,7 +96,7 @@ contract Cash is IERC20{
     /**
      * @dev `IERC20.allowance`를 참조하세요.
      */
-    function allowance(address owner, address spender) public view returns (uint256) {
+    function allowance(address owner, address spender) override public view returns (uint256) {
         return _allowances[owner][spender];
     }
 
@@ -119,7 +107,7 @@ contract Cash is IERC20{
      *
      * - `spender`는 영 주소가 될 수 없습니다.
      */
-    function approve(address spender, uint256 value) public returns (bool) {
+    function approve(address spender, uint256 value) override public returns (bool) {
         _approve(msg.sender, spender, value);
         return true;
     }
@@ -136,7 +124,7 @@ contract Cash is IERC20{
      * - 호출자는 `sender`의 토큰에 대해 최소한 `amount` 만큼의 허용량을
      * 가져야 합니다.
      */
-    function transferFrom(address sender, address recipient, uint256 amount) public returns (bool) {
+    function transferFrom(address sender, address recipient, uint256 amount) override public returns (bool) {
         _transfer(sender, recipient, amount);
         _approve(sender, msg.sender, _allowances[sender][msg.sender].sub(amount));
         return true;
@@ -271,23 +259,20 @@ contract Cash is IERC20{
         _approve(account, msg.sender, _allowances[account][msg.sender].sub(amount));
     }
     
-
+    
     /**
      * @notice buy tokens
      * msg.value should be greater than or equal to 0.1 ether
-     * 1 eth = 100,000 cash	
+     * 1 eth = 1000 cash	
      * @return success or failure
      */      
-    function buy() public payable returns(address){
-        //wei의 양 = 1 eth면  buyPrice
+    function buy() public payable {
+        // todo
+        //wei의 양 = 1 eth면 amountTobuy 1000
         // _transfer(owner, msg.sender, amount);
-        
-        uint256 amountTobuy = msg.value * buyPrice * (10 **_decimals);
-        uint256 dexBalance = balanceOf(owner);
         require(amountTobuy > 0, "You need to send some Ether");
-        require(amountTobuy <= dexBalance, "Not enough tokens in the reserve");
-        _transfer(owner, msg.sender, amountTobuy);
         
-        return owner;
+        uint256 amountTobuy = msg.value * 1000;
+        _mint(msg.sender, amountTobuy);
     }
 }
