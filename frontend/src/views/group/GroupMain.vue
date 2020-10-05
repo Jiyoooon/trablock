@@ -238,6 +238,42 @@
               </v-btn>
             </v-card>
             </v-col>
+            <!-- <input type="hidden" id="hidden-area" :value="hiddenArea" /> -->
+            <v-dialog
+              v-model="dialogPK"
+              persistent
+              max-width="400"
+            >
+              <v-card>
+                <v-card-title class="headline">
+                  지갑 PrivateKey를 기억하세요!
+                </v-card-title>
+
+                <v-card-text>
+                  {{this.privateKey}}
+                </v-card-text>
+
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+
+                  <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="copyPK"
+                  >
+                    Copy
+                  </v-btn>
+
+                  <v-btn
+                    color="green darken-1"
+                    text
+                    @click="movePK"
+                  >
+                    확인했습니다!
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </v-row>
         </v-tab-item>
       </v-tabs-items>                        
@@ -286,6 +322,9 @@ export default {
         // wCheck: true,
         wCheck: false,
         access_token: this.$store.state.auth.user.accessToken,
+
+        privateKey: '',
+        dialogPK: false,
       }
     },
   created(){
@@ -344,6 +383,7 @@ export default {
       console.log(account)
       console.log(`Account : ${account.address}`);
       console.log(`Private key  : ${account.privateKey}`);
+      this.privateKey = `${account.privateKey}`;
 
       //내 계좌 생성하기
       http.post('/token/wallets', 
@@ -356,12 +396,11 @@ export default {
         console.log(data.address+", "+data.balance);
         this.Wallet.address = data.address;
         this.Wallet.balance = data.balance;
+        this.dialogPK = true;
         // this.$dialog.notify.success("계좌 생성에 성공했습니다! 😃", {
         //   position: "bottom-right",
         //   timeout: 3000,
         // });
-        alert("계좌 생성에 성공했습니다! 😃");
-        this.$router.go();
       })
     },
     charge(){
@@ -378,11 +417,45 @@ export default {
 
     editProfile() {
           
-        },
+    },
+
     handleLogout() {
-        this.$store.dispatch('auth/logout');
-        this.$router.push('/');
-      },
+      this.$store.dispatch('auth/logout');
+      this.$router.push('/');
+    },
+    
+    movePK() {
+      this.dialogPK = false;
+      alert("계좌 생성에 성공했습니다! 😃");
+      this.$router.go();
+    },
+
+    copyPK() {
+      let PK = this.privateKey;
+      const el = document.createElement('textarea');
+      el.value = PK;
+      alert(el.value);
+      document.body.appendChild(el);
+      // alert(PK);
+      // let toCopy = document.querySelector("#hidden-area");
+      // toCopy.setAttribute("type", "text");
+      // toCopy.setAttribute("value", PK);
+      el.select();
+
+      try {
+        document.execCommand("copy");
+        document.body.removeChild(el);
+        alert("Privat Key가 복사되었습니다! 은밀한 곳에 보관하세요 ^0^")
+        // this.text = emoji + " 가 복사되었습니다!\nCtrl+V 로 사용하세요!";
+        // this.snackbar = true;
+      } catch (err) {
+        // this.text = "복사에 실패하였습니다 😰";
+        // this.snackbar = true;
+      }
+
+      // toCopy.setAttribute("type", "hidden");
+      // window.getSelection().removeAllRanges();
+    },
   },
 
   computed: {
