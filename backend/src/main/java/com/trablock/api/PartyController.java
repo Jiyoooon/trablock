@@ -1,10 +1,13 @@
 package com.trablock.api;
 
+import com.trablock.application.IPartyContractService;
 import com.trablock.application.IPartyMemberService;
 import com.trablock.application.IPartyService;
+import com.trablock.application.impl.PartyContractService;
 import com.trablock.domain.Party;
 import com.trablock.domain.exception.EmptyListException;
 import com.trablock.domain.exception.NotFoundException;
+import com.trablock.domain.wrapper.PartyContract;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +28,9 @@ public class PartyController {
     private IPartyService partyService;
 
     @Autowired
+    private IPartyContractService partyContractService;
+
+    @Autowired
     private IPartyMemberService partyMemberService;
 
     @Autowired
@@ -43,6 +49,14 @@ public class PartyController {
             throw new EmptyListException("NO DATA");
 
         return partyList;
+    }
+
+    // partyId로 특정 모임 검색
+    @ApiOperation(value = "특정 모임 검색")
+    @GetMapping("/party/searchByPartyId")
+    public Party getParty(long partyId) {
+        Party party = partyService.get(partyId);
+        return party;
     }
 
     /**
@@ -85,7 +99,13 @@ public class PartyController {
     @PostMapping("/party")
     public Party create(@RequestBody Party party) {
     	System.out.println(party.getMembers().size());
-        return partyService.add(party, party.getMembers());
+
+        Party temp = partyService.add(party, party.getMembers());
+
+        // smart contract 배포
+        partyContractService.setPartyContract(party);
+
+        return temp;
     }
 
 
