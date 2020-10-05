@@ -18,6 +18,7 @@
 		<java.version>12</java.version>
 	</properties>
 
+	
 	<dependencies>
 	
 		<dependency>
@@ -64,6 +65,14 @@
 		</dependency>
 		
 		
+		<!-- marked the embedded servlet container as provided --> 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail -->
 		<dependency>
 		    <groupId>org.springframework.boot</groupId>
@@ -77,8 +86,15 @@
 		  <artifactId>slack-webhook</artifactId>
 		  <version>1.4.0</version>
 		</dependency>
-
 		
+		<!-- 
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		 -->
+		 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
@@ -150,6 +166,19 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+	          	<groupId>org.apache.maven.plugins</groupId>
+	          	<artifactId>maven-surefire-plugin</artifactId>
+	          	<version>2.19.1</version>
+	        </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

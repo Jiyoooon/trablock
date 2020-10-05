@@ -10,11 +10,18 @@
  	</select>
  	
  	<select id="getUserById" parameterType="long" resultType="User">
- 		SELECT id, nickname, email, dkf FROM User WHERE id = #{userid}
+ 		SELECT id, nickname, email FROM User WHERE id = #{userid}
  	</select>
  	
  	<select id="getUserByEmail" parameterType="string" resultType="User">
  		SELECT id, nickname, email, password FROM User WHERE email = #{email}
+ 	</select>
+ 	
+ 	<select id="selectUserByQuery" parameterType="string" resultType="User">
+ 		SELECT 	id, nickname, email 
+ 		FROM 	User 
+ 		WHERE 	email like CONCAT('%', #{query}, '%')
+ 			OR 	nickname like CONCAT('%', #{query}, '%')
  	</select>
 
 	<select id="getWallets" parameterType="long" resultType="Wallet">
@@ -31,7 +38,7 @@
 		ON p.id = pm.party_id
 	</select>
 	
-	<insert id="create" parameterType="User">
+	<insert id="create" useGeneratedKeys="true" keyProperty="id" parameterType="User">
 		INSERT INTO User(nickname, email, password, created)
 		VALUES(#{nickname}, #{email}, #{password}, now())
 	</insert>
@@ -97,7 +104,7 @@
 	<select id="checkPassword" parameterType="string" resultType="int">
 		SELECT count(id)
 		FROM User
-		WHERE id = #{userid} AND password = #{password}
+		WHERE id = #{userId} AND password = #{password}
 	</select>
 	
 	<update id="updatePasswordByEmail" parameterType="string">
@@ -112,5 +119,9 @@
 		FROM information_schema.tables
 		WHERE table_name = 'User'
 		AND table_schema = DATABASE()
+	</select>
+	
+	<select id="selectPassword"	parameterType="string" resultType="string">
+		SELECT password FROM User WHERE id = #{userId}
 	</select>
 </mapper>

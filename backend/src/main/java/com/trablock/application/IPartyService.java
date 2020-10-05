@@ -11,7 +11,7 @@ public interface IPartyService {
     List<Party> get(String name);
 
     @Transactional
-    Party add(Party party);
+    Party add(Party party, List<Long> partyMemberIdList);
 
     @Transactional
     Party update(Party party);

@@ -38,7 +38,7 @@ public class SwaggerConfig {
         		.globalOperationParameters(aParameters)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.trablock.api"))
-                .paths(PathSelectors.any())
+                .paths(PathSelectors.ant("/api/**"))
                 .build()
                 .apiInfo(apiInfo());
     }

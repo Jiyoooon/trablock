@@ -5,7 +5,8 @@ import java.time.LocalDateTime;
 public class Memo {
     private long id;                // 메모 아이디
     private long partyId;           // 모임 아이디
-    private LocalDateTime date;     // 메모 날짜(생성? OR 마지막으로 수정된?)
+//    private LocalDateTime date;     // 메모 날짜(여행일 中 1)
+    private String date;     // 메모 날짜(여행일 中 1)
     private String description;     // 메모 내용
     private boolean isChecklist;    // 체크리스트여부
 
@@ -28,19 +29,29 @@ public class Memo {
         this.partyId = partyId;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+//    public LocalDateTime getDate() {
+//        return date;
+//    }
+//
+//    public void setDate(LocalDateTime date) {
+//        this.date = date;
+//    }
+    
+    
+    public String getDate() {
+    	return date;
     }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    
+    public void setDate(String date) {
+    	this.date = date;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+
+	public void setDescription(String description) {
         this.description = description;
     }
 

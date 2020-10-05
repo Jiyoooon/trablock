@@ -7,10 +7,11 @@ import com.trablock.domain.Wallet;
 
 public interface IWalletRepository {
 	List<Wallet> list();
-	Wallet get(long id);
-	Wallet get(String wAddress);
+	Wallet getWalletByOwnerId(long ownerId);
+	Wallet getWalletByWAddress(String wAddress);
 	
 	long create(Wallet wallet);
-	int updateBalance(String wAddress, BigDecimal balance, int cash);
-	int updateRequestNo(String wAddress);
+	int update(Wallet wallet);
+
+	int delete(long id);
 }

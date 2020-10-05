@@ -41,4 +41,6 @@ public interface IUserService {
 	public boolean checkPassword(String uid, String password) throws Exception;
 	public void sendTmpPasswordEmail(String password, String email) throws Exception;
 
+	List<User> findUserByEmailOrNickname(String query);
+
 }

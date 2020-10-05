@@ -73,7 +73,6 @@ public class UserService implements IUserService {
     		throw new NotFoundException("회원 정보 찾지 못함");
     	}
     	
-    	user.setPassword("");
 	    user.setWallets(this.userRepository.getWallets(user.getId(), 0));
 	    user.setParties(this.userRepository.getParties(user.getId()));
     	
@@ -83,13 +82,10 @@ public class UserService implements IUserService {
     //회원가입
     @Override
     public User add(User user) throws Exception{
-//        long id = this.userRepository.selectNextUserId();
-        
         user.setPassword(SHA256.testSHA256(user.getPassword()));
-        
         this.userRepository.create(user);
         
-        return getUserInfo(user.getEmail());
+        return user;
     }
 
     //회원 수정
@@ -210,8 +206,14 @@ public class UserService implements IUserService {
 	@Override
 	public List<PartyMember> partyUserList(long partyId) throws Exception{
 		List<PartyMember> m = userRepository.userInParty(partyId);
-		System.out.println(m.size());
 		return m;
+	}
+
+
+	//이메일 또는 닉네임으로 회원 검색
+	@Override
+	public List<User> findUserByEmailOrNickname(String query) {
+		return userRepository.selectUserByQuery(query);
 	}
 
 }

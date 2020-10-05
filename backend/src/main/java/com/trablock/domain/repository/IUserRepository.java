@@ -39,8 +39,12 @@ public interface IUserRepository {
 	
 	List<PartyMember> userInParty(long partyId);//그룹별 유저정보
 	
-	int checkPassword(String userid, String password);
+	int checkPassword(String userId, String password);
 	void updatePasswordByEmail(String email, String password);
+	String selectPassword(String userId);
 	
 	long selectNextUserId();
+
+	//닉네임 또는 이메일로 유저 검색
+	List<User> selectUserByQuery(String query);
 }

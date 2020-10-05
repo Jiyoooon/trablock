@@ -1,6 +1,5 @@
 package com.trablock.api.handler;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trablock.domain.exception.ApplicationException;
 import com.trablock.domain.exception.BadRequestException;
 import com.trablock.domain.exception.EmptyListException;
 import com.trablock.domain.exception.NotFoundException;
@@ -20,12 +20,24 @@ import net.gpedro.integrations.slack.SlackMessage;
 
 @ControllerAdvice
 @RestController
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler{
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = NotFoundException.class)
-    public HashMap<String, Object> handleNotFoundException(NotFoundException e) {
-//    	e.printStackTrace();
+    public HashMap<String, Object> handleNotFoundException(Exception e) {
+    	e.printStackTrace();
+    	HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		map.put("result", "fail");
+		map.put("cause", e.getMessage());
+		
+		return map;
+    }
+    
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(value = ApplicationException.class)
+    public HashMap<String, Object> handleApplicationException(Exception e) {
+    	e.printStackTrace();
     	HashMap<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("result", "fail");
@@ -36,9 +48,8 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ExceptionHandler(value = EmptyListException.class)
-    public HashMap<String, Object> handleEmptyListException(EmptyListException e) {
-//    	e.printStackTrace();
-    	
+    public HashMap<String, Object> handleEmptyListException(Exception e) {
+    	e.printStackTrace();
     	HashMap<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("result", "fail");
@@ -51,7 +62,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(value = SecurityException.class)
     public HashMap<String, Object> unAuthorizedExceptionHandler(Exception e){
-//    	e.printStackTrace();
+    	e.printStackTrace();
     	HashMap<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("result", "fail");
@@ -63,7 +74,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = BadRequestException.class)
     public HashMap<String, Object> badRequestHandleException(Exception e){
-//    	e.printStackTrace();
+    	e.printStackTrace();
     	HashMap<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("result", "fail");
@@ -74,12 +85,20 @@ public class GlobalExceptionHandler {
     
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = Exception.class)
-    public HashMap<String, Object> handleException(Exception e){
+    public HashMap<String, Object> defaultHandleException(HttpServletRequest req, Exception e){
     	e.printStackTrace();
     	HashMap<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("result", "fail");
 		map.put("cause", e.getMessage());
+		
+		StringBuilder msg = new StringBuilder();
+		msg.append(":bangbang:`Backend exception log`\n");
+		msg.append("**ERROR**\t").append(e.toString()).append("\n");
+		msg.append("**URL**\t\t").append(req.getRequestURL()).append("\n");
+  
+		SlackApi api =new SlackApi("https://meeting.ssafy.com/hooks/7rifsd8zajfj7xh5ewop5bwjee");    //웹훅URL
+        api.call(new SlackMessage("jiyooon","spring",msg.toString()));
 		
 		return map;
     }
