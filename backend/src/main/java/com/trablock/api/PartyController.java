@@ -1,7 +1,9 @@
 package com.trablock.api;
 
+import com.trablock.application.IPartyContractService;
 import com.trablock.application.IPartyMemberService;
 import com.trablock.application.IPartyService;
+import com.trablock.application.impl.PartyContractService;
 import com.trablock.domain.Party;
 import com.trablock.domain.exception.EmptyListException;
 import com.trablock.domain.exception.NotFoundException;
@@ -24,6 +26,9 @@ public class PartyController {
     public static final Logger logger = LoggerFactory.getLogger(PartyController.class);
 
     private IPartyService partyService;
+
+    @Autowired
+    private IPartyContractService partyContractService;
 
     @Autowired
     private IPartyMemberService partyMemberService;
@@ -98,6 +103,7 @@ public class PartyController {
         Party temp = partyService.add(party, party.getMembers());
 
         // smart contract 배포
+        partyContractService.setPartyContract(party);
 
         return temp;
     }
