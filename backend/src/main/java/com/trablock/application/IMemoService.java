@@ -11,5 +11,7 @@ public interface IMemoService {
 	public int removeMemo(long memoId, long userId) throws BadRequestException;
 
 	public Memo searchMemoById(long memoId, long userId) throws BadRequestException;
+	public Memo searchMemoByDate(Memo memo) throws BadRequestException;
+	
 	public List<Memo> searchMemoByParty(long partyId, long userId) throws BadRequestException;
 }

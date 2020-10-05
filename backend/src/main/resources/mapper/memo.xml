@@ -14,7 +14,8 @@
 		UPDATE Memo 
 			SET description = #{description},
 				isChecklist = #{isChecklist}
-		WHERE id = #{id}
+		WHERE party_id = #{partyId}
+			AND date = #{date}
 	</update>
 	
 	<delete id="deleteMemo"	parameterType="long">
@@ -31,6 +32,13 @@
 		SELECT id, party_id as 'partyId', date, description, isChecklist
 		FROM Memo 
 		WHERE id = #{memoId}
+	</select>
+	
+	<select id="selectMemoByDate" parameterType="Memo" resultType="Memo">
+		SELECT id, party_id as 'partyId', date, description, isChecklist
+		FROM Memo
+		WHERE party_id = #{partyId}
+			AND date = #{date}
 	</select>
 	
 	<select id="isUserInParty"	parameterType="long"	resultType="int">
