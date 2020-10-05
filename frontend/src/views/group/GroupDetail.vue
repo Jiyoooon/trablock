@@ -227,7 +227,7 @@
 </template>
 
 <script>
-
+import http from '@/util/http-common.js';
 export default {
   name: 'GroupMain',
   components: {
@@ -273,20 +273,21 @@ export default {
     this.$refs.calendar.checkChange()
   },
   created() {
-    //모임 정보 가져오기
-    // http.get('users', {
+    // 모임 정보 가져오기
+    http.get('/party/searchByPartyId', {
+      partyId : this.groupId
+    })
+    .then(({data}) => {
+      this.group = data
+    })
 
-    // })
-    // .then(({data}) => {
-    //   this.group = data
-    // })
-    //여행 일자 표시하기(띠)
-    // http.get('users', {
-
-    // })
-    // .then(({data}) => {
-    //   this.group = data
-    // })
+    //메모 리스트 가져오기
+    http.get('/party/searchByPartyId', { ///////////
+      partyId : this.groupId
+    })
+    .then(({data}) => {
+      this.group = data
+    })
   },
 
   methods: {
@@ -322,29 +323,20 @@ export default {
 
         nativeEvent.stopPropagation()
       },
-      updateRange ({ start, end }) {
+      updateRange () {
         const events = []
 
-        const min = new Date(`${start.date}T00:00:00`)
-        const max = new Date(`${end.date}T23:59:59`)
-        const days = (max.getTime() - min.getTime()) / 86400000
-        const eventCount = this.rnd(days, days + 20)
-
-        for (let i = 0; i < eventCount; i++) {
-          const allDay = this.rnd(0, 3) === 0
-          const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-          const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-          const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-          const second = new Date(first.getTime() + secondTimestamp)
-
+        if(this.group.startDate.length > 0){
           events.push({
-            name: this.names[this.rnd(0, this.names.length - 1)],
-            start: first,
-            end: second,
-            color: this.colors[this.rnd(0, this.colors.length - 1)],
-            timed: !allDay,
+            name: '',
+            start: this.group.startDate,
+            end: this.group.endDate,
+            color: "green",
           })
         }
+
+
+        
 
         this.events = events
         this.events = []
@@ -353,7 +345,15 @@ export default {
         return Math.floor((b - a + 1) * Math.random()) + a
       },
     saveMemo(){
-
+      http.post('/memo', {
+        /////////////
+        partyId : this.groupId
+      })
+      .then(({data}) => {
+        if(data.result == "success"){
+          //
+        }
+      })
       alert(this.groupMemo)
     },
     
