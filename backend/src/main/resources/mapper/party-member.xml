@@ -10,6 +10,12 @@
         select *
         from Party
     </select>
+    
+    <select id="searchMemberByUserId" parameterType="long" resultType="PartyMember">
+        select user_id as 'userId', party_id as 'partyId', payment, chief, warning, ispay, isagree 
+        from PartyMember
+        where user_id = #{userId}
+    </select>
 
     <select id="getPartyIdListByUserId" parameterType="long" resultType="Long">
         select party_id
@@ -18,8 +24,9 @@
     </select>
 	
 	<select id="getMemberListByPartyId" parameterType="long"	resultType="PartyMember">
-		select user_id as 'userId', party_id as 'partyId', payment, chief, warning, ispay, isagree 
-        from PartyMember
+		select u.nickname as 'name', u.email as 'email', pm.user_id as 'userId', party_id as 'partyId', payment, chief, warning, ispay, isagree 
+        from PartyMember pm
+        JOIN User u ON u.id = pm.user_id
         where party_id = #{partyId}
 	</select>
 

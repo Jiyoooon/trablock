@@ -9,7 +9,7 @@ public class PartyMember {
     private boolean chief;          // 모임리더인지 여부(true이면 리더)
     private boolean warning;        // 미납경고(true이면 경고)
     private boolean ispay;			// 이번달 냈는지 여부
-    private boolean isagree;		// 출금동의 여부
+    private int isagree;			// 출금동의 여부(0 : 아직 확인 안함, 1 : 동의, 2 : 거절)
 
     private String email;			//유저 이메일
     private String name;			//유저 이름
@@ -18,7 +18,7 @@ public class PartyMember {
     }
 
     public PartyMember(long userId, long partyId, BigDecimal payment, boolean chief, boolean warning, boolean ispay,
-			boolean isagree) {
+    		int isagree) {
 		super();
 		this.userId = userId;
 		this.partyId = partyId;
@@ -96,11 +96,11 @@ public class PartyMember {
 		this.ispay = ispay;
 	}
 
-	public boolean isIsagree() {
+	public int isIsagree() {
 		return isagree;
 	}
 
-	public void setIsagree(boolean isagree) {
+	public void setIsagree(int isagree) {
 		this.isagree = isagree;
 	}
 

@@ -5,12 +5,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.trablock.application.IPartyMemberService;
 import com.trablock.application.IPartyService;
 import com.trablock.application.IPartyWalletService;
 import com.trablock.domain.Party;
 import com.trablock.domain.PartyMember;
+import com.trablock.domain.Withdraw;
 import com.trablock.domain.exception.ApplicationException;
 import com.trablock.domain.exception.NotFoundException;
 import com.trablock.domain.repository.IPartyMemberRepository;
@@ -77,7 +79,7 @@ public class PartyService implements IPartyService {
         long partyId = party.getId();
         boolean chief = true;
         for (long userId : partyMemberIdList) {
-            this.partyMemberService.add(new PartyMember(userId, partyId, BigDecimal.valueOf(0), chief, false, false, false));
+            this.partyMemberService.add(new PartyMember(userId, partyId, BigDecimal.valueOf(0), chief, false, false, 0));
             if (chief) {
                 chief = false;
             }
@@ -105,5 +107,71 @@ public class PartyService implements IPartyService {
         this.partyRepository.delete(id);
     }
 
+    
+    //출금 신청
+	@Override
+	@Transactional
+	public void registerWithdraw(Withdraw withdraw) {
+		Party party = this.partyRepository.searchById(withdraw.getPartyId());
+        if (party == null) {
+            throw new NotFoundException("모임 정보를 찾을 수 없습니다.");
+        }
+		
+        //파티 객체 가져와서 withdraw = true로 바꾸기
+        party.setWithdraw(true);
+        party.setWithdrawName(withdraw.getWithdrawName());
+        party.setWithdrawAmount(withdraw.getWithdrawAmount());
+        party.setPrivatekey(withdraw.getPrivatekey());
+        partyRepository.update(party);
+        
+        //userId는 isagree = 1로
+        PartyMember user = partyMemberRepository.searchMemberByUserId(withdraw.getUserId());
+        user.setIsagree(1);//동의
+        partyMemberRepository.update(user);
+	}
 
+	@Override
+	public void agreeWithdraw(long userId, long partyId, int isagree) {
+		//userId 멤버가 해당 파티 멤버인지 확인!
+		List<PartyMember> members = partyMemberRepository.getMemberListByPartyId(partyId);
+		//userId 멤버 동의 isagree = true
+		int check = 0;// 확인 한 사람 수
+		int agree = 0;// 동의 한 사람 수
+		boolean isMyParty = false;
+		
+		for(PartyMember pm : members) {
+			if(pm.getUserId() == userId) {
+				pm.setIsagree(isagree);
+				isMyParty = true;
+			}
+			if(pm.isIsagree() > 0) {
+				if(pm.isIsagree() == 1) agree++;
+				check++;
+			}
+		}
+		
+		if(!isMyParty) throw new NotFoundException("내 모임의 계좌만 접근 가능합니다.");
+		
+		Party party = partyRepository.searchById(partyId);
+		
+		if(check == members.size()) {
+			//party에 해당하는 모두가 agree했을 경우 출금
+			if(agree == members.size()) {
+				//출금 스마트컨트랙트 함수 호출***********
+				
+				//withdrawName, withdrawAmount 남김
+			}else {//거절 => 출금 실패
+				//withdrawName, withdrawAmount 지움
+				party.setWithdrawName(null);
+				party.setWithdrawAmount(null);
+			}
+
+			party.setWithdraw(false);//출금정보 리셋
+			party.setPrivatekey(null);//기본키 지움
+			partyRepository.update(party);//출금 완료 후 파티 정보 수정
+		}
+		
+	}
+
+	
 }
