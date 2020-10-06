@@ -12,6 +12,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.trablock.Application;
 import com.trablock.application.ICashContractService;
 
+import java.math.BigInteger;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 public class CashContractServiceTest {
@@ -25,7 +27,7 @@ public class CashContractServiceTest {
 
     @Test
     public void testGetBalance() {
-        int balance = this.cashContractService.getBalance(ADMIN_ADDRESS);
+        BigInteger balance = this.cashContractService.getBalance(ADMIN_ADDRESS);
 
         log.info(balance + "");
     }

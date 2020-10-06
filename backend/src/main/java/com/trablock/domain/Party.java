@@ -105,9 +105,10 @@ public class Party {
 
 
 
-	public boolean isPayCycle() {
+	public boolean getPayCycle() {
 		return payCycle;
 	}
+
 
 
 

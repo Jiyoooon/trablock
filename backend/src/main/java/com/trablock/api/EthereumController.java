@@ -39,8 +39,6 @@ public class EthereumController {
     @GetMapping("/address/{addr}")
     public Address getAddress(@PathVariable String addr)
     {
-        cashContractService.getTokenInfromation();
-
         Address address = this.etherService.getAddress(addr);
 
         if(address == null)
