@@ -595,7 +595,7 @@ export default {
       })
       .then(() => {
         this.groupKey = ''
-        alert('다른 인원들이 동의하면 출금이 자동으로 진행됩니다.')
+        alert('다른 인원들이 동의하면 출금이 자동으로 진행됩니다!')
       })
     },
     changeGroupId(id) {
