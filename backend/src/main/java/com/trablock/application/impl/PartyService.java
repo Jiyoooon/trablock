@@ -125,7 +125,7 @@ public class PartyService implements IPartyService {
         partyRepository.update(party);
         
         //userId는 isagree = 1로
-        PartyMember user = partyMemberRepository.searchMemberByUserId(withdraw.getUserId());
+        PartyMember user = partyMemberRepository.searchMemberByUserId(withdraw.getUserId(), withdraw.getPartyId());
         user.setIsagree(1);//동의
         partyMemberRepository.update(user);
 	}
