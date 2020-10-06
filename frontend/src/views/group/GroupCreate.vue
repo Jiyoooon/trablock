@@ -407,7 +407,7 @@ export default {
         if(canMake){
           var ok = confirm("모임을 생성하시겠습니까?")
           if(ok) {
-            this.pickedFrinedId.push(this.$store.state.auth.user.id); //나의 아이디 넣어줘야해
+            this.pickedFrinedId.push(this.$store.state.auth.user.data.id); //나의 아이디 넣어줘야해
             this.pickedFriend.forEach(element => {
               this.userList.forEach(element2 => {
                 if(element == element2.nickname){

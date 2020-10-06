@@ -92,8 +92,8 @@
                 <v-col cols="12" sm="9">
                   <v-row>
                     <v-col align="left">
-                      <h1 class="mt-15">민지와 함께 춤을</h1>
-                      <h3 class="my-5">모임설명입니다. 좋은 모임입니다.</h3>
+                      <h1 class="mt-15">{{group.name}}</h1>
+                      <h3 class="my-5">{{group.explanation}}</h3>
                     </v-col>
                   </v-row>
                   <v-divider></v-divider>
@@ -198,13 +198,129 @@
                           <h4 class="mx-8 my-3"><v-icon color="amber darken-2" class="mr-2">fas fa-circle-notch fa-spin</v-icon>간지 님이 미납하였습니다.</h4>
                           <h4 class="mx-8 my-3"><v-icon color="red" class="mr-2">mdi-cancel</v-icon>춤을추는민지 님이 수수료 5,000,000원을 납부하고 퇴출되었습니다.</h4>
                         </v-card>
-
-                        <v-card-actions>
-                          <v-btn text>회원 납부 현황 보기</v-btn>
-                          <v-btn text>나의 납부 현황 보기</v-btn>
-                          <v-btn text>납부하기</v-btn>
-                        </v-card-actions>
-                      </v-card>
+                        <v-col align="center">
+                          <v-card-actions align="center">
+                            <v-btn text @click="dialogPay = true">납부하기</v-btn>
+                            <v-btn text @click="dialogTable=true">회원 납부 현황 보기</v-btn>
+                            <v-btn text @click="dialogGetMoney = true">출금하기</v-btn>
+                          </v-card-actions>
+                        </v-col>
+                      </v-card> 
+                      <v-dialog
+                        v-model="dialogPay"
+                        max-width="500px"
+                      >
+                        <v-card>
+                          <v-card-title>
+                            {{regularPay}} 원을 납부하겠습니다.
+                          </v-card-title>
+                          <v-card-text>
+                            <v-text-field
+                              label="개인키를 입력하세요."
+                              v-model="groupKey"
+                            ></v-text-field>
+                          </v-card-text>
+                          <v-card-actions>
+                            <v-btn
+                              color="green"
+                              text
+                              @click="pay()"
+                            >
+                              pay
+                            </v-btn>
+                            <v-btn
+                              color="primary"
+                              text
+                              @click="dialogPay = false"
+                            >
+                              Close
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                      <v-dialog
+                        v-model="dialogGetMoney"
+                        max-width="500px"
+                      >
+                        <v-card>
+                          <v-card-title>
+                            모임원들의 동의가 진행된 후 출금됩니다.
+                          </v-card-title>
+                          <v-card-text>  
+                            <v-col cols="12" sm="8">                          
+                              <v-text-field
+                                label="출금할 금액을 입력하세요"
+                                v-model="amount"
+                              ></v-text-field>
+                            </v-col>
+                            <v-text-field
+                              label="개인키를 입력하세요."
+                              v-model="groupKey"
+                            ></v-text-field>
+                          </v-card-text>
+                          <v-card-actions>
+                            <v-btn
+                              color="green"
+                              text
+                              @click="getAmount()"
+                            >
+                              출금하기
+                            </v-btn>
+                            <v-btn
+                              color="primary"
+                              text
+                              @click="dialogGetMoney = false"
+                            >
+                              Close
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                      <v-dialog
+                        v-model="dialogTable"
+                        max-width="600px"
+                      >
+                        <v-card>
+                          <v-card-title>
+                            회원 납부 현황
+                          </v-card-title>
+                          <v-simple-table height="300px">
+                            <thead>
+                              <tr>
+                                <th class="text-left">
+                                  이름
+                                </th>
+                                <th class="text-left">
+                                  납부 금액
+                                </th>
+                                <th class="text-left">
+                                  최근 납부
+                                </th>
+                                <th class="text-left">
+                                  경고 횟수
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="item in group.memberlist" :key="item">
+                                <td>{{item}}</td>
+                                <td>ㅇㅇ</td>
+                                <td>ㅇㅇ</td>
+                                <td>ㅇㅇ</td>
+                              </tr>
+                            </tbody>
+                          </v-simple-table>
+                          <v-card-actions>
+                            <v-btn
+                              color="primary"
+                              text
+                              @click="dialogTable = false"
+                            >
+                              Close
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
 
                     </v-col>
                     
@@ -228,6 +344,7 @@
 
 <script>
 import http from '@/util/http-common.js';
+import authHeader from '@/services/auth-header.js';
 export default {
   name: 'GroupMain',
   components: {
@@ -267,26 +384,33 @@ export default {
         pickedDate : '',
         groupMemo : '',
         group : {},
+        memoList : [],
+        regularPay : '50',
+        groupKey : '',
+        dialogGetMoney : false,
+        amount : '',
+        dialogTable : false,
       }
     },
-  mounted () {
-    this.$refs.calendar.checkChange()
-  },
   created() {
     // 모임 정보 가져오기
     http.get('/party/searchByPartyId', {
-      partyId : this.groupId
+      params : {
+        partyId : this.$route.query.groupId,
+      }
     })
     .then(({data}) => {
       this.group = data
     })
 
     //메모 리스트 가져오기
-    http.get('/party/searchByPartyId', { ///////////
-      partyId : this.groupId
-    })
-    .then(({data}) => {
-      this.group = data
+    http.get('/token/memos', {
+      params : {
+        partyId : this.groupId
+      },
+      headers: authHeader()
+    }).then(({data}) => {
+      this.memoList = data.data
     })
   },
 
@@ -326,7 +450,7 @@ export default {
       updateRange () {
         const events = []
 
-        if(this.group.startDate.length > 0){
+        if(this.group.startDate != null){
           events.push({
             name: '',
             start: this.group.startDate,
@@ -334,10 +458,6 @@ export default {
             color: "green",
           })
         }
-
-
-        
-
         this.events = events
         this.events = []
       },
@@ -345,22 +465,51 @@ export default {
         return Math.floor((b - a + 1) * Math.random()) + a
       },
     saveMemo(){
-      http.post('/memo', {
-        /////////////
-        partyId : this.groupId
-      })
-      .then(({data}) => {
+      http.post('/token/memo', { 
+        memo : {
+          partyId : this.groupId,
+          date : this.pickedDate,
+          description : this.groupMemo,
+          isChecklist : false,
+        },
+        
+          headers : authHeader()
+        
+      }).then(({data}) => {
         if(data.result == "success"){
-          //
+          alert("저장이 완료되었습니다.")
+          this.dialogMemo = false
+          this.$router.go;
         }
       })
-      alert(this.groupMemo)
     },
     
     handleLogout() {
       this.$store.dispatch('auth/logout');
       this.$router.push('/');
     },
+    pay() {
+      http.get('/party/pay', {
+        partyId : this.groupId,
+        privateKey : this.groupKey,
+        value : this.regularPay,
+      })
+      .then(({data}) => {
+        this.group = data
+        this.groupKey = ''
+      })
+    },
+    getAmount() {
+      http.get('/party/withdraw', {
+        partyId : this.groupId,
+        privateKey : this.groupKey,
+        value : this.amount,
+      })
+      .then(({data}) => {
+        this.group = data
+        this.groupKey = ''
+      })
+    }
   },
 };
 </script>
