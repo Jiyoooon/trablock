@@ -182,7 +182,21 @@
                             label="nickname"
                             name="nickname"
                             type="text"
-                          />
+                           >
+                          <template v-slot:append>
+                            <v-fade-transition leave-absolute>
+                              <v-progress-circular
+                                v-if="loadingN"
+                                size="24"
+                                color="info"
+                                indeterminate
+                              ></v-progress-circular>
+                              <v-icon v-if="!loadingN && nCheck==0" class="mx-2" width="24" height="24" @click="checkNick" color="light-blue">fas fa-check</v-icon>
+                              <v-icon v-if="nCheck==1" class="mx-2" width="24" height="24" @click="checkNick" color="red">fas fa-times</v-icon>
+                              <v-icon v-if="nCheck==2" class="mx-2" width="24" height="24" @click="checkNick" color="green">fas fa-check</v-icon>
+                            </v-fade-transition>
+                          </template>
+                          </v-text-field>
                           <div class="text-center mt-6">
                             <v-btn @click="handleRegister" large :color="bgColor2" dark>
                               Sign Up</v-btn
@@ -302,12 +316,14 @@ export default {
     user: new User('', '', ''),
     user2: new User('', '', ''),
     rules: {
+      // email: [val => (val || '').length > 0 || '이메일을 입력해주세요!', val => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$/.test(val) || '이메일 형식을 지켜주세요!'],
       email: [val => (val || '').length > 0 || '이메일을 입력해주세요!'],
       password: [val => (val || '').length > 0 || '비밀번호를 입력해주세요!', val => /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/.test(val) || 
                '비밀번호는 숫자, 영문, 특수문자(!@#$%^*+=-)를 조합한 8자 이상이어야 합니다!'],
       nickname: [val => (val || '').length > 0 || '닉네임을 입력해주세요!'],
     },
     loadingE: false,
+    loadingN: false,
     eCheck: 0,
     nCheck: 0,
   }),
@@ -372,11 +388,11 @@ export default {
             });
           }
           else{
-            alert("회원가입 완료");
+            this.$dialog.notify.success("회원가입 완료", {
+              position: "bottom-right", timeout: 3000, });
+            this.$router.push('/');
+            // alert("회원가입 완료");
             this.step = 1;
-            // this.$dialog.notify.success("회원가입 완료", {
-            //   position: "bottom-right", timeout: 3000, });
-            //   this.$router.push('/');
           }
       },
       );
@@ -418,28 +434,32 @@ export default {
     
     checkEmail () {
       this.loadingE = true
-      // console.log(this.user2.email);
       http.get(`/user/dup/email/${this.user2.email}`, {
-        // email: 
       }).then(({ data }) => {
-        console.log(data);
-        // if(data.result == "fail"){
-          // this.eCheck = 1;
-        // }
-        // else {
-          this.eCheck = 2;
-        // }
+        data
+        this.eCheck = 2;
       }).catch((error) => {
-        console.log(error);
-      // if(error.response) {
+        error
         this.eCheck = 1;
-        // this.$router.push("servererror")
-      // }             
     });
-    // alert(this.eCheck);
-
       setTimeout(() => {
         this.loadingE = false
+      }, 2000)
+    },
+
+    checkNick () {
+      this.loadingN = true
+      http.get(`/user/dup/nickname/${this.user2.nickname}`, {
+      }).then(({ data }) => {
+        data
+        if(data.result == "fail"){
+          this.nCheck = 1;
+        }else{
+          this.nCheck = 2;
+        } 
+      });
+      setTimeout(() => {
+        this.loadingN = false
       }, 2000)
     },
   }
