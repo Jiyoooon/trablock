@@ -326,9 +326,9 @@
                               <tr v-for="item in group.memberlist" :key="item">
                                 <td>{{item.name}}</td>
                                 <td>{{item.payment}}원</td>
-                                <td v-if="isPay">O</td>
+                                <td v-if="item.isPay">O</td>
                                 <td v-else>X</td>
-                                <td v-if="warning">X</td>
+                                <td v-if="item.warning">X</td>
                                 <td v-else>O</td>
                               </tr>
                             </tbody>
@@ -537,7 +537,6 @@ export default {
       },
       updateRange () {
         const events = []
-
         if(this.group.startDate != null){
           events.push({
             name: '',
@@ -587,16 +586,16 @@ export default {
       })
     },
     getAmount() {
-      http.get('/party/withdraw', {
+      http.post('/withdraw', {
         userId : this.$store.state.auth.user.data.id,
         partyId : this.groupId,
         withdrawName : this.$store.state.auth.user.data.nickname,
-        privateKey : this.groupKey,
         withdrawAmount : this.amount,
+        privatekey : this.groupKey,
       })
-      .then(({data}) => {
-        this.group = data
+      .then(() => {
         this.groupKey = ''
+        alert('다른 인원들이 동의하면 출금이 자동으로 진행됩니다.')
       })
     },
     changeGroupId(id) {

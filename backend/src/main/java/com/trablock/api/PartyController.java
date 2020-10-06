@@ -50,8 +50,8 @@ public class PartyController {
     
     //출금 신청
     @ApiOperation(value = "모임 계좌 출금 신청")
-    @GetMapping("/withdraw")
-    public void withdraw(Withdraw withdraw) {
+    @PostMapping("/withdraw")
+    public void withdraw(@RequestBody Withdraw withdraw) {
     	//파티 객체 가져와서 withdraw = true로 바꾸기
     	//userId는 isagree = true로
     	partyService.registerWithdraw(withdraw);
