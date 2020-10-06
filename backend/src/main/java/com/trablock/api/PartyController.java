@@ -56,6 +56,8 @@ public class PartyController {
     @GetMapping("/party/searchByPartyId")
     public Party getParty(long partyId) {
         Party party = partyService.get(partyId);
+        
+        
         return party;
     }
 
