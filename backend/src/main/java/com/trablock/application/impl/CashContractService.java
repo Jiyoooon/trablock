@@ -25,8 +25,8 @@ import java.math.BigInteger;
 public class CashContractService implements ICashContractService {
 	private static final Logger log = LoggerFactory.getLogger(CashContractService.class);
 
-//	@Value("${eth.erc20.contract}")
-	private String ERC20_TOKEN_CONTRACT = "0x65aC044FD54E6eAddd0bb4766150848eEfDfa6f5";
+	@Value("${eth.erc20.contract}")
+	private String ERC20_TOKEN_CONTRACT;
 
 	@Value("${eth.admin.address}")
 	private String ADMIN_ADDRESS;
