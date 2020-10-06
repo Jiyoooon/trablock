@@ -1,25 +1,28 @@
 package com.trablock.application.impl;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.trablock.application.IPartyMemberService;
 import com.trablock.application.IPartyService;
 import com.trablock.application.IPartyWalletService;
 import com.trablock.domain.Party;
 import com.trablock.domain.PartyMember;
-import com.trablock.domain.PartyWallet;
 import com.trablock.domain.exception.ApplicationException;
 import com.trablock.domain.exception.NotFoundException;
+import com.trablock.domain.repository.IPartyMemberRepository;
 import com.trablock.domain.repository.IPartyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 public class PartyService implements IPartyService {
 
     @Autowired
     private IPartyRepository partyRepository;
+    @Autowired
+    private IPartyMemberRepository partyMemberRepository;
     @Autowired
     private IPartyMemberService partyMemberService;
     @Autowired
@@ -32,13 +35,14 @@ public class PartyService implements IPartyService {
     }
 
     @Override
-    public Party get(long id) {
+    public Party get(long id) {//partyId
     	// id를 통해 특정 모임을 가져옴
         Party party = this.partyRepository.searchById(id);
         if (party == null) {
             throw new NotFoundException("모임 정보를 찾을 수 없습니다.");
         }
 
+        party.setMemberlist(partyMemberRepository.getMemberListByPartyId(id));
         return party;
     }
 
@@ -73,7 +77,7 @@ public class PartyService implements IPartyService {
         long partyId = party.getId();
         boolean chief = true;
         for (long userId : partyMemberIdList) {
-            this.partyMemberService.add(new PartyMember(userId, partyId, BigDecimal.valueOf(0), chief, false));
+            this.partyMemberService.add(new PartyMember(userId, partyId, BigDecimal.valueOf(0), chief, false, false, false));
             if (chief) {
                 chief = false;
             }

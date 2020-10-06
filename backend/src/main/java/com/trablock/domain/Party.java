@@ -22,6 +22,8 @@ public class Party {
     private boolean available;          // 완료 여부(기본 : false)
     private BigDecimal exitFee;         // 퇴출수수료
     private List<Long> members;
+    
+    private List<PartyMember> memberlist;
 
     public long getId() {
         return id;
@@ -150,6 +152,15 @@ public class Party {
 
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
+	}
+
+	
+	public List<PartyMember> getMemberlist() {
+		return memberlist;
+	}
+
+	public void setMemberlist(List<PartyMember> memberlist) {
+		this.memberlist = memberlist;
 	}
 
 	@Override

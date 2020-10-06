@@ -53,7 +53,6 @@ public class MemoController {
     	HttpStatus status = HttpStatus.ACCEPTED;
     	
     	Memo existedMemo = memoService.searchMemoByDate(memo);
-    	System.out.println(existedMemo);
     	String userId = getLoginId(request);
 
     	map.put("result", "success");
