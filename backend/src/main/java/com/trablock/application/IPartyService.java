@@ -1,6 +1,8 @@
 package com.trablock.application;
 
 import com.trablock.domain.Party;
+import com.trablock.domain.Withdraw;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -18,4 +20,6 @@ public interface IPartyService {
 
     @Transactional
     void delete(long id);
+	void registerWithdraw(Withdraw withdraw);
+	void agreeWithdraw(long userId, long partyId, int isagree);
 }

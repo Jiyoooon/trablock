@@ -150,7 +150,6 @@ public class UserController {
   	public ResponseEntity<HashMap<String, Object>> signupUser2(@RequestBody User user, HttpServletResponse response)throws Exception {
       	HashMap<String, Object> map = new HashMap<String, Object>();
       	
-      	System.out.println(user);
 //      	String namePt = "^[a-zA-Z0-9가-힣]{2,12}$";
       	String pwPt = "^[0-9a-zA-Z~`!@#$%\\\\^&*()-]{8,12}$";//특수,대소문자,숫자 포함 8자리 이상
       	String emailPt = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";

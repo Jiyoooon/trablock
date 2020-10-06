@@ -53,7 +53,6 @@ public class MemoController {
     	HttpStatus status = HttpStatus.ACCEPTED;
     	
     	Memo existedMemo = memoService.searchMemoByDate(memo);
-    	System.out.println(existedMemo);
     	String userId = getLoginId(request);
 
     	map.put("result", "success");
@@ -120,8 +119,8 @@ public class MemoController {
     
     //모임별 메모 조회
     @ApiOperation(value = "모임별 메모 조회", notes = "Authorization header => 'Bearer [token]'")
-    @GetMapping(path = "/memos/{partyId}")
-    public ResponseEntity<HashMap<String, Object>> getMemosByParty(@PathVariable("partyId") long partyId
+    @GetMapping(path = "/memos")
+    public ResponseEntity<HashMap<String, Object>> getMemosByParty(long partyId
     														, HttpServletRequest request) throws Exception{
     	HashMap<String, Object> map = new HashMap<>();
     	HttpStatus status = HttpStatus.ACCEPTED;
