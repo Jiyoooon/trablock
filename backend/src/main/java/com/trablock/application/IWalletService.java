@@ -31,4 +31,6 @@ public interface IWalletService
 
 	@Transactional
 	Wallet requestEth(String walletAddress);
+	
+	void changeTBC(int value, String privatekey);
 }

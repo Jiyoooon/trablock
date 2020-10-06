@@ -123,6 +123,13 @@ public class WalletController {
 		return this.walletService.requestEth(address);
 	}
 	
+	@ApiOperation(value = "Request ether")
+	@RequestMapping(value ="/wallets/change", method = RequestMethod.PUT)
+	public void changeTBC(@RequestParam(value = "privateKey") String privateKey,
+			@RequestParam(value = "value") int value, HttpServletRequest request){
+		walletService.changeTBC(value, privateKey);
+	}
+	
 	
 	public String getLoginId(HttpServletRequest request) {
     	String token = request.getHeader("Authorization").split(" ")[1];

@@ -234,12 +234,12 @@ public class CashContract extends Contract {
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> buy(BigInteger bigInteger) {
+    public RemoteFunctionCall<TransactionReceipt> buy(BigInteger value) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_BUY, 
                 Arrays.<Type>asList(), 
                 Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function, bigInteger);
+        return executeRemoteCallTransaction(function, value);
     }
 
     public RemoteFunctionCall<TransactionReceipt> createParties(BigInteger partyId, BigInteger partyGoal, BigInteger durationInDays, BigInteger exitFee) {
@@ -299,10 +299,11 @@ public class CashContract extends Contract {
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> pay(String adr) {
+    public RemoteFunctionCall<TransactionReceipt> pay(BigInteger pid, BigInteger amount) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_PAY, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, adr)), 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(pid), 
+                new org.web3j.abi.datatypes.generated.Uint256(amount)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -348,10 +349,11 @@ public class CashContract extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> withDraw(String adr) {
+    public RemoteFunctionCall<TransactionReceipt> withDraw(BigInteger pid, BigInteger amount) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_WITHDRAW, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, adr)), 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(pid), 
+                new org.web3j.abi.datatypes.generated.Uint256(amount)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }

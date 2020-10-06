@@ -7,18 +7,18 @@
 
     <!--  Read  -->
     <select id="list" resultType="Wallet">
-        select id, owner_id as 'ownerId', address, balance
+        select id, owner_id as 'ownerId', address, balance, TBC
         from Wallet
     </select>
 
     <select id="getWalletByOwnerId" parameterType="long" resultType="Wallet">
-        select id, owner_id as 'ownerId', address, balance
+        select id, owner_id as 'ownerId', address, balance, TBC
         from Wallet
         where owner_id = #{ownerId}
     </select>
 
     <select id="getWalletByWAddress" parameterType="String" resultType="Wallet">
-        select id, owner_id as 'ownerId', address, balance
+        select id, owner_id as 'ownerId', address, balance, TBC
         from Wallet
         where address = #{wAddress}
     </select>
@@ -40,7 +40,8 @@
         set
             owner_id = #{ownerId},
             address = #{address},
-            balance = #{balance}
+            balance = #{balance},
+            TBC = #{TBC}
         where id = #{id}
     </update>
     <!-- Update    -->

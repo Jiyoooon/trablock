@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletFile;
 import org.web3j.crypto.WalletUtils;
 
 import java.io.File;
@@ -172,6 +173,9 @@ public class WalletService implements IWalletService
 		
 		return get(wallet.getAddress());
 	}
-	
-	
+
+	@Override
+	public void changeTBC(int value, String privatekey) {
+		cashContractService.buy(value, privatekey);
+	}
 }

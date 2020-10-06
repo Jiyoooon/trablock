@@ -1,76 +1,91 @@
-// SPDX-License-Identifier: MIT
+pragma solidity ^0.4.2;
 
-pragma solidity ^0.7.2;
+import "./SafeMath.sol";
 
 contract partyContract {
-
-  uint public totalParties = 0;
-  uint public totalExpenses = 0;
-
-  struct Party{
-    address beneficiary;
-    uint id;
-    uint noOfMembers;
-    uint travelDate;
-    uint payCycle;
-    uint target;
-    uint partyBalance;
-    uint exitFee;
-    address payable[] members;
-  }
-
-  struct UnverifiedExpense{
-    uint id;
-    address payable to;
-    uint cost;
-  //  address[] verifiedBy;
-    uint totalSigns;
-    string expHash;
-  }
-
-  Party[] public parties;
-  UnverifiedExpense[] public unverifiedExpenses;
-
-  mapping(address => mapping(uint => bool)) public toSignOrNot;
+    
+    using SafeMath for uint256;
   
-  mapping(address => mapping(uint  => bool)) public belongsToOrNot;
-  mapping(address => uint[]) public belongsTo;
-
-  event CreateParty(string name, uint indexed grpId, string venue, uint payCycle, uint target, uint partyBalance, uint exitFee, uint travelDate);
-  event AddExpense(string name, uint indexed expId, uint indexed grpId, uint cost, address indexed to);
-  event VerifiedExp(address indexed verifier, uint indexed expId, uint indexed grpId);
-
-  function getNoOfTotalGroupsOf(address user) view public returns(uint){
-    return belongsTo[user].length;
-  }
+   struct Member {
+        uint index;
+        uint balance;
+        bool exists;
+        bool warning;
+   }
+   
+   struct Record {
+       address member;
+       uint amount;
+   }
   
-     function _totalParties() public view returns (uint) {
-        return totalParties;
+  mapping(uint => Record) public withDrawList;
+  mapping(address => Member) public members;             // 파티 멤버들의 지갑주소
+  address[] internal walletList;
+  uint public pid;                      // 모임계좌 id
+  address public beneficiary;           // 펀딩을 실행한 사람의 계좌 주소
+  uint public partyGoal;                // 목표 금액
+  uint public noOfMembers;              // 파티 인원수
+  uint public deadline;                 // 여행 금액 모금 마감 날짜
+  uint public payCycle;                 // 여행 금액 모금하는 주기(front쪽에서 정해져서 넘어옴)
+  uint public exitFee;                  // 퇴출할 때 수수료(파티 생성때 front쪽에서 정해져서 넘어옴)
+  
+  
+  constructor (
+        uint partyId,
+        uint _partyGoal,
+        uint durationInDays,
+        uint _exitFee,
+        address ownerAddress
+    ) public {
+        pid = partyId;
+        beneficiary = ownerAddress;
+        walletList.push(ownerAddress);
+        partyGoal = _partyGoal;
+        deadline = block.timestamp + durationInDays * 1 days;
+        exitFee = _exitFee;
+        members[ownerAddress] = Member(0, 0, true, false);
+        noOfMembers = 1;
     }
 
-  function createParty(uint _travelDate, uint _payCycle, uint _target, uint _exitFee, string memory _name, string memory _venue) public returns(uint){
-    Party memory newParty;
+  function joinGroup(address[] memory membersAddress) public {
+    for (uint i = 0; i < membersAddress.length; i++) {
+        members[membersAddress[i]] = Member(noOfMembers, 0, true, false);
+        walletList.push(membersAddress[i]);
+        noOfMembers++;
+    }
+  }
+ 
+ 
+  
+  function isMember(address adr) public view returns (bool) {
+      return members[adr].exists;
+  }
+
+    function getPartyGoal() public view returns (uint) {
+        return partyGoal;
+    }
     
-    newParty.id = totalParties;
-    newParty.beneficiary = msg.sender;
-    newParty.noOfMembers = 1;
-    newParty.travelDate = _travelDate;
-    newParty.payCycle = _payCycle;
-    newParty.target = _target;
-    newParty.partyBalance = 0;
-    newParty.exitFee = _exitFee;
+    function getBeneficiary() public view returns (address) {
+        return beneficiary;
+    }
+    
+    function getNoOfMembers() public view returns (uint) {
+        return noOfMembers;
+    }
+    
+    function getWalletList() public view returns (address[] memory){
+        return walletList;
+    }
+    
+    function getMemberBalance(address adr) public view returns (uint) {
+        return members[adr].balance;
+    }
 
-    emit CreateParty(_name, totalParties, _venue, _payCycle, _target, 0, _exitFee, _travelDate);
-
-    totalParties++;
-    parties.push(newParty);
-  }
-
-  function joinGroup(uint _partyId) public {
-    require(totalParties >= _partyId && 0 <= _partyId);
-    require(belongsToOrNot[msg.sender][_partyId]==false);
-
-    parties[_partyId].members.push(msg.sender);
-    parties[_partyId].noOfMembers++;
-  }
+    function addBalacne(address adr, uint256 amount) public {
+        members[adr].balance = members[adr].balance.add(amount);
+    }
+    
+    function withDraw(address withdrawer, uint256 amount) public {
+        withDrawList[block.timestamp] = Record(withdrawer, amount);
+    }
 }

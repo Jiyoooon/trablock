@@ -1,17 +1,17 @@
-// SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.7.2;
+pragma solidity ^0.4.2;
+
 
 /**
  * @title Ownable
  * @dev The Ownable contract has an owner address, and provides basic authorization control
  * functions, this simplifies the implementation of "user permissions".
  */
-abstract contract Ownable {
+contract Ownable {
   address public owner;
 
   event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-  constructor() {
+  constructor() public {
     owner = msg.sender;
   }
 
