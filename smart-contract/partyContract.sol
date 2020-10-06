@@ -1,5 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.7.2;
+pragma solidity ^0.4.2;
 
 import "./SafeMath.sol";
 
@@ -29,10 +28,10 @@ contract partyContract {
         uint durationInDays,
         uint _exitFee,
         address ownerAddress
-    ) {
+    ) public {
         pid = partyId;
         beneficiary = ownerAddress;
-        walletList[0] = ownerAddress;
+        walletList.push(ownerAddress);
         partyGoal = _partyGoal;
         deadline = block.timestamp + durationInDays * 1 days;
         exitFee = _exitFee;
