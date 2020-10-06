@@ -506,6 +506,12 @@ export default {
     viewDay ({date}) {
         this.dialogMemo = true
         this.pickedDate = date
+        this.groupMemo = ''
+        this.memoList.forEach(element => {
+          if(element.date.substr(0,10) == date){
+            this.groupMemo = element.description
+          }
+        });
       },
       getEventColor (event) {
         return event.color
@@ -536,32 +542,45 @@ export default {
         nativeEvent.stopPropagation()
       },
       updateRange () {
-        const events = []
+        const events = [];
         if(this.group.startDate != null){
           events.push({
-            name: '',
+            id: 0,
+            name: 'travel',
             start: this.group.startDate,
             end: this.group.endDate,
             color: "green",
           })
         }
+
+        this.memoList.forEach(element => {
+          events.push({
+            id: 0,
+            name: 'memo',
+            start: element.date,
+            end: element.date,
+            color: "amber",
+          })
+
+        });
         this.events = events
-        this.events = []
       },
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
       },
     saveMemo(){
-      http.post('/token/memo', { 
-        memo : {
+      http.post('/token/memo', 
+        {
           partyId : this.groupId,
           date : this.pickedDate,
           description : this.groupMemo,
           isChecklist : false,
         },
-        headers : authHeader()
-        
-      }).then(({data}) => {
+        {
+          headers : authHeader()
+        }
+      
+      ).then(({data}) => {
         if(data.result == "success"){
           alert("저장이 완료되었습니다.")
           this.dialogMemo = false

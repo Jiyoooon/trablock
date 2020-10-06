@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,13 +48,15 @@ public class MemoController {
     //메모 작성&수정
     @ApiOperation(value = "새로운 메모 작성, 수정", notes = "Authorization header => 'Bearer [token]'")
     @PostMapping(path = "/memo")
-    public ResponseEntity<HashMap<String, Object>> writeMemo(@ModelAttribute("memo") Memo memo
+    public ResponseEntity<HashMap<String, Object>> writeMemo(@RequestBody Memo memo
     														, HttpServletRequest request) throws Exception{
     	HashMap<String, Object> map = new HashMap<>();
     	HttpStatus status = HttpStatus.ACCEPTED;
     	
     	Memo existedMemo = memoService.searchMemoByDate(memo);
     	String userId = getLoginId(request);
+    	
+    	System.out.println(memo.toString());
 
     	map.put("result", "success");
     	
