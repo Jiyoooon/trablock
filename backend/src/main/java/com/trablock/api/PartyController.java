@@ -57,7 +57,6 @@ public class PartyController {
     public Party getParty(long partyId) {
         Party party = partyService.get(partyId);
         
-        
         return party;
     }
 
