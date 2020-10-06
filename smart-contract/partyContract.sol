@@ -12,7 +12,13 @@ contract partyContract {
         bool exists;
         bool warning;
    }
+   
+   struct Record {
+       address member;
+       uint amount;
+   }
   
+  mapping(uint => Record) public withDrawList;
   mapping(address => Member) public members;             // 파티 멤버들의 지갑주소
   address[] internal walletList;
   uint public pid;                      // 모임계좌 id
@@ -22,6 +28,8 @@ contract partyContract {
   uint public deadline;                 // 여행 금액 모금 마감 날짜
   uint public payCycle;                 // 여행 금액 모금하는 주기(front쪽에서 정해져서 넘어옴)
   uint public exitFee;                  // 퇴출할 때 수수료(파티 생성때 front쪽에서 정해져서 넘어옴)
+  
+  
   constructor (
         uint partyId,
         uint _partyGoal,
@@ -41,13 +49,13 @@ contract partyContract {
 
   function joinGroup(address[] memory membersAddress) public {
     for (uint i = 0; i < membersAddress.length; i++) {
-        Member memory m = Member(noOfMembers, 0, true, false);
-        members[membersAddress[i]] = m;
+        members[membersAddress[i]] = Member(noOfMembers, 0, true, false);
         walletList.push(membersAddress[i]);
         noOfMembers++;
     }
   }
-  
+ 
+ 
   
   function isMember(address adr) public view returns (bool) {
       return members[adr].exists;
@@ -76,5 +84,8 @@ contract partyContract {
     function addBalacne(address adr, uint256 amount) public {
         members[adr].balance = members[adr].balance.add(amount);
     }
-
+    
+    function withDraw(address withdrawer, uint256 amount) public {
+        withDrawList[block.timestamp] = Record(withdrawer, amount);
+    }
 }

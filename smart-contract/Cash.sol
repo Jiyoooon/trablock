@@ -37,7 +37,8 @@ contract Cash is Ownable, IERC20{
     
     uint256 private _totalSupply;
     
-    address[] private partyAddress;
+    // address[] private partyAddress;
+    mapping (uint => address) partyAddress;     // (partyId, partyContract Address)
 
     function name() public view returns (string memory) {
         return _name;
@@ -261,43 +262,44 @@ contract Cash is Ownable, IERC20{
         _approve(account, msg.sender, _allowances[account][msg.sender].sub(amount));
     }
     
-    function pay(address adr) public payable {
+    function pay(uint pid, uint256 amount) public {
         address payer = msg.sender;
-        uint256 amount = msg.value;
         
-        partyContract party = parties[adr];
+        address partyAdr = partyAddress[pid];
+        partyContract party = parties[partyAdr];
+        
         if(balanceOf(payer) > amount){
-          _transfer(payer, adr, amount);
+          _transfer(payer, partyAdr, amount);
           party.addBalacne(payer, amount);
         }
     }
     
-    function withDraw(address adr) external {
-        partyContract party = parties[adr];
+    function withDraw(uint pid, uint256 amount) public {
+        address withdrawer = msg.sender;
+
+        address partyAdr = partyAddress[pid];
+        partyContract party = parties[partyAdr];
         
-        if(party.getPartyGoal() > balanceOf(adr)){
-            address[] memory members = party.getWalletList();
-            for(uint i = 0; i < party.getNoOfMembers() ; i++){
-                _transfer(adr, members[i], balanceOf(adr));
-            }
-        } else {
-            _transfer(adr, party.getBeneficiary(), balanceOf(adr));
-        }
+        _transfer(partyAdr, withdrawer, amount);
+        party.withDraw(withdrawer, amount);
+            // address[] memory members = party.getWalletList();
+            // for(uint i = 0; i < party.getNoOfMembers() ; i++){
+            //     _transfer(adr, members[i], balanceOf(adr));
+            // }
     }
     
-    function createParties(uint partyId, uint partyGoal, uint durationInDays, uint exitFee) public returns (address){
+    function createParties(uint partyId, uint partyGoal, uint durationInDays, uint exitFee) public {
         partyContract newParty = new partyContract(partyId, partyGoal, durationInDays, exitFee, msg.sender);
 
         address adr = address(newParty);        
         parties[adr] = newParty;
-        partyAddress.push(adr);
-        return adr;
+        partyAddress[partyId] = adr;
     }
     
     /**
      * @notice buy tokens
-     * 1 eth = 100,000 cash	
-     */   
+     * 1 eth = 100,000 cash    
+     */
     function buy() public payable{
         // todo
         //wei의 양 = 1 eth면 amount가 100,000
@@ -309,5 +311,9 @@ contract Cash is Ownable, IERC20{
         // require(amountTobuy <= dexBalance, "Not enough tokens in the reserve");
         // _transfer(owner, msg.sender, amountTobuy);
         _mint(msg.sender, amountTobuy);
+    }
+    
+    function getParties(uint partyId) public view returns (address) {
+        return partyAddress[partyId];
     }
 }
