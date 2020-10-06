@@ -3,11 +3,8 @@ package com.trablock.api;
 import com.trablock.application.IPartyContractService;
 import com.trablock.application.IPartyMemberService;
 import com.trablock.application.IPartyService;
-import com.trablock.application.impl.PartyContractService;
 import com.trablock.domain.Party;
 import com.trablock.domain.exception.EmptyListException;
-import com.trablock.domain.exception.NotFoundException;
-import com.trablock.domain.wrapper.PartyContract;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -97,13 +93,14 @@ public class PartyController {
     // 모임등록
     @ApiOperation(value = "모임 등록")
     @PostMapping("/party")
-    public Party create(@RequestBody Party party) {
+    public Party create(@RequestBody Party party, @RequestParam String privateKey) {
     	System.out.println(party.getMembers().size());
 
-        Party temp = partyService.add(party, party.getMembers());
+        partyService.add(party, party.getMembers());
+        Party temp = partyService.get(party.getId());
 
         // smart contract 배포
-        partyContractService.setPartyContract(party);
+        partyContractService.setPartyContract(party, privateKey);
 
         return temp;
     }
