@@ -66,17 +66,18 @@
 
                 <v-divider></v-divider>
 
+                <div v-if="groups.length == 0" class="mt-3">등록한 모임이 없습니다. </div>
                 <v-list-item
                   v-for="item in groups"
                   :key="item.title"
                   link :to="{name: 'groupdetail',query: { groupId: item.id }}"
                 >
                   <v-list-item-icon>
-                    <v-icon>{{ item.icon }}</v-icon>
+                    <v-icon>mdi-view-dashboard</v-icon>
                   </v-list-item-icon>
 
                   <v-list-item-content>
-                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                    <v-list-item-title>{{ item.name }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
@@ -338,6 +339,23 @@ export default {
       }
     },
   created(){
+    http.get('/party/searchId', {
+      params : {
+        id : this.$store.state.auth.user.data.id
+      }
+    }).then(({ data }) => {
+      this.groups = data;
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.$router.push("servererror")
+      } else if(error.request) {
+        this.$router.push("error")
+      } else{
+        this.$router.push("/404");
+      }                          
+    });
+    
     //userList 가져오기
     http.get('users')
     .then(({data}) => {
@@ -347,7 +365,7 @@ export default {
 
     http.get('/party/searchId', {
       params : {
-        id : 1 //사용자 id로 바꿔줘야해.
+        id : this.$store.state.auth.user.data.id
       }
     }).then(({ data }) => {
       this.groups = data;
