@@ -324,7 +324,7 @@
                             </thead>
                             <tbody>
                               <tr v-for="item in group.memberlist" :key="item">
-                                <td>{{item.userId}}</td>
+                                <td>{{item.name}}</td>
                                 <td>{{item.payment}}원</td>
                                 <td v-if="isPay">O</td>
                                 <td v-else>X</td>
@@ -471,13 +471,13 @@ export default {
         this.sum += Number(element.payment)
 
         if(element.ispay) {
-          this.goodMember.push(element.userId)
+          this.goodMember.push(element.name)
         }else{
-          this.badMember.push(element.userId)
+          this.badMember.push(element.name)
         }
 
         if(element.warning){
-          this.realBadMember.push(element.userId)
+          this.realBadMember.push(element.name)
         }
       });
 
@@ -488,7 +488,7 @@ export default {
 
 
       //다음 납부 날짜 계산하기
-      
+
     })
 
     //메모 리스트 가져오기
@@ -588,9 +588,11 @@ export default {
     },
     getAmount() {
       http.get('/party/withdraw', {
+        userId : this.$store.state.auth.user.data.id,
         partyId : this.groupId,
+        withdrawName : this.$store.state.auth.user.data.nickname,
         privateKey : this.groupKey,
-        value : this.amount,
+        withdrawAmount : this.amount,
       })
       .then(({data}) => {
         this.group = data
