@@ -131,6 +131,7 @@ public class PartyService implements IPartyService {
 	}
 
 	@Override
+	@Transactional
 	public void agreeWithdraw(long userId, long partyId, int isagree) {
 		//userId 멤버가 해당 파티 멤버인지 확인!
 		List<PartyMember> members = partyMemberRepository.getMemberListByPartyId(partyId);
@@ -142,6 +143,7 @@ public class PartyService implements IPartyService {
 		for(PartyMember pm : members) {
 			if(pm.getUserId() == userId) {
 				pm.setIsagree(isagree);
+				partyMemberRepository.update(pm);
 				isMyParty = true;
 			}
 			if(pm.isIsagree() > 0) {

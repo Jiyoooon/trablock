@@ -287,7 +287,7 @@ import Web3 from 'web3';
 import authHeader from '@/services/auth-header.js';
 // var web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/98aa6777fadd45949e67403767091144"));
 // var web3 = new Web3(new Web3.providers.HttpProvider('https://api.infura.io/v1/jsonrpc/ropsten'));
-var web3 = new Web3(new Web3.providers.HttpProvider('http://192.168.50.10:8545'));
+var web3 = new Web3(new Web3.providers.HttpProvider('http://j3a101.p.ssafy.io/geth'));
 export default {
   name: 'GroupMain',
   components: {
