@@ -4,6 +4,7 @@ import com.trablock.domain.PartyWallet;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface IPartyWalletService
 {
@@ -17,6 +18,4 @@ public interface IPartyWalletService
 	@Transactional
 	PartyWallet syncBalance(String walletAddress, BigDecimal balance, int cash);
 
-	@Transactional
-	PartyWallet requestEth(String walletAddress);
 }
