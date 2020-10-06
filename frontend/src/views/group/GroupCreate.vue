@@ -156,7 +156,7 @@
                               <v-divider></v-divider>
                               <v-card-actions>
                                 <v-btn color="blue darken-1" text @click="dialogUser = false; pickedFriend = []">Close</v-btn>
-                                <v-btn color="blue darken-1" text @click="dialogUser = false; updateRegularPay()">Save</v-btn>
+                                <v-btn color="blue darken-1" text @click="dialogUser = false;">Save</v-btn>
                               </v-card-actions>
                             </v-card>
                           </v-dialog>
@@ -359,8 +359,13 @@ export default {
     //userList 가져오기
     http.get('users')
     .then(({data}) => {
-      this.userList = data
-      this.sUserList = data
+      var id = this.$store.state.auth.user.data.id
+      data.forEach(element => {
+        if(element.id != id) {
+          this.userList.push(element)
+          this.sUserList.push(element)
+        }
+      });
     })
 
     http.get('/party/searchId', {
