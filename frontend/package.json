@@ -23,6 +23,7 @@
     "vue-carousel-3d": "^0.2.0",
     "vue-d3-charts": "^0.2.8",
     "vue-page-transition": "^0.2.2",
+    "vue-progress-path": "0.0.2",
     "vue-router": "^3.4.0",
     "vue-wordcloud": "^1.1.1",
     "vuetify": "^2.2.11",

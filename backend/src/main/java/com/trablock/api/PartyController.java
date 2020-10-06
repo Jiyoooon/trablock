@@ -3,11 +3,9 @@ package com.trablock.api;
 import com.trablock.application.IPartyContractService;
 import com.trablock.application.IPartyMemberService;
 import com.trablock.application.IPartyService;
-import com.trablock.application.impl.PartyContractService;
 import com.trablock.domain.Party;
+import com.trablock.domain.Withdraw;
 import com.trablock.domain.exception.EmptyListException;
-import com.trablock.domain.exception.NotFoundException;
-import com.trablock.domain.wrapper.PartyContract;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -39,6 +36,23 @@ public class PartyController {
         this.partyService = partyService;
     }
 
+    
+    //출금 동의 요청
+    @ApiOperation(value = "출금 동의 요청")
+    @GetMapping("/withdraw/agree")
+    public void agreeWithdraw(long userId, long partyId, int isagree) {
+    	partyService.agreeWithdraw(userId, partyId, isagree);
+    }
+    
+    //출금 신청
+    @ApiOperation(value = "모임 계좌 출금 신청")
+    @PostMapping("/withdraw")
+    public void withdraw(@RequestBody Withdraw withdraw) {
+    	//파티 객체 가져와서 withdraw = true로 바꾸기
+    	//userId는 isagree = true로
+    	partyService.registerWithdraw(withdraw);
+    }
+    
     // 전체 모임 리스트 검색
     @ApiOperation(value = "전체 모임 리스트 검색")
     @GetMapping("/party")
@@ -56,6 +70,7 @@ public class PartyController {
     @GetMapping("/party/searchByPartyId")
     public Party getParty(long partyId) {
         Party party = partyService.get(partyId);
+        
         return party;
     }
 
@@ -97,13 +112,14 @@ public class PartyController {
     // 모임등록
     @ApiOperation(value = "모임 등록")
     @PostMapping("/party")
-    public Party create(@RequestBody Party party) {
+    public Party create(@RequestBody Party party, @RequestParam String privateKey) {
     	System.out.println(party.getMembers().size());
 
-        Party temp = partyService.add(party, party.getMembers());
+        partyService.add(party, party.getMembers());
+        Party temp = partyService.get(party.getId());
 
         // smart contract 배포
-        partyContractService.setPartyContract(party);
+        partyContractService.setPartyContract(party, privateKey);
 
         return temp;
     }

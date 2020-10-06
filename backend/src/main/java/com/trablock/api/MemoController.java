@@ -44,39 +44,44 @@ public class MemoController {
         this.memoService = memoService;
     }
 
-    //메모 작성
-    @ApiOperation(value = "새로운 메모 작성", notes = "Authorization header => 'Bearer [token]'")
+    //메모 작성&수정
+    @ApiOperation(value = "새로운 메모 작성, 수정", notes = "Authorization header => 'Bearer [token]'")
     @PostMapping(path = "/memo")
     public ResponseEntity<HashMap<String, Object>> writeMemo(@ModelAttribute("memo") Memo memo
     														, HttpServletRequest request) throws Exception{
     	HashMap<String, Object> map = new HashMap<>();
     	HttpStatus status = HttpStatus.ACCEPTED;
     	
-    	
+    	Memo existedMemo = memoService.searchMemoByDate(memo);
     	String userId = getLoginId(request);
-    	
+
     	map.put("result", "success");
-    	memoService.registeMemo(memo, Long.parseLong(userId));
+    	
+    	if(existedMemo == null) {//create
+    		memoService.registeMemo(memo, Long.parseLong(userId));
+    	}else {//update
+    		map.put("data", memoService.updateMemo(memo, Long.parseLong(userId)));
+    	}
     	
     	return new ResponseEntity<HashMap<String, Object>>(map, status);
     }
     
     
-    //메모 수정
-    @ApiOperation(value = "메모 수정", notes = "Authorization header => 'Bearer [token]'")
-    @PutMapping(path = "/memo")
-    public ResponseEntity<HashMap<String, Object>> updateMemo(@ModelAttribute("memo") Memo memo
-    														, HttpServletRequest request) throws Exception{
-    	HashMap<String, Object> map = new HashMap<>();
-    	HttpStatus status = HttpStatus.ACCEPTED;
-    	
-    	String userId = getLoginId(request);
-    	
-    	map.put("result", "success");
-    	map.put("data", memoService.updateMemo(memo, Long.parseLong(userId)));
-    	
-    	return new ResponseEntity<HashMap<String, Object>>(map, status);
-    }
+//    //메모 수정
+//    @ApiOperation(value = "메모 수정", notes = "Authorization header => 'Bearer [token]'")
+//    @PutMapping(path = "/memo")
+//    public ResponseEntity<HashMap<String, Object>> updateMemo(@ModelAttribute("memo") Memo memo
+//    														, HttpServletRequest request) throws Exception{
+//    	HashMap<String, Object> map = new HashMap<>();
+//    	HttpStatus status = HttpStatus.ACCEPTED;
+//    	
+//    	String userId = getLoginId(request);
+//    	
+//    	map.put("result", "success");
+//    	map.put("data", memoService.updateMemo(memo, Long.parseLong(userId)));
+//    	
+//    	return new ResponseEntity<HashMap<String, Object>>(map, status);
+//    }
     
     //메모 삭제
     @ApiOperation(value = "메모 삭제", notes = "Authorization header => 'Bearer [token]'")
@@ -114,8 +119,8 @@ public class MemoController {
     
     //모임별 메모 조회
     @ApiOperation(value = "모임별 메모 조회", notes = "Authorization header => 'Bearer [token]'")
-    @GetMapping(path = "/memos/{partyId}")
-    public ResponseEntity<HashMap<String, Object>> getMemosByParty(@PathVariable("partyId") long partyId
+    @GetMapping(path = "/memos")
+    public ResponseEntity<HashMap<String, Object>> getMemosByParty(long partyId
     														, HttpServletRequest request) throws Exception{
     	HashMap<String, Object> map = new HashMap<>();
     	HttpStatus status = HttpStatus.ACCEPTED;

@@ -141,13 +141,34 @@
                           <v-text-field
                             id="email"
                             v-model="user2.email"
+                            :items="email"
+                            :rules="rules.email"
+                            required
                             label="email"
                             name="email"
                             type="email"
-                          />
+                          >
+                          <template v-slot:append>
+                            <v-fade-transition leave-absolute>
+                              <v-progress-circular
+                                v-if="loadingE"
+                                size="24"
+                                color="info"
+                                indeterminate
+                              ></v-progress-circular>
+                              <v-icon v-if="!loadingE && eCheck==0" class="mx-2" width="24" height="24" @click="checkEmail" color="light-blue">fas fa-check</v-icon>
+                              <v-icon v-if="eCheck==1" class="mx-2" width="24" height="24" @click="checkEmail" color="red">fas fa-times</v-icon>
+                              <v-icon v-if="eCheck==2" class="mx-2" width="24" height="24" @click="checkEmail" color="green">fas fa-check</v-icon>
+                            </v-fade-transition>
+                          </template>
+                          </v-text-field>
+
                           <v-text-field
                             id="password"
                             v-model="user2.password"
+                            :items="password"
+                            :rules="rules.password"
+                            required
                             label="password"
                             name="password"
                             type="password"
@@ -155,10 +176,27 @@
                           <v-text-field
                             id="nickname"
                             v-model="user2.nickname"
+                            :items="nickname"
+                            :rules="rules.nickname"
+                            required
                             label="nickname"
                             name="nickname"
                             type="text"
-                          />
+                           >
+                          <template v-slot:append>
+                            <v-fade-transition leave-absolute>
+                              <v-progress-circular
+                                v-if="loadingN"
+                                size="24"
+                                color="info"
+                                indeterminate
+                              ></v-progress-circular>
+                              <v-icon v-if="!loadingN && nCheck==0" class="mx-2" width="24" height="24" @click="checkNick" color="light-blue">fas fa-check</v-icon>
+                              <v-icon v-if="nCheck==1" class="mx-2" width="24" height="24" @click="checkNick" color="red">fas fa-times</v-icon>
+                              <v-icon v-if="nCheck==2" class="mx-2" width="24" height="24" @click="checkNick" color="green">fas fa-check</v-icon>
+                            </v-fade-transition>
+                          </template>
+                          </v-text-field>
                           <div class="text-center mt-6">
                             <v-btn @click="handleRegister" large :color="bgColor2" dark>
                               Sign Up</v-btn
@@ -231,7 +269,7 @@
 
 <script>
 import User from '../models/user';
-// import http from '@/util/http-common.js'
+import http from '@/util/http-common.js'
 // import Notification from './Notification'
 export default {
   name: 'Main',
@@ -277,6 +315,17 @@ export default {
     snackbar: false,
     user: new User('', '', ''),
     user2: new User('', '', ''),
+    rules: {
+      // email: [val => (val || '').length > 0 || '이메일을 입력해주세요!', val => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$/.test(val) || '이메일 형식을 지켜주세요!'],
+      email: [val => (val || '').length > 0 || '이메일을 입력해주세요!'],
+      password: [val => (val || '').length > 0 || '비밀번호를 입력해주세요!', val => /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/.test(val) || 
+               '비밀번호는 숫자, 영문, 특수문자(!@#$%^*+=-)를 조합한 8자 이상이어야 합니다!'],
+      nickname: [val => (val || '').length > 0 || '닉네임을 입력해주세요!'],
+    },
+    loadingE: false,
+    loadingN: false,
+    eCheck: 0,
+    nCheck: 0,
   }),
   computed: {
     loggedIn() {
@@ -332,19 +381,18 @@ export default {
           (error.response && error.response.data) ||
           error.message ||
           error.toString();
-          console.log(this.message.message);
           if(typeof(this.message.message) != 'undefined'){
-                this.$dialog.notify.error(this.message.message, {
+            this.$dialog.notify.error(this.message.message, {
               position: "bottom-right",
               timeout: 3000,
-              });
+            });
           }
           else{
-            alert("회원가입 완료");
+            this.$dialog.notify.success("회원가입 완료", {
+              position: "bottom-right", timeout: 3000, });
+            this.$router.push('/');
+            // alert("회원가입 완료");
             this.step = 1;
-            // this.$dialog.notify.success("회원가입 완료", {
-            //   position: "bottom-right", timeout: 3000, });
-            //   this.$router.push('/');
           }
       },
       );
@@ -382,7 +430,38 @@ export default {
         this.snackbarMessage = 'Error signing you in'
         this.snackbar = true
       }
-    }
+    },
+    
+    checkEmail () {
+      this.loadingE = true
+      http.get(`/user/dup/email/${this.user2.email}`, {
+      }).then(({ data }) => {
+        data
+        this.eCheck = 2;
+      }).catch((error) => {
+        error
+        this.eCheck = 1;
+    });
+      setTimeout(() => {
+        this.loadingE = false
+      }, 2000)
+    },
+
+    checkNick () {
+      this.loadingN = true
+      http.get(`/user/dup/nickname/${this.user2.nickname}`, {
+      }).then(({ data }) => {
+        data
+        if(data.result == "fail"){
+          this.nCheck = 1;
+        }else{
+          this.nCheck = 2;
+        } 
+      });
+      setTimeout(() => {
+        this.loadingN = false
+      }, 2000)
+    },
   }
 }
 </script>
