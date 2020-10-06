@@ -5,8 +5,11 @@ import vuetify from './plugins/vuetify';
 import store from './store';
 import VuetifyDialog from 'vuetify-dialog'
 import 'vuetify-dialog/dist/vuetify-dialog.css'
+import VueProgress from 'vue-progress-path'
 
 Vue.config.productionTip = false
+
+Vue.use(VueProgress);
 
 Vue.use(VuetifyDialog, {
   context: {
