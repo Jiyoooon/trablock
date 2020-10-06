@@ -2,8 +2,10 @@ package com.trablock.application.impl;
 
 import com.trablock.application.ICashContractService;
 import com.trablock.application.IPartyContractService;
+import com.trablock.application.IPartyWalletService;
 import com.trablock.application.IWalletService;
 import com.trablock.domain.Party;
+import com.trablock.domain.PartyWallet;
 import com.trablock.domain.wrapper.CashContract;
 import com.trablock.domain.wrapper.PartyContract;
 import org.slf4j.Logger;
@@ -26,6 +28,7 @@ import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,11 +62,13 @@ public class PartyContractService implements IPartyContractService {
 
 
 	private IWalletService walletService;
+	private IPartyWalletService partyWalletService;
 
 	@Autowired
-	public PartyContractService(IWalletService walletService) {
+	public PartyContractService(IWalletService walletService, IPartyWalletService partyWalletService) {
 		Assert.notNull(walletService, "walletService 개체가 반드시 필요!");
 		this.walletService = walletService;
+		this.partyWalletService = partyWalletService;
 	}
 
 	/**
@@ -71,85 +76,37 @@ public class PartyContractService implements IPartyContractService {
 	 * @param party		모임계좌에 대한 요소에 대한 정보들이 담긴 매개객체
 	 */
 	@Override
-	public void setPartyContract(Party party) {
-		String address = walletService.get(party.getMembers().get(0)).getAddress();			// 주소
-		BigInteger goalAmount = party.getTarget().toBigInteger();							// 목표금액
-		BigInteger deadline = null;															// 모임통장 지속시간(일(日))
-		try {
-			Date start = new SimpleDateFormat("yyyy-MM-dd").parse(party.getStartDate());
-			Date end = new SimpleDateFormat("yyyy-MM-dd").parse(party.getEndDate());
-			long diff = end.getTime() - start.getTime();
-			deadline = new BigInteger(String.valueOf(diff));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		List<String> memberList = new ArrayList<>();                                    	// 멤버들의 지갑주소 (address)
-		for (Long id:party.getMembers()) {
-			memberList.add(walletService.get(id).getAddress());
-		}
+	public void setPartyContract(Party party, String privateKey) {
+		// 컨트랙트를 로드 하기 위해 컨트랙트 주소와 credentials에 쓰일 개인키를 입력받는다(개인키는 front를 통해 사용자에게 입력받는다.)
+		// 모임계좌를 만드는 과정 역시 수수료가 드는 과정이므로 개인키가 필요하다.
+		String contractAddress = "0x3cbaECCAF441AA4faD5467c2755a943aaE6a045C";	// cash 컨트랙트 주소(프로젝트의 시작과 함께 정해진다.)
 
-		Credentials credentials = Credentials.create("bcf332aec0530df57aaa129c95702d0f4c5317b1e189a4e69812938328e799d1");		// 사용자에게 입력받는 개인키
-		String contractAddress = null;
+		Credentials credentials = Credentials.create(privateKey);	// 유저의 개인키를 토대로 지갑 객체를 생성한다.
+
+		// 1. 배포되어 있는 cash 컨트랙트를 로드 한다.
+		CashContract cashContract = CashContract.load(contractAddress, web3j, credentials, contractGasProvider);
 		try {
-			PartyContract partyContract = PartyContract.deploy(web3j, credentials, contractGasProvider, BigInteger.ONE, address, goalAmount, deadline, BigInteger.ONE, memberList).send();
-			contractAddress = partyContract.getContractAddress();
+			// 2. cash 컨트랙트의 함수를 통해 모임계좌를 생성
+			cashContract.createParties(new BigInteger(String.valueOf(party.getId())), new BigInteger(String.valueOf(party.getTarget())), new BigInteger(String.valueOf(100)), new BigInteger(String.valueOf(0))).send();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		// 송금 트랜잭션 생성(개인계좌 -> 모임계좌)
+		// 3. 모임계좌의 컨트랙트 주소를 db에 저장한다.(PartyWallet의 table에 insert)
+		String partyWalletAddress = null;
 		try {
-			// Decrypt and open the wallet into a Credential object
-			System.out.println("Account address: " + credentials.getAddress());
-			System.out.println("Balance: " + Convert.fromWei(web3j.ethGetBalance(credentials.getAddress(), DefaultBlockParameterName.LATEST).send().getBalance().toString(), Convert.Unit.ETHER));
-
-			// Get the latest nonce
-			EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(credentials.getAddress(), DefaultBlockParameterName.LATEST).send();
-			BigInteger nonce =  ethGetTransactionCount.getTransactionCount();
-
-			// Recipient address(받는 사람 주소 = contract 주소)
-			String recipientAddress = "0xc7DAc56F545Ed286E6dAb2660524D169A7D308E3";
-
-			// Value to transfer (in wei)
-			BigInteger value = Convert.toWei("1", Convert.Unit.ETHER).toBigInteger();
-
-			// Gas Parameters
-			BigInteger gasLimit = BigInteger.valueOf(21000);
-			BigInteger gasPrice = Convert.toWei("1", Convert.Unit.GWEI).toBigInteger();
-
-			// Prepare the rawTransaction
-			RawTransaction rawTransaction  = RawTransaction.createEtherTransaction(
-					nonce,
-					gasPrice,
-					gasLimit,
-					recipientAddress,
-					value);
-
-			// Sign the transaction
-			byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
-			String hexValue = Numeric.toHexString(signedMessage);
-
-			// Send transaction
-			EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send();
-			String transactionHash = ethSendTransaction.getTransactionHash();
-			System.out.println("transactionHash: " + transactionHash);
-
-			// Wait for transaction to be mined
-			Optional<TransactionReceipt> transactionReceipt = null;
-			do {
-				System.out.println("checking if transaction " + transactionHash + " is mined....");
-				EthGetTransactionReceipt ethGetTransactionReceiptResp = web3j.ethGetTransactionReceipt(transactionHash).send();
-				transactionReceipt = ethGetTransactionReceiptResp.getTransactionReceipt();
-				Thread.sleep(3000); // Wait 3 sec
-			} while(!transactionReceipt.isPresent());
-
-			System.out.println("Transaction " + transactionHash + " was mined in block # " + transactionReceipt.get().getBlockNumber());
-			System.out.println("Balance: " + Convert.fromWei(web3j.ethGetBalance(credentials.getAddress(), DefaultBlockParameterName.LATEST).send().getBalance().toString(), Convert.Unit.ETHER));
-
-
-		} catch (IOException | InterruptedException ex) {
-			throw new RuntimeException(ex);
+			partyWalletAddress = cashContract.getParties(new BigInteger(String.valueOf(party.getId()))).send();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+
+		// 3-1. id(auto) / party_id(위에서 쓴거) / address(위에서 받은거) / balance(처음 생성하는 것이므로 0으로 초기화)
+		PartyWallet partyWallet = new PartyWallet();
+		partyWallet.setPartyId(party.getId());
+		partyWallet.setAddress(partyWalletAddress);
+		partyWallet.setBalance(new BigDecimal(0));
+		partyWalletService.register(partyWallet);
+
 	}
 
 }
