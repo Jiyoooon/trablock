@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.7.2;
+pragma solidity ^0.4.2;
 
 import "./SafeMath.sol";
 import "./Ownable.sol";
+import "./partyContract.sol";
 
 interface IERC20 {
 
@@ -25,15 +26,18 @@ contract Cash is Ownable, IERC20{
     
     using SafeMath for uint256;
     
+    mapping (address => partyContract) parties;
     mapping (address => uint256) private _balances;
     mapping (address => mapping (address => uint256)) private _allowances;
     
-    string private _name = "TraBlcokCoin";
+    string private _name = "TraBlockCoin";
     string private _symbol = "TBC";
     uint8 private _decimals  = 18;
-    uint public buyPrice = 10000;
+    uint private buyPrice = 10000;
     
     uint256 private _totalSupply;
+    
+    address[] private partyAddress;
 
     function name() public view returns (string memory) {
         return _name;
@@ -69,7 +73,7 @@ contract Cash is Ownable, IERC20{
     /**
      * @dev `IERC20.totalSupply`를 참조하세요.
      */
-    function totalSupply() override public view returns (uint256) {
+    function totalSupply() public  view returns (uint256) {
         return _totalSupply;
     }
 
@@ -88,7 +92,7 @@ contract Cash is Ownable, IERC20{
      * - `recipient`는 영 주소(0x0000...0)가 될 수 없습니다.
      * - 호출자의 잔고는 적어도 `amount` 이상이어야 합니다.
      */
-    function transfer(address recipient, uint256 amount) override external returns (bool) {
+    function transfer(address recipient, uint256 amount) external returns (bool) {
         _transfer(msg.sender, recipient, amount);
         return true;
     }
@@ -96,7 +100,7 @@ contract Cash is Ownable, IERC20{
     /**
      * @dev `IERC20.allowance`를 참조하세요.
      */
-    function allowance(address owner, address spender) override public view returns (uint256) {
+    function allowance(address owner, address spender) public view returns (uint256) {
         return _allowances[owner][spender];
     }
 
@@ -107,7 +111,7 @@ contract Cash is Ownable, IERC20{
      *
      * - `spender`는 영 주소가 될 수 없습니다.
      */
-    function approve(address spender, uint256 value) override public returns (bool) {
+    function approve(address spender, uint256 value) public returns (bool) {
         _approve(msg.sender, spender, value);
         return true;
     }
@@ -124,7 +128,7 @@ contract Cash is Ownable, IERC20{
      * - 호출자는 `sender`의 토큰에 대해 최소한 `amount` 만큼의 허용량을
      * 가져야 합니다.
      */
-    function transferFrom(address sender, address recipient, uint256 amount) override public returns (bool) {
+    function transferFrom(address sender, address recipient, uint256 amount) public returns (bool) {
         _transfer(sender, recipient, amount);
         _approve(sender, msg.sender, _allowances[sender][msg.sender].sub(amount));
         return true;
@@ -198,14 +202,12 @@ contract Cash is Ownable, IERC20{
      *
      * - `to`는 영 주소가 될 수 없습니다.
      */
-    function _mint(address account, uint256 amount) external {
+    function _mint(address account, uint256 amount) internal {
         require(account != address(0), "ERC20: mint to the zero address");
 
         _totalSupply = _totalSupply.add(amount);
         
         _balances[account] = _balances[account].add(amount);
-        
-        emit Transfer(address(0), account, amount);
     }
 
      /**
@@ -259,20 +261,53 @@ contract Cash is Ownable, IERC20{
         _approve(account, msg.sender, _allowances[account][msg.sender].sub(amount));
     }
     
+    function pay(address adr) public payable {
+        address payer = msg.sender;
+        uint256 amount = msg.value;
+        
+        partyContract party = parties[adr];
+        if(balanceOf(payer) > amount){
+          _transfer(payer, adr, amount);
+          party.addBalacne(payer, amount);
+        }
+    }
+    
+    function withDraw(address adr) external {
+        partyContract party = parties[adr];
+        
+        if(party.getPartyGoal() > balanceOf(adr)){
+            address[] memory members = party.getWalletList();
+            for(uint i = 0; i < party.getNoOfMembers() ; i++){
+                _transfer(adr, members[i], balanceOf(adr));
+            }
+        } else {
+            _transfer(adr, party.getBeneficiary(), balanceOf(adr));
+        }
+    }
+    
+    function createParties(uint partyId, uint partyGoal, uint durationInDays, uint exitFee) public returns (address){
+        partyContract newParty = new partyContract(partyId, partyGoal, durationInDays, exitFee, msg.sender);
+
+        address adr = address(newParty);        
+        parties[adr] = newParty;
+        partyAddress.push(adr);
+        return adr;
+    }
     
     /**
      * @notice buy tokens
-     * msg.value should be greater than or equal to 0.1 ether
-     * 1 eth = 1000 cash	
-     * @return success or failure
-     */      
-    function buy() public payable {
+     * 1 eth = 100,000 cash	
+     */   
+    function buy() public payable{
         // todo
-        //wei의 양 = 1 eth면 amountTobuy 1000
+        //wei의 양 = 1 eth면 amount가 100,000
         // _transfer(owner, msg.sender, amount);
-        require(amountTobuy > 0, "You need to send some Ether");
         
         uint256 amountTobuy = msg.value * 1000;
+        // uint256 dexBalance = balanceOf(owner);
+        require(amountTobuy > 0, "You need to send some Ether");
+        // require(amountTobuy <= dexBalance, "Not enough tokens in the reserve");
+        // _transfer(owner, msg.sender, amountTobuy);
         _mint(msg.sender, amountTobuy);
     }
 }
