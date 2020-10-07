@@ -165,6 +165,7 @@ export default {
     http.get('/token/wallets', { 
         headers: authHeader() 
     }).then(({ data }) => {
+      console.log(`data 데이터 : `);
       console.log(data);
       if(data.result == "fail"){
         this.wCheck = false;
@@ -173,6 +174,7 @@ export default {
         this.wCheck = true;
         this.Wallet.address = data.address;
         this.Wallet.balance = data.balance;
+        this.Wallet.TBC = Number(data.tbc);
       }
     })
 
