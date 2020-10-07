@@ -44,11 +44,8 @@ public class CashContractService implements ICashContractService {
 	private ContractGasProvider contractGasProvider = new DefaultGasProvider();
 	private Credentials credentials;
 
+	@Autowired
 	private Web3j web3j;
-
-	public CashContractService() {
-		web3j = Web3j.build(new HttpService());
-	}
 
 	/**
 	 * TODO Sub PJT Ⅱ 과제 3 토큰 잔액 조회
