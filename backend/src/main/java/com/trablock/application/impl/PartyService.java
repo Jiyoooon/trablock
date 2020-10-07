@@ -175,10 +175,6 @@ public class PartyService implements IPartyService {
 				party.setWithdrawName(null);
 				party.setWithdrawAmount(null);
 			}
-
-			party.setWithdraw(false);//출금정보 리셋
-			party.setPrivatekey(null);//기본키 지움
-			partyRepository.update(party);//출금 완료 후 파티 정보 수정
 		}
 		
 	}
