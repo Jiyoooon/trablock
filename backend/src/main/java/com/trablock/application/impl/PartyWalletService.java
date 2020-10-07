@@ -41,34 +41,34 @@ public class PartyWalletService implements IPartyWalletService
 	 */
 	@Override
 	public PartyWallet get(long partyId) {
-//		PartyWallet wallet = this.partyWalletRepository.getPartyWalletByPartyId(partyId);
-//		String walletAddress = wallet.getAddress();
-//
-//		// 주소로 정보검색 요청
-//		BigInteger updatedBalance = this.ethereumService.getBalance(walletAddress);
-//
-//		// 잔액정보가 불일치하면 업데이트
-//		if (updatedBalance != wallet.getBalance().toBigInteger()) {
-//			wallet.setBalance(BigDecimal.valueOf(Long.parseLong(updatedBalance.toString())));
-//		}
+		PartyWallet wallet = this.partyWalletRepository.getPartyWalletByPartyId(partyId);
+		String walletAddress = wallet.getAddress();
 
-		return null;
+		// 주소로 정보검색 요청
+		BigInteger updatedBalance = this.ethereumService.getBalance(walletAddress);
+
+		// 잔액정보가 불일치하면 업데이트
+		if (updatedBalance != wallet.getBalance().toBigInteger()) {
+			wallet.setBalance(BigDecimal.valueOf(Long.parseLong(updatedBalance.toString())));
+		}
+
+		return wallet;
 	}
 
 
 	@Override
 	public PartyWallet get(String address) {
-//		PartyWallet wallet = this.partyWalletRepository.getPartyWalletByAddress(address);
-//
-//		// 주소로 정보검색 요청
-//		BigInteger updatedBalance = this.ethereumService.getBalance(address);
-//
-//		// 잔액정보가 불일치하면 업데이트
-//		if (updatedBalance != wallet.getBalance().toBigInteger()) {
-//			wallet.setBalance(BigDecimal.valueOf(Long.parseLong(updatedBalance.toString())));
-//		}
+		PartyWallet wallet = this.partyWalletRepository.getPartyWalletByAddress(address);
 
-		return null;
+		// 주소로 정보검색 요청
+		BigInteger updatedBalance = this.ethereumService.getBalance(address);
+
+		// 잔액정보가 불일치하면 업데이트
+		if (updatedBalance != wallet.getBalance().toBigInteger()) {
+			wallet.setBalance(BigDecimal.valueOf(Long.parseLong(updatedBalance.toString())));
+		}
+
+		return wallet;
 	}
 
 	/**
