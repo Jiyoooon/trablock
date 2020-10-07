@@ -333,7 +333,7 @@ export default {
       groupMemo: "",
       group: {},
       memoList: [],
-      regularPay: "50",
+      regularPay: "",
       groupKey: "",
       dialogGetMoney: false,
       amount: "",
@@ -548,6 +548,7 @@ export default {
         .then(({ data }) => {
           this.group = data;
           this.groupKey = "";
+          this.$router.go();
         });
     },
     getAmount() {
