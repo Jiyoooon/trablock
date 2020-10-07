@@ -4,10 +4,7 @@
       <v-toolbar color="#FFA000" dark flat prominent>
         <div align="center" justify="center">
           <v-toolbar-title>
-            <router-link
-              :to="{ name: 'groupmain' }"
-              class="text-decoration-none"
-            >
+            <router-link :to="{ name: 'groupmain' }" class="text-decoration-none">
               <h1 class="my-15 mx-15" style="color:white;">TRABLOCK</h1>
             </router-link>
           </v-toolbar-title>
@@ -20,7 +17,7 @@
 
         <!-- <v-btn icon>
           <v-icon>mdi-blinds</v-icon>
-        </v-btn> -->
+        </v-btn>-->
 
         <div class="my-2">
           <v-btn large color="red darken-1" @click="handleLogout">Logout</v-btn>
@@ -51,22 +48,16 @@
               <v-list dense nav class="py-0">
                 <v-list-item :class="miniVariant && 'px-0'">
                   <v-list-item-content class="elevation-5 mt-5 mb-2">
-                    <v-list-item-title
-                      ><h3 class="my-2">나의 모임</h3></v-list-item-title
-                    >
+                    <v-list-item-title>
+                      <h3 class="my-2">나의 모임</h3>
+                    </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
 
                 <v-divider></v-divider>
 
-                <div v-if="groups.length == 0" class="mt-3">
-                  등록한 모임이 없습니다.
-                </div>
-                <v-list-item
-                  v-for="(item, i) in groups"
-                  :key="i"
-                  @click="changeGroupId(item.id)"
-                >
+                <div v-if="groups.length == 0" class="mt-3">등록한 모임이 없습니다.</div>
+                <v-list-item v-for="(item, i) in groups" :key="i" @click="changeGroupId(item.id)">
                   <v-list-item-icon>
                     <v-icon>mdi-view-dashboard</v-icon>
                   </v-list-item-icon>
@@ -78,10 +69,10 @@
               </v-list>
             </v-navigation-drawer>
             <v-card min-height="40vh" class="mx-15">
-              <v-row class="fill-height"> </v-row>
+              <v-row class="fill-height"></v-row>
 
               <v-row class="fill-height">
-                <v-col cols="12" sm="3"> </v-col>
+                <v-col cols="12" sm="3"></v-col>
                 <v-col cols="12" sm="9">
                   <v-row>
                     <v-col align="left">
@@ -94,25 +85,11 @@
                     <v-col cols="12" sm="7" align="center">
                       <v-sheet height="64">
                         <v-toolbar flat color="white">
-                          <v-btn
-                            fab
-                            text
-                            small
-                            color="grey darken-2"
-                            @click="prev"
-                          >
+                          <v-btn fab text small color="grey darken-2" @click="prev">
                             <v-icon small>mdi-chevron-left</v-icon>
                           </v-btn>
-                          <v-toolbar-title v-if="$refs.calendar">
-                            {{ $refs.calendar.title }}
-                          </v-toolbar-title>
-                          <v-btn
-                            fab
-                            text
-                            small
-                            color="grey darken-2"
-                            @click="next"
-                          >
+                          <v-toolbar-title v-if="$refs.calendar">{{ $refs.calendar.title }}</v-toolbar-title>
+                          <v-btn fab text small color="grey darken-2" @click="next">
                             <v-icon small>mdi-chevron-right</v-icon>
                           </v-btn>
                           <v-spacer></v-spacer>
@@ -132,11 +109,7 @@
                           @change="updateRange"
                         ></v-calendar>
                       </v-sheet>
-                      <v-dialog
-                        v-model="dialogMemo"
-                        persistent
-                        max-width="600px"
-                      >
+                      <v-dialog v-model="dialogMemo" persistent max-width="600px">
                         <v-card>
                           <v-card-title>
                             <v-btn icon>
@@ -160,20 +133,8 @@
                           </v-card-text>
                           <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn
-                              color="blue darken-1"
-                              text
-                              @click="dialogMemo = false"
-                            >
-                              Close
-                            </v-btn>
-                            <v-btn
-                              color="blue darken-1"
-                              text
-                              @click="saveMemo()"
-                            >
-                              Save
-                            </v-btn>
+                            <v-btn color="blue darken-1" text @click="dialogMemo = false">Close</v-btn>
+                            <v-btn color="blue darken-1" text @click="saveMemo()">Save</v-btn>
                           </v-card-actions>
                         </v-card>
                       </v-dialog>
@@ -183,163 +144,100 @@
                       <v-card class="mr-4 mt-6" outlined min-height="47vh">
                         <v-list-item three-line>
                           <v-list-item-content align="left">
-                            <v-list-item-title class="headline my-3 mx-2"
-                              >총 누적금액은
-                              <strong>{{ sum }}원</strong
-                              >입니다.</v-list-item-title
-                            >
-                            <v-list-item-subtitle class="mx-2"
-                              >{{ nextPayDate }}까지
+                            <v-list-item-title class="headline my-3 mx-2">
+                              총 누적금액은
+                              <strong>{{ sum }}원</strong>입니다.
+                            </v-list-item-title>
+                            <v-list-item-subtitle class="mx-2">
+                              {{ nextPayDate }}까지
                               <strong>{{ group.payAmount }}원</strong>을
-                              입금해야 합니다.</v-list-item-subtitle
-                            >
+                              입금해야 합니다.
+                            </v-list-item-subtitle>
                           </v-list-item-content>
                         </v-list-item>
 
-                        <v-card
-                          class="mx-5 mt-1"
-                          outlined
-                          align="left"
-                          min-height="27vh"
-                        >
+                        <v-card class="mx-5 mt-1" outlined align="left" min-height="27vh">
                           <h3 class="mx-5 mt-3 mb-6">최근 납부 현황</h3>
                           <h4 class="mx-8 my-3">
                             <span v-if="goodMember.length > 0">
-                              <v-icon color="green" class="mr-2"
-                                >mdi-checkbox-marked-circle</v-icon
-                              >
-                              <span v-for="(item, i) in goodMember" :key="i"
-                                >{{ item }}
-                                <span v-if="i != goodMember.length - 1"
-                                  >,</span
-                                > </span
-                              >님이 정상납부하였습니다.
+                              <v-icon color="green" class="mr-2">mdi-checkbox-marked-circle</v-icon>
+                              <span v-for="(item, i) in goodMember" :key="i">
+                                {{ item }}
+                                <span v-if="i != goodMember.length - 1">,</span>
+                              </span>님이 정상납부하였습니다.
                             </span>
                           </h4>
                           <h4 class="mx-8 my-3">
                             <span v-if="badMember.length > 0">
-                              <v-icon color="amber darken-2" class="mr-2"
-                                >fas fa-circle-notch fa-spin</v-icon
-                              >
-                              <span v-for="(item, i) in badMember" :key="i"
-                                >{{ item }}
-                                <span v-if="i != badMember.length - 1"
-                                  >,</span
-                                ></span
-                              >님이 아직 미납하였습니다.
+                              <v-icon
+                                color="amber darken-2"
+                                class="mr-2"
+                              >fas fa-circle-notch fa-spin</v-icon>
+                              <span v-for="(item, i) in badMember" :key="i">
+                                {{ item }}
+                                <span v-if="i != badMember.length - 1">,</span>
+                              </span>님이 아직 미납하였습니다.
                             </span>
                           </h4>
                           <h4 class="mx-8 my-3">
                             <span v-if="realBadMember.length > 0">
-                              <v-icon color="red" class="mr-2"
-                                >mdi-cancel</v-icon
-                              >
-                              <span v-for="(item, i) in realBadMember" :key="i"
-                                >{{ item }}
-                                <span v-if="i != realBadMember.length - 1"
-                                  >,</span
-                                > </span
-                              >님은 미납한 경험이 있는 회원입니다.
+                              <v-icon color="red" class="mr-2">mdi-cancel</v-icon>
+                              <span v-for="(item, i) in realBadMember" :key="i">
+                                {{ item }}
+                                <span v-if="i != realBadMember.length - 1">,</span>
+                              </span>님은 미납한 경험이 있는 회원입니다.
                             </span>
                           </h4>
                         </v-card>
                         <v-col align="center">
                           <v-card-actions align="center">
-                            <v-btn text @click="dialogPay = true"
-                              >납부하기</v-btn
-                            >
-                            <v-btn text @click="dialogTable = true"
-                              >회원 납부 현황 보기</v-btn
-                            >
-                            <v-btn text @click="dialogGetMoney = true"
-                              >출금하기</v-btn
-                            >
+                            <v-btn text @click="dialogPay = true">납부하기</v-btn>
+                            <v-btn text @click="dialogTable = true">회원 납부 현황 보기</v-btn>
+                            <v-btn text @click="dialogGetMoney = true">출금하기</v-btn>
                           </v-card-actions>
                         </v-col>
                       </v-card>
                       <v-dialog v-model="dialogPay" max-width="500px">
                         <v-card>
-                          <v-card-title>
-                            {{ regularPay }} 원을 납부하겠습니다.
-                          </v-card-title>
+                          <v-card-title>{{ regularPay }} 원을 납부하겠습니다.</v-card-title>
                           <v-card-text>
-                            <v-text-field
-                              label="개인키를 입력하세요."
-                              v-model="groupKey"
-                            ></v-text-field>
+                            <v-text-field label="개인키를 입력하세요." v-model="groupKey"></v-text-field>
                           </v-card-text>
                           <v-card-actions>
-                            <v-btn color="green" text @click="pay()">
-                              pay
-                            </v-btn>
-                            <v-btn
-                              color="primary"
-                              text
-                              @click="dialogPay = false"
-                            >
-                              Close
-                            </v-btn>
+                            <v-btn color="green" text @click="pay()">pay</v-btn>
+                            <v-btn color="primary" text @click="dialogPay = false">Close</v-btn>
                           </v-card-actions>
                         </v-card>
                       </v-dialog>
                       <v-dialog v-model="dialogGetMoney" max-width="500px">
                         <v-card>
-                          <v-card-title>
-                            모임원들의 동의가 진행된 후 출금됩니다.
-                          </v-card-title>
+                          <v-card-title>모임원들의 동의가 진행된 후 출금됩니다.</v-card-title>
                           <v-card-text>
                             <v-col cols="12" sm="8">
-                              <v-text-field
-                                label="출금할 금액을 입력하세요"
-                                v-model="amount"
-                              ></v-text-field>
+                              <v-text-field label="출금할 금액을 입력하세요" v-model="amount"></v-text-field>
                             </v-col>
-                            <v-text-field
-                              label="개인키를 입력하세요."
-                              v-model="groupKey"
-                            ></v-text-field>
+                            <v-text-field label="개인키를 입력하세요." v-model="groupKey"></v-text-field>
                           </v-card-text>
                           <v-card-actions>
-                            <v-btn color="green" text @click="getAmount()">
-                              출금하기
-                            </v-btn>
-                            <v-btn
-                              color="primary"
-                              text
-                              @click="dialogGetMoney = false"
-                            >
-                              Close
-                            </v-btn>
+                            <v-btn color="green" text @click="getAmount()">출금하기</v-btn>
+                            <v-btn color="primary" text @click="dialogGetMoney = false">Close</v-btn>
                           </v-card-actions>
                         </v-card>
                       </v-dialog>
                       <v-dialog v-model="dialogTable" max-width="600px">
                         <v-card>
-                          <v-card-title>
-                            회원 납부 현황
-                          </v-card-title>
+                          <v-card-title>회원 납부 현황</v-card-title>
                           <v-simple-table height="300px">
                             <thead>
                               <tr>
-                                <th class="text-left">
-                                  이름
-                                </th>
-                                <th class="text-left">
-                                  납부 금액
-                                </th>
-                                <th class="text-left">
-                                  최근 납부 여부
-                                </th>
-                                <th class="text-left">
-                                  경고 여부
-                                </th>
+                                <th class="text-left">이름</th>
+                                <th class="text-left">납부 금액</th>
+                                <th class="text-left">최근 납부 여부</th>
+                                <th class="text-left">경고 여부</th>
                               </tr>
                             </thead>
                             <tbody>
-                              <tr
-                                v-for="(item, i) in group.memberlist"
-                                :key="i"
-                              >
+                              <tr v-for="(item, i) in group.memberlist" :key="i">
                                 <td>{{ item.name }}</td>
                                 <td>{{ item.payment }}원</td>
                                 <td v-if="item.isPay">O</td>
@@ -350,13 +248,7 @@
                             </tbody>
                           </v-simple-table>
                           <v-card-actions>
-                            <v-btn
-                              color="primary"
-                              text
-                              @click="dialogTable = false"
-                            >
-                              Close
-                            </v-btn>
+                            <v-btn color="primary" text @click="dialogTable = false">Close</v-btn>
                           </v-card-actions>
                         </v-card>
                       </v-dialog>
@@ -369,7 +261,7 @@
         </v-tab-item>
         <v-tab-item>
           <v-card flat min-height="90vh">
-            <v-card-text> 하이하이</v-card-text>
+            <v-card-text>하이하이</v-card-text>
           </v-card>
         </v-tab-item>
       </v-tabs-items>
@@ -403,7 +295,7 @@ export default {
         month: "Month",
         week: "Week",
         day: "Day",
-        "4day": "4 Days",
+        "4day": "4 Days"
       },
       selectedEvent: {},
       selectedElement: null,
@@ -416,7 +308,7 @@ export default {
         "cyan",
         "green",
         "orange",
-        "grey darken-1",
+        "grey darken-1"
       ],
       names: [
         "Meeting",
@@ -426,7 +318,7 @@ export default {
         "Event",
         "Birthday",
         "Conference",
-        "Party",
+        "Party"
       ],
 
       dialogPay: false,
@@ -450,7 +342,7 @@ export default {
       nextPayDate: null,
       splitArray: [],
       dayArray: [],
-      endArray: [],
+      endArray: []
     };
   },
   created() {
@@ -458,13 +350,13 @@ export default {
     http
       .get("/party/searchId", {
         params: {
-          id: this.$store.state.auth.user.data.id,
-        },
+          id: this.$store.state.auth.user.data.id
+        }
       })
       .then(({ data }) => {
         this.groups = data;
       })
-      .catch((error) => {
+      .catch(error => {
         if (error.response) {
           this.$router.push("servererror");
         } else if (error.request) {
@@ -478,8 +370,8 @@ export default {
     http
       .get("/party/searchByPartyId", {
         params: {
-          partyId: this.$route.query.groupId,
-        },
+          partyId: this.$route.query.groupId
+        }
       })
       .then(({ data }) => {
         this.group = data;
@@ -502,16 +394,16 @@ export default {
               params: {
                 partyId: this.$route.query.groupId,
                 userId: this.$store.state.auth.user.data.id,
-                isagree: 1,
-              },
+                isagree: 1
+              }
             });
           } else {
             http.get("/withdraw/agree", {
               params: {
                 partyId: this.$route.query.groupId,
                 userId: this.$store.state.auth.user.data.id,
-                isagree: 2,
-              },
+                isagree: 2
+              }
             });
           }
         }
@@ -522,12 +414,12 @@ export default {
             name: this.group.destination,
             start: this.group.startDate.substr(0, 10),
             end: this.group.endDate,
-            color: "green",
+            color: "green"
           });
         }
 
         this.sum = Number(this.sum);
-        this.group.memberlist.forEach((element) => {
+        this.group.memberlist.forEach(element => {
           this.sum += Number(element.payment);
 
           if (element.ispay) {
@@ -549,19 +441,19 @@ export default {
     http
       .get("/token/memos", {
         params: {
-          partyId: this.groupId,
+          partyId: this.groupId
         },
-        headers: authHeader(),
+        headers: authHeader()
       })
       .then(({ data }) => {
         this.memoList = data.data;
-        this.memoList.forEach((element) => {
+        this.memoList.forEach(element => {
           this.events.push({
             id: 0,
             name: "",
             start: element.date.substr(0, 10),
             end: element.date,
-            color: "amber",
+            color: "amber"
           });
         });
       });
@@ -572,7 +464,7 @@ export default {
       this.dialogMemo = true;
       this.pickedDate = date;
       this.groupMemo = "";
-      this.memoList.forEach((element) => {
+      this.memoList.forEach(element => {
         if (element.date.substr(0, 10) == date) {
           this.groupMemo = element.description;
         }
@@ -618,10 +510,10 @@ export default {
             partyId: this.groupId,
             date: this.pickedDate,
             description: this.groupMemo,
-            isChecklist: false,
+            isChecklist: false
           },
           {
-            headers: authHeader(),
+            headers: authHeader()
           }
         )
         .then(({ data }) => {
@@ -642,7 +534,7 @@ export default {
         .get("/party/pay", {
           partyId: this.groupId,
           privateKey: this.groupKey,
-          value: this.regularPay,
+          value: this.regularPay
         })
         .then(({ data }) => {
           this.group = data;
@@ -656,7 +548,7 @@ export default {
           partyId: this.groupId,
           withdrawName: this.$store.state.auth.user.data.nickname,
           withdrawAmount: this.amount,
-          privatekey: this.groupKey,
+          privatekey: this.groupKey
         })
         .then(() => {
           this.groupKey = "";
@@ -803,8 +695,8 @@ export default {
       if (date < 10) date = "0" + date;
 
       return year + "-" + month + "-" + date;
-    },
-  },
+    }
+  }
 };
 </script>
 <style></style>
