@@ -37,9 +37,7 @@
                     <v-container>
                     <v-row>
         <v-col cols="12" class="pt-5 pb-0 text-center text-h3 font-weight-bold"><div>{{currentUser.nickname}}의 PROFILE</div></v-col>
-        <v-col cols="12" class="py-1 text-h4 font-weight-bold"><div>MY</div>
-        <!-- <v-icon class="font-weight-bold" fab x-large dark>fas fa-wallet</v-icon> -->
-            </v-col>
+        <v-col cols="12"></v-col>
         </v-row>
 
         <v-row>
@@ -53,58 +51,62 @@
                 elevation="10"
                 >
                 <v-card-title>
-                    <v-icon
-                    large
-                    left
-                    >
-                    fas fa-wallet
+                <v-col cols="6" align="left">
+                  <v-icon
+                  large
+                  left
+                  >
+                  fas fa-wallet
+                  </v-icon>
+                  <span class="title font-weight-light">내 지갑</span>
+                </v-col>
+                <v-col cols="6" align="right">
+                  <v-chip
+                    @click="charge"
+                    class="ma-2"
+                    color="orange lighten-1"
+                  >
+                    <v-icon left>
+                      mdi-heart
                     </v-icon>
-                    <span class="title font-weight-light">내 지갑</span>
+                    충전하기
+                  </v-chip>
+                </v-col>
                 </v-card-title>
 
                 <v-card-text class="headline font-weight-light">
-                    <v-col cols="12" class="display-0" align="left">
+                <v-row align="left">
+                    <v-col cols="12" class="display-0" align="right">
                     {{Wallet.address}}
                     </v-col>
-                    <!-- <td>{{Wallet.address}}</td> -->
+                </v-row>
                 </v-card-text>
                 <v-card-text class="headline font-weight-bold">
                     <v-row align="center">
                     <v-col cols="3" class="display-0.5" align="left">
-                        남은 잔액
+                        ETH
                     </v-col>
                     <v-col cols="9" class="display-3" align="right">
                         {{ (Number(Wallet.balance) / 1000000000000000000).toFixed(9) }}
                     </v-col>
                     </v-row>
-                </v-card-text>
-
-                <v-card-actions>
-                    <v-list-item class="grow">
-                    <v-row
-                        align="center"
-                        justify="end"
-                    >
-                        <v-icon class="mr-1" @click="charge">
-                        mdi-heart
-                        </v-icon>
-                        <span class="subheading mr-2">충전하기</span>
-                        <!-- <span class="mr-1">·</span>
-                        <v-icon class="mr-1">
-                        mdi-share-variant
-                        </v-icon>
-                        <span class="subheading">45</span> -->
+                    <v-row align="center">
+                    <v-col cols="3" class="display-0.5" align="left">
+                        TBC
+                    </v-col>
+                    <v-col cols="9" class="display-3" align="right">
+                        {{ Number(Wallet.TBC) }}
+                    </v-col>
                     </v-row>
-                    </v-list-item>
-                </v-card-actions>
+                </v-card-text>
                 </v-card>
             </template>
             </v-col>
         </v-row>
-                    </v-container>
-                </v-card>
-            </v-col>
-        </v-row>
+              </v-container>
+          </v-card>
+      </v-col>
+  </v-row>
 </template>
 
 
@@ -139,7 +141,8 @@ export default {
         },
         Wallet : {
           address: "",
-          balance: ""
+          balance: "",
+          TBC: ""
         },
         dialog: false,
 
@@ -210,3 +213,7 @@ export default {
     
 };
 </script>
+
+<style>
+* { font-family: 'NanumSquareRound'; }
+</style>
