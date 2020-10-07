@@ -538,9 +538,12 @@ export default {
     pay() {
       http
         .get("/party/pay", {
-          partyId: this.groupId,
-          privateKey: this.groupKey,
-          value: this.regularPay
+          params: {
+            userId: this.$store.state.auth.user.data.id,
+            partyId: this.groupId,
+            privateKey: this.groupKey,
+            value: this.regularPay
+          }
         })
         .then(({ data }) => {
           this.group = data;
