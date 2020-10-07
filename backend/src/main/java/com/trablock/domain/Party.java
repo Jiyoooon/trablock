@@ -1,7 +1,6 @@
 package com.trablock.domain;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,8 +22,8 @@ public class Party {
     private BigDecimal exitFee;         // 퇴출수수료
     
     private boolean withdraw;				// 출금 신청 여부(누군가 신청하면 true로 바꿈)
-    private String withdrawName;			// 누가 출금 신청했는지
-    private BigDecimal withdrawAmount;		// 출금 양
+    private String withdraw_name;			// 누가 출금 신청했는지
+    private BigDecimal withdraw_amount;		// 출금 양
     private String privatekey;
     
     private List<Long> members;
@@ -226,26 +225,26 @@ public class Party {
 
 
 
-	public String getWithdrawName() {
-		return withdrawName;
+	public String getWithdraw_name() {
+		return withdraw_name;
 	}
 
 
 
-	public void setWithdrawName(String withdrawName) {
-		this.withdrawName = withdrawName;
+	public void setWithdraw_name(String withdraw_name) {
+		this.withdraw_name = withdraw_name;
 	}
 
 
 
-	public BigDecimal getWithdrawAmount() {
-		return withdrawAmount;
+	public BigDecimal getWithdraw_amount() {
+		return withdraw_amount;
 	}
 
 
 
-	public void setWithdrawAmount(BigDecimal withdrawAmount) {
-		this.withdrawAmount = withdrawAmount;
+	public void setWithdraw_amount(BigDecimal withdraw_amount) {
+		this.withdraw_amount = withdraw_amount;
 	}
 
 
@@ -292,7 +291,7 @@ public class Party {
 				+ ", target=" + target + ", totalAmount=" + totalAmount + ", payCycle=" + payCycle + ", payDate="
 				+ payDate + ", payAmount=" + payAmount + ", image=" + image + ", startDate=" + startDate + ", endDate="
 				+ endDate + ", destination=" + destination + ", available=" + available + ", exitFee=" + exitFee
-				+ ", withdraw=" + withdraw + ", withdrawName=" + withdrawName + ", withdrawAmount=" + withdrawAmount
+				+ ", withdraw=" + withdraw + ", withdrawName=" + withdraw_name + ", withdrawAmount=" + withdraw_amount
 				+ ", members=" + members + ", memberlist=" + memberlist + "]";
 	}
 
