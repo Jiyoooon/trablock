@@ -38,7 +38,7 @@
             #{payCycle}, #{pay_date}, #{pay_amount}, #{image},
             #{start_date}, #{end_date}, #{destination}, #{available},
             #{exitFee}, #{finished}, #{type}, #{withdraw},
-            #{withdraw_name}, #{withdraw_amount}, #{privatekey}, #{total_amount}
+            #{withdrawName}, #{withdrawAmount}, #{privatekey}, #{totalAmount}
         )
     </insert>
     <!-- Create   -->
@@ -52,19 +52,19 @@
            created = #{created},
            target = #{target},
            pay_cycle = #{payCycle},
-           pay_date = #{pay_date},
-           pay_amount = #{pay_amount},
+           pay_date = #{payDate},
+           pay_amount = #{payAmount},
            image = #{image},
-           start_date = #{start_date},
-           end_date = #{end_date},
+           start_date = #{startDate},
+           end_date = #{endDate},
            destination = #{destination},
            available = #{available},
            exit_fee = #{exitFee},
            finished = #{finished},
            type = #{type},
            withdraw = #{withdraw},
-    	   withdraw_name = #{withdraw_name},
-    	   withdraw_amount = #{withdraw_amount},
+    	   withdraw_name = #{withdrawName},
+    	   withdraw_amount = #{withdrawAmount},
     	   privatekey = #{privatekey},
     	   total_amount = #{total_amount}
         where id = #{id}

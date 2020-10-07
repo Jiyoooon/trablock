@@ -122,8 +122,8 @@ public class PartyService implements IPartyService {
 		
         //파티 객체 가져와서 withdraw = true로 바꾸기
         party.setWithdraw(true);
-        party.setWithdraw_name(withdraw.getWithdrawName());
-        party.setWithdraw_amount(withdraw.getWithdrawAmount());
+        party.setWithdrawName(withdraw.getWithdrawName());
+        party.setWithdrawAmount(withdraw.getWithdrawAmount());
         party.setPrivatekey(withdraw.getPrivatekey());
         partyRepository.update(party);
         
@@ -167,13 +167,13 @@ public class PartyService implements IPartyService {
 		if(check == members.size()) {
 			//party에 해당하는 모두가 agree했을 경우 출금
 			if(agree == members.size()) {
-				//출금 스마트컨트랙트 함수 호출***********
-				partyContractService.withdraw(partyId, party.getPrivatekey(), party.getWithdraw_amount());
-				//withdrawName, withdrawAmount 남김
+				// 출금 스마트컨트랙트 함수 호출***********
+				partyContractService.withdraw(partyId, party.getPrivatekey(), party.getWithdrawAmount());
+				// withdrawName, withdrawAmount 남김
 			}else {//거절 => 출금 실패
 				//withdrawName, withdrawAmount 지움
-				party.setWithdraw_name(null);
-				party.setWithdraw_amount(null);
+				party.setWithdrawName(null);
+				party.setWithdrawAmount(null);
 			}
 
 			party.setWithdraw(false);//출금정보 리셋
