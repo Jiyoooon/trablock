@@ -59,6 +59,8 @@
             payment = #{payment},
             chief = #{chief},
             warning = #{warning}
+            
+         where party_id = #{partyId} and user_id = #{userId}
     </update>
     <!--  Update  -->
 
