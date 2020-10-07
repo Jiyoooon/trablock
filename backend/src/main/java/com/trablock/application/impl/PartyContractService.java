@@ -7,9 +7,11 @@ import com.trablock.application.IWalletService;
 import com.trablock.domain.Party;
 import com.trablock.domain.PartyMember;
 import com.trablock.domain.PartyWallet;
+import com.trablock.domain.Wallet;
 import com.trablock.domain.repository.IPartyMemberRepository;
 import com.trablock.domain.repository.IPartyRepository;
 import com.trablock.domain.repository.IPartyWalletRepository;
+import com.trablock.domain.repository.IWalletRepository;
 import com.trablock.domain.wrapper.CashContract;
 import com.trablock.domain.wrapper.PartyContract;
 import org.slf4j.Logger;
@@ -72,6 +74,8 @@ public class PartyContractService implements IPartyContractService {
 	@Autowired
 	private IPartyRepository partyRepository;
 
+	@Autowired
+	private IWalletRepository walletRepository;
     @Autowired
     private IPartyMemberRepository partyMemberRepository;
 	@Autowired
@@ -122,7 +126,10 @@ public class PartyContractService implements IPartyContractService {
 	}
 	
 	public void pay(long userId, long partyId, String privateKey, long value) {
-		walletService.changeTBC((int)value, privateKey);
+		Wallet wallet = walletRepository.getWalletByOwnerId(userId);
+		if(wallet.getTBC().compareTo(new BigDecimal(value)) < 0) {
+			walletService.changeTBC((int)value/1000 + 1, privateKey);
+		}
 		Credentials credentials = Credentials.create(privateKey);		// 사용자에게 입력받는 개인키
 		try {
 			CashContract cashContract = CashContract.load(ERC20_TOKEN_CONTRACT, web3j, credentials, contractGasProvider);
