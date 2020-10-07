@@ -34,10 +34,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="update" parameterType="PartyWallet">
         update PartyWallet
         set
-        party_id = #{partyId},
         address = #{address},
         balance = #{balance}
-        where id = #{id}
+        where id = #{id} and  party_id = #{partyId}
     </update>
     <!--  Update  -->
 
