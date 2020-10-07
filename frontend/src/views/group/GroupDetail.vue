@@ -444,10 +444,10 @@ export default {
     .then(({data}) => {
       this.group = data
       if(data.withdraw) {
-        this.rich = this.group.withdrawName
-        this.richAmount = this.group.withdrawAmount
+        this.rich = this.group.withdraw_name
+        this.richAmount = this.group.withdraw_amount
         console.log(data)
-        var ok = confirm(data.withdrawName+"이 "+data.withdrawAmount+"의 출금을 요청합니다.")
+        var ok = confirm(data.withdraw_name+"이 "+data.withdraw_amount+"의 출금을 요청합니다.")
         
         if(ok){
           http.get('/withdraw/agree', {
