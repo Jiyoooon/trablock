@@ -12,11 +12,11 @@ public class Party {
     private BigDecimal target;          // 모임 목표금액
     private BigDecimal totalAmount;     // 모임 실제금액
     private boolean payCycle;           // 모임 납입주기(false : 월단위, true : 주단위)
-    private int payDate;                // 모임 납입날짜(월단위시 일을 의미하고, 주단위시 1=월요일 ~ 7=일요일을 의미)
-    private BigDecimal payAmount;       // 모임 납입금
+    private int pay_date;                // 모임 납입날짜(월단위시 일을 의미하고, 주단위시 1=월요일 ~ 7=일요일을 의미)
+    private BigDecimal pay_amount;       // 모임 납입금
     private String image;               // 사진
-    private String startDate;    // 여행 시작 날짜(기본)
-    private String endDate;      // 여행 종료 날짜(기본)
+    private String start_date;    // 여행 시작 날짜(기본)
+    private String end_date;      // 여행 종료 날짜(기본)
     private String destination;         // 여행지
     private boolean available;          // 완료 여부(기본 : false)
     private BigDecimal exitFee;         // 퇴출수수료
@@ -120,25 +120,25 @@ public class Party {
 
 
 	public int getPayDate() {
-		return payDate;
+		return pay_date;
 	}
 
 
 
 	public void setPayDate(int payDate) {
-		this.payDate = payDate;
+		this.pay_date = payDate;
 	}
 
 
 
 	public BigDecimal getPayAmount() {
-		return payAmount;
+		return pay_amount;
 	}
 
 
 
 	public void setPayAmount(BigDecimal payAmount) {
-		this.payAmount = payAmount;
+		this.pay_amount = payAmount;
 	}
 
 
@@ -156,25 +156,25 @@ public class Party {
 
 
 	public String getStartDate() {
-		return startDate;
+		return start_date;
 	}
 
 
 
 	public void setStartDate(String startDate) {
-		this.startDate = startDate;
+		this.start_date = startDate;
 	}
 
 
 
 	public String getEndDate() {
-		return endDate;
+		return end_date;
 	}
 
 
 
 	public void setEndDate(String endDate) {
-		this.endDate = endDate;
+		this.end_date = endDate;
 	}
 
 
@@ -315,11 +315,11 @@ public class Party {
 				", target=" + target +
 				", totalAmount=" + totalAmount +
 				", payCycle=" + payCycle +
-				", payDate=" + payDate +
-				", payAmount=" + payAmount +
+				", payDate=" + pay_date +
+				", payAmount=" + pay_amount +
 				", image='" + image + '\'' +
-				", startDate='" + startDate + '\'' +
-				", endDate='" + endDate + '\'' +
+				", startDate='" + start_date + '\'' +
+				", endDate='" + end_date + '\'' +
 				", destination='" + destination + '\'' +
 				", available=" + available +
 				", exitFee=" + exitFee +
