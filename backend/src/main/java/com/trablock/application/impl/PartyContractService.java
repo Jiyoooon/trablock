@@ -5,7 +5,9 @@ import com.trablock.application.IPartyContractService;
 import com.trablock.application.IPartyWalletService;
 import com.trablock.application.IWalletService;
 import com.trablock.domain.Party;
+import com.trablock.domain.PartyMember;
 import com.trablock.domain.PartyWallet;
+import com.trablock.domain.repository.IPartyMemberRepository;
 import com.trablock.domain.repository.IPartyRepository;
 import com.trablock.domain.repository.IPartyWalletRepository;
 import com.trablock.domain.wrapper.CashContract;
@@ -64,14 +66,16 @@ public class PartyContractService implements IPartyContractService {
 
 	@Autowired
 	private IWalletService walletService;
+	@Autowired
+	private IPartyWalletService partyWalletService;
 	
 	@Autowired
 	private IPartyRepository partyRepository;
-	
+
+    @Autowired
+    private IPartyMemberRepository partyMemberRepository;
 	@Autowired
 	private IPartyWalletRepository partyWalletRepository;
-	
-	private IPartyWalletService partyWalletService;
 
 	@Autowired
 	public PartyContractService(IWalletService walletService, IPartyWalletService partyWalletService) {
@@ -117,12 +121,14 @@ public class PartyContractService implements IPartyContractService {
 		partyWalletService.register(partyWallet);
 	}
 	
-	public void pay(long partyId, String privateKey, long value) {
+	public void pay(long userId, long partyId, String privateKey, long value) {
 		Credentials credentials = Credentials.create(privateKey);		// 사용자에게 입력받는 개인키
 		try {
 			CashContract cashContract = CashContract.load(ERC20_TOKEN_CONTRACT, web3j, credentials, contractGasProvider);
-			
 			cashContract.pay(BigInteger.valueOf(partyId), BigInteger.valueOf(value)).send();
+			PartyMember partyMember = partyMemberRepository.searchMemberByUserId(userId, partyId);
+			partyMember.setIspay(true);
+			partyMemberRepository.update(partyMember);
 			
 			walletUpdate(partyId, cashContract);
 		} catch (Exception e) {
@@ -130,12 +136,12 @@ public class PartyContractService implements IPartyContractService {
 		}
 	}
 	
-	public void withdraw(long partyId, String privateKey, long value) {
+	public void withdraw(long partyId, String privateKey, BigDecimal value) {
 		Credentials credentials = Credentials.create(privateKey);
 		try {
 			CashContract cashContract = CashContract.load(ERC20_TOKEN_CONTRACT, web3j, credentials, contractGasProvider);
 			
-			cashContract.withDraw(BigInteger.valueOf(partyId), BigInteger.valueOf(value)).send();
+			cashContract.withDraw(BigInteger.valueOf(partyId), value.toBigInteger()).send();
 			
 			walletUpdate(partyId, cashContract);
 		} catch (Exception e) {
