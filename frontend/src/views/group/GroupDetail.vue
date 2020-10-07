@@ -207,9 +207,15 @@
                             </span>
                           </h4>
                           <h4 class="mx-8 my-3">
-                            <span v-if="realBadMember.length > 0">
+                            <span v-if="rich.length > 0">
                               <v-icon color="red" class="mr-2">mdi-cancel</v-icon>
                               <span v-for="(item,i) in realBadMember" :key="i">{{item}} <span v-if="i != realBadMember.length-1">,</span> </span>님은 미납한 경험이 있는 회원입니다.
+                            </span>
+                          </h4>
+                          <h4 class="mx-8 my-3">
+                            <span v-if="realBadMember.length > 0">
+                              <v-icon color="red" class="mr-2">mdi-cancel</v-icon>
+                              {{rich}}님이 미납한 경험이 있는 회원입니다.
                             </span>
                           </h4>
                         </v-card>
@@ -446,8 +452,6 @@ export default {
       this.group = data
       console.log(data)
       if(data.withdraw && data.withdraw_name != this.$store.state.auth.user.data.nickname) {
-        this.rich = this.group.withdraw_name
-        this.richAmount = this.group.withdraw_amount
         var ok = confirm(data.withdraw_name+"이 "+data.withdraw_amount+"의 출금을 요청합니다.")
         
         if(ok){
@@ -467,6 +471,11 @@ export default {
             }
           })
         }
+      }
+
+      if(!this.group.withdraw){
+        this.rich = this.group.withdraw_name
+        this.richAmount = this.group.withdraw_amount
       }
 
       if(this.group.startDate != null){
@@ -590,9 +599,13 @@ export default {
     },
     pay() {
       http.get('/party/pay', {
-        partyId : this.groupId,
-        privateKey : this.groupKey,
-        value : this.regularPay,
+        params : {
+          userId : this.$store.state.auth.user.data.id,
+          partyId : this.groupId,
+          privateKey : this.groupKey,
+          value : this.regularPay,
+        }
+        
       })
       .then(({data}) => {
         this.group = data

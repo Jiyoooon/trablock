@@ -10,7 +10,7 @@ public class Party {
     private String explanation;         // 모임 설명
     private String created;      // 모임 생성날짜(기본 : 현재 시간)
     private BigDecimal target;          // 모임 목표금액
-    private BigDecimal totalAmount;     // 모임 실제금액
+    private BigDecimal total_amount;     // 모임 실제금액
     private boolean payCycle;           // 모임 납입주기(false : 월단위, true : 주단위)
     private int pay_date;                // 모임 납입날짜(월단위시 일을 의미하고, 주단위시 1=월요일 ~ 7=일요일을 의미)
     private BigDecimal pay_amount;       // 모임 납입금
@@ -95,13 +95,13 @@ public class Party {
 
 
 	public BigDecimal getTotalAmount() {
-		return totalAmount;
+		return total_amount;
 	}
 
 
 
 	public void setTotalAmount(BigDecimal totalAmount) {
-		this.totalAmount = totalAmount;
+		this.total_amount = totalAmount;
 	}
 
 
@@ -313,7 +313,7 @@ public class Party {
 				", explanation='" + explanation + '\'' +
 				", created='" + created + '\'' +
 				", target=" + target +
-				", totalAmount=" + totalAmount +
+				", totalAmount=" + total_amount +
 				", payCycle=" + payCycle +
 				", payDate=" + pay_date +
 				", payAmount=" + pay_amount +
