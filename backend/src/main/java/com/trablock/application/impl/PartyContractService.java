@@ -129,7 +129,7 @@ public class PartyContractService implements IPartyContractService {
 			cashContract.pay(BigInteger.valueOf(partyId), BigInteger.valueOf(value)).send();
 			PartyMember partyMember = partyMemberRepository.searchMemberByUserId(userId, partyId);
 			partyMember.setIspay(true);
-			partyMemberRepository.update(partyMember);
+			partyMemberRepository.update(partyMember);			
 			
 			walletUpdate(partyId, cashContract);
 		} catch (Exception e) {

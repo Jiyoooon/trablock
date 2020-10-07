@@ -180,12 +180,18 @@
                             </span>
                           </h4>
                           <h4 class="mx-8 my-3">
-                            <span v-if="realBadMember.length > 0">
+                            <span v-if="rich.length > 0">
                               <v-icon color="red" class="mr-2">mdi-cancel</v-icon>
                               <span v-for="(item, i) in realBadMember" :key="i">
                                 {{ item }}
                                 <span v-if="i != realBadMember.length - 1">,</span>
                               </span>님은 미납한 경험이 있는 회원입니다.
+                            </span>
+                          </h4>
+                          <h4 class="mx-8 my-3">
+                            <span v-if="realBadMember.length > 0">
+                              <v-icon color="red" class="mr-2">mdi-cancel</v-icon>
+                              {{rich}}님이 미납한 경험이 있는 회원입니다.
                             </span>
                           </h4>
                         </v-card>
