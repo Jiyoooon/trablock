@@ -159,6 +159,12 @@ public class PartyContractService implements IPartyContractService {
 			cashContract.withDraw(BigInteger.valueOf(partyId), value.toBigInteger()).send();
 			
 			walletUpdate(partyId, cashContract);
+
+			Party party = partyRepository.searchById(partyId);
+			BigDecimal val = party.getTotalAmount();
+			val.subtract(value);
+			party.setTotalAmount(val);
+			partyRepository.update(party);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
