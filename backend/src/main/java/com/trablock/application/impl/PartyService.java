@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.trablock.application.IPartyContractService;
 import com.trablock.application.IPartyMemberService;
 import com.trablock.application.IPartyService;
 import com.trablock.application.IPartyWalletService;
@@ -29,6 +30,8 @@ public class PartyService implements IPartyService {
     private IPartyMemberService partyMemberService;
     @Autowired
     private IPartyWalletService partyWalletService;
+    @Autowired
+    private IPartyContractService partyContractService;
 
     @Override
     public List<Party> list() {
@@ -129,6 +132,9 @@ public class PartyService implements IPartyService {
         user.setIsagree(1);//동의
         partyMemberRepository.update(user);
 	}
+	
+	
+	
 
 	@Override
 	@Transactional
@@ -160,7 +166,7 @@ public class PartyService implements IPartyService {
 			//party에 해당하는 모두가 agree했을 경우 출금
 			if(agree == members.size()) {
 				//출금 스마트컨트랙트 함수 호출***********
-				
+				partyContractService.withdraw(partyId, party.getPrivatekey(), party.getWithdrawAmount());
 				//withdrawName, withdrawAmount 남김
 			}else {//거절 => 출금 실패
 				//withdrawName, withdrawAmount 지움
