@@ -54,7 +54,7 @@ public class PartyController {
 
 	//송금
 	@ApiOperation(value = "모임 계좌에 송금")
-	@PostMapping("/pay")
+	@GetMapping("/party/pay")
 	public void pay(@RequestParam(value = "userId") Long userId, @RequestParam(value = "partyId") Long partyId,
 			@RequestParam(value = "privateKey") String privateKey, @RequestParam(value = "value") Long value) {
 		partyContractService.pay(userId, partyId, privateKey, value);
