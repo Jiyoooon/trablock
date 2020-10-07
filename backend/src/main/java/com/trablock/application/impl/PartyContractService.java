@@ -96,12 +96,10 @@ public class PartyContractService implements IPartyContractService {
 	public void setPartyContract(Party party, String privateKey) {
 		// 컨트랙트를 로드 하기 위해 컨트랙트 주소와 credentials에 쓰일 개인키를 입력받는다(개인키는 front를 통해 사용자에게 입력받는다.)
 		// 모임계좌를 만드는 과정 역시 수수료가 드는 과정이므로 개인키가 필요하다.
-		String contractAddress = "0xE03737192fD2483044f77bE4e6c3a774e256296f";	// cash 컨트랙트 주소(프로젝트의 시작과 함께 정해진다.)
-
 		Credentials credentials = Credentials.create(privateKey);	// 유저의 개인키를 토대로 지갑 객체를 생성한다.
 
 		// 1. 배포되어 있는 cash 컨트랙트를 로드 한다.
-		CashContract cashContract = CashContract.load(contractAddress, web3j, credentials, contractGasProvider);
+		CashContract cashContract = CashContract.load(ERC20_TOKEN_CONTRACT, web3j, credentials, contractGasProvider);
 		try {
 			// 2. cash 컨트랙트의 함수를 통해 모임계좌를 생성
 			cashContract.createParties(new BigInteger(String.valueOf(party.getId())), new BigInteger(String.valueOf(party.getTarget())), new BigInteger(String.valueOf(100)), new BigInteger(String.valueOf(0))).send();
@@ -130,6 +128,7 @@ public class PartyContractService implements IPartyContractService {
 		if(wallet.getTBC().compareTo(new BigDecimal(value)) < 0) {
 			walletService.changeTBC((int)value/1000 + 1, privateKey);
 		}
+		
 		Credentials credentials = Credentials.create(privateKey);		// 사용자에게 입력받는 개인키
 		try {
 			CashContract cashContract = CashContract.load(ERC20_TOKEN_CONTRACT, web3j, credentials, contractGasProvider);
