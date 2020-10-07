@@ -367,9 +367,34 @@ export default {
         })
       }
     },
+    checkRegister(){
+      console.log("dddd")
+      if(this.eCheck == 0){
+        this.$dialog.notify.error("이메일 중복체크를 완료해주세요@_@", {
+              position: "bottom-right", timeout: 3000, });
+        return false;
+      }
+      if(this.eCheck == 1){
+        this.$dialog.notify.error("중복된 이메일입니닷. 변경해주세요!", {
+              position: "bottom-right", timeout: 3000, });
+        return false;
+      }
+      if(this.nCheck == 0){
+        this.$dialog.notify.error("닉네임 중복체크를 완료해주세요@_@", {
+              position: "bottom-right", timeout: 3000, });
+        return false;
+      }
+      if(this.nCheck == 1){
+        this.$dialog.notify.error("중복된 닉네임입니닷. 변경해주세요!", {
+              position: "bottom-right", timeout: 3000, });
+        return false;
+      }
+      return true;
+    },
 
     handleRegister() {
       this.user = this.user2;
+      if(!this.checkRegister()) return;
       this.$store.dispatch('auth/register', this.user).then(
           () => {
           //this.message = data.message;
