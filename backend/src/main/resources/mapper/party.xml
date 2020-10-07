@@ -28,15 +28,17 @@
     <!-- Create   -->
     <insert id="create" parameterType="Party" useGeneratedKeys="true" keyProperty="id">
         insert into Party(
-            name, explanation, created,
-            target, pay_cycle, pay_date, pay_amount,
-            image, start_date, end_date, destination,
-            available, exit_fee
+            name, explanation, created, target,
+            pay_cycle, pay_date, pay_amount, image,
+            start_date, end_date, destination, available,
+            exit_fee, finished, type, withdraw,
+            withdraw_name, withdraw_amount, privatekey, total_amount
         ) values (
-            #{name}, #{explanation}, now(),
-            #{target}, #{payCycle}, #{payDate}, #{payAmount},
-            #{image}, #{startDate}, #{endDate}, #{destination},
-            #{available}, #{exitFee}
+            #{name}, #{explanation}, now(), #{target},
+            #{payCycle}, #{payDate}, #{payAmount}, #{image},
+            #{startDate}, #{endDate}, #{destination}, #{available},
+            #{exitFee}, #{finished}, #{type}, #{withdraw},
+            #{withdraw_name}, #{withdraw_amount}, #{privatekey}, #{totalAmount}
         )
     </insert>
     <!-- Create   -->
@@ -57,7 +59,14 @@
            end_date = #{endDate},
            destination = #{destination},
            available = #{available},
-           exit_fee = #{exitFee}
+           exit_fee = #{exitFee},
+           finished = #{finished},
+           type = #{type},
+           withdraw = #{withdraw},
+    	   withdraw_name = #{withdraw_name},
+    	   withdraw_amount = #{withdraw_amount},
+    	   privatekey = #{privatekey},
+    	   total_amount = #{totalAmount}
         where id = #{id}
     </update>
     <!-- Update    -->

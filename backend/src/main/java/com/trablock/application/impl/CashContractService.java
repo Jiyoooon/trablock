@@ -111,7 +111,7 @@ public class CashContractService implements ICashContractService {
 			cashContract = CashContract.load(ERC20_TOKEN_CONTRACT, web3j, credentials, contractGasProvider);
 			partyAddress = cashContract
 					.createParties(BigInteger.valueOf(party.getId()), party.getTarget().toBigInteger(),
-							BigInteger.valueOf(party.isPayCycle() ? 1 : 0), party.getExitFee().toBigInteger())
+							BigInteger.valueOf(party.getPayCycle() ? 1 : 0), party.getExitFee().toBigInteger())
 					.send().getLogs().get(0).getTopics().get(0);
 		} catch (Exception e) {
 			e.printStackTrace();

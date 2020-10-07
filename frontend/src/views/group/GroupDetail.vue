@@ -68,8 +68,8 @@
 
                 <div v-if="groups.length == 0" class="mt-3">등록한 모임이 없습니다. </div>
                 <v-list-item
-                  v-for="item in groups"
-                  :key="item.title"
+                  v-for="(item, i) in groups"
+                  :key="i"
                   @click="changeGroupId(item.id)"
                 >
                   <v-list-item-icon>
@@ -193,29 +193,23 @@
                           align = "left"
                           min-height="27vh"
                         >
-                          <h3 class="mx-5 mt-3 mb-6">2020.09.15 납부 현황</h3>
-                          <h4 class="mx-8 my-3">
-                            <span v-if="realBadMember.length > 0">
-                              <v-icon color="red" class="mr-2">mdi-cancel</v-icon>
-                              <span v-for="item in realBadMember" :key="item">{{item}},</span>님은 미납한 경험이 있는 회원입니다.
-                            </span>
-                          </h4>
+                          <h3 class="mx-5 mt-3 mb-6">최근 납부 현황</h3>
                           <h4 class="mx-8 my-3">
                             <span v-if="goodMember.length > 0">
                               <v-icon color="green" class="mr-2">mdi-checkbox-marked-circle</v-icon>
-                              <span v-for="item in goodMember" :key="item">{{item}}, </span>님이 정상납부하였습니다.
+                              <span v-for="(item,i) in goodMember" :key="i">{{item}} <span v-if="i != goodMember.length-1">,</span> </span>님이 정상납부하였습니다.
                             </span>
                           </h4>
                           <h4 class="mx-8 my-3">
                             <span v-if="badMember.length > 0">
                               <v-icon color="amber darken-2" class="mr-2">fas fa-circle-notch fa-spin</v-icon>
-                              <span v-for="item in badMember" :key="item">{{item}},</span>님이 아직 미납하였습니다.
+                              <span v-for="(item,i) in badMember" :key="i">{{item}} <span v-if="i != badMember.length-1">,</span></span>님이 아직 미납하였습니다.
                             </span>
                           </h4>
                           <h4 class="mx-8 my-3">
                             <span v-if="realBadMember.length > 0">
                               <v-icon color="red" class="mr-2">mdi-cancel</v-icon>
-                              <span v-for="item in realBadMember" :key="item">{{item}},</span>님은 미납한 경험이 있는 회원입니다.
+                              <span v-for="(item,i) in realBadMember" :key="i">{{item}} <span v-if="i != realBadMember.length-1">,</span> </span>님은 미납한 경험이 있는 회원입니다.
                             </span>
                           </h4>
                         </v-card>
@@ -323,7 +317,7 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <tr v-for="item in group.memberlist" :key="item">
+                              <tr v-for="(item,i) in group.memberlist" :key="i">
                                 <td>{{item.name}}</td>
                                 <td>{{item.payment}}원</td>
                                 <td v-if="item.isPay">O</td>
@@ -417,6 +411,10 @@ export default {
 
         rich : '',
         richAmount : '',
+        nextPayDate : null,
+        splitArray : [],
+        dayArray : [],
+        endArray : [],
       }
     },
   created() {
@@ -446,7 +444,11 @@ export default {
     .then(({data}) => {
       this.group = data
       if(data.withdraw) {
-        var ok = confirm(this.rich+"이 "+this.richAmount+"의 출금을 요청합니다.")
+        this.rich = this.group.withdraw_name
+        this.richAmount = this.group.withdraw_amount
+        console.log(data)
+        var ok = confirm(data.withdraw_name+"이 "+data.withdraw_amount+"의 출금을 요청합니다.")
+        
         if(ok){
           http.get('/withdraw/agree', {
             params : {
@@ -481,14 +483,11 @@ export default {
         }
       });
 
-      if(!this.group.withdraw){
-        this.rich = this.group.withdrawName
-        this.richAmount = this.group.withdrawAmount
-      }
-
+      
 
       //다음 납부 날짜 계산하기
-
+      this.nextPayDate = this.calculateNextPayDate();
+      alert(this.nextPayDate)
     })
 
     //메모 리스트 가져오기
@@ -506,6 +505,12 @@ export default {
     viewDay ({date}) {
         this.dialogMemo = true
         this.pickedDate = date
+        this.groupMemo = ''
+        this.memoList.forEach(element => {
+          if(element.date.substr(0,10) == date){
+            this.groupMemo = element.description
+          }
+        });
       },
       getEventColor (event) {
         return event.color
@@ -536,32 +541,45 @@ export default {
         nativeEvent.stopPropagation()
       },
       updateRange () {
-        const events = []
+        const events = [];
         if(this.group.startDate != null){
           events.push({
-            name: '',
+            id: 0,
+            name: 'travel',
             start: this.group.startDate,
             end: this.group.endDate,
             color: "green",
           })
         }
+
+        this.memoList.forEach(element => {
+          events.push({
+            id: 0,
+            name: 'memo',
+            start: element.date,
+            end: element.date,
+            color: "amber",
+          })
+
+        });
         this.events = events
-        this.events = []
       },
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
       },
     saveMemo(){
-      http.post('/token/memo', { 
-        memo : {
+      http.post('/token/memo', 
+        {
           partyId : this.groupId,
           date : this.pickedDate,
           description : this.groupMemo,
           isChecklist : false,
         },
-        headers : authHeader()
-        
-      }).then(({data}) => {
+        {
+          headers : authHeader()
+        }
+      
+      ).then(({data}) => {
         if(data.result == "success"){
           alert("저장이 완료되었습니다.")
           this.dialogMemo = false
@@ -601,7 +619,132 @@ export default {
     changeGroupId(id) {
       this.$router.push({name: 'groupdetail',query: { groupId: id }});
       this.$router.go()
-    }
+    },
+
+    calculateNextPayDate() {
+      // 필요한 변수들
+      // 1. 종료일(다음 납부 날짜일이 존재하는지 확인할 때 필요)
+      // 2. 납부 사이클(주/월)
+      //  2-1) 사이클이 주 인 경우 -> 요일
+      //  2-2) 사이클이 월 인 경우 -> 특정일(1~28로 제한)
+      // 3. 오늘 날짜
+      var endDate = this.group.endDate; // yyyy-mm-dd
+      var today = this.getTimeStamp(); // yyyy-mm-dd
+      var cycleIsWeek = this.group.payCycle; // False : 월단위, True : 주단위
+      var cycle = this.group.payDate; // F : 1~28, 주 : 0(일) ~ 6(토)
+      var result;
+
+      if (cycleIsWeek) {
+        // 주를 선택한 경우
+        var _today = new Date().getDay(); // 오늘날짜의 요일
+        if (_today > cycle) {
+          // 현재날짜 > 특정요일 => 7-(현재-특정) 만큼 현재날짜에 더해준다.
+          result = this.dateAdd(7 - (_today - cycle));
+        } else if (_today == cycle) {
+          // 현재날짜 = 특정요일 => 무조건 7일 플러스
+          result = this.dateAdd(7);
+        } else {
+          // 현재날짜 < 특정요일 => 특정-현재 만큼 현재 날짜에 더해준다.
+          result = this.dateAdd(cycle - _today);
+        }
+
+        if (!this.isEnd(result, endDate)) {
+          // 계산된 정산일이 종료일 전이라면 계산한 날짜 반환
+          return result;
+        } else {
+          // 정산일이 종료일을 지났다면 -1 반환
+          return -1;
+        }
+      } else {
+        // 월을 선택한 경우
+        var dateToday = Number(today.substring(8)); // 오늘날짜의 일
+
+        if (dateToday > cycle) {
+          this.splitArray = today.split("-"); // 년,월,일로 나눠서 계산
+          if (this.splitArray[1] == 12) {
+            // 12월인 경우 1달 후는 내년 1월이다
+            this.splitArray[0] += 1;
+            this.splitArray[1] = 0;
+          }
+          result = this.splitArray[0] + "-" + (this.splitArray[1] + 1) + "-" + cycle; // 오늘 날짜(년, <월 + 1달 후>) + 일(특정일자)
+
+          if (!this.isEnd(result, endDate)) {
+            // 계산된 정산일이 종료일 전이라면 계산한 날짜 반환
+            return result;
+          } else {
+            // 정산일이 종료일을 지났다면 -1 반환
+            return -1;
+          }
+        } else {
+          // 오늘날짜의 일이 특정일자보다 작으면 현재달(년, 월) + 특정일자(일)을 합쳐서 반환
+          this.splitArray = today.split("-"); // 년,월,일로 나눠서 계산
+
+          result = this.splitArray[0] + "-" + this.splitArray[1] + "-" + cycle; // 오늘 날짜(년, 월) + 일(특정일자)
+
+          if (!this.isEnd(result, endDate)) {
+            // 계산된 정산일이 종료일 전이라면 계산한 날짜 반환
+            return result;
+          } else {
+            // 정산일이 종료일을 지났다면 -1 반환
+            return -1;
+          }
+        }
+      }
+    },
+
+    // 오늘날짜 계산 함수들
+    getTimeStamp() {
+      var d = new Date();
+      var s =
+        this.leadingZeros(d.getFullYear(), 4) +
+        "-" +
+        this.leadingZeros(d.getMonth() + 1, 2) +
+        "-" +
+        this.leadingZeros(d.getDate(), 2);
+
+      return s;
+    },
+    leadingZeros(n, digits) {
+      var zero = "";
+      n = n.toString();
+
+      if (n.length < digits) {
+        for (var i = 0; i < digits - n.length; i++) zero += "0";
+      }
+      return zero + n;
+    },
+
+    isEnd(day, end) {
+      // 종료일이 지났는지 확인해주는 함수
+      this.dayArray = day.split("-");
+      this.endArray = end.split("-");
+
+      var __day = new Date(this.dayArray[0], this.dayArray[1], this.dayArray[2]).getTime();
+      var __end = new Date(this.endArray[0], this.endArray[1], this.endArray[2]).getTime();
+
+      if (__day > __end) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    dateAdd(addDay) {
+      // 며칠 후 날짜를 구해주는 함수
+      var nowDate = new Date();
+      var addDate = nowDate.getTime() + addDay * 24 * 60 * 60 * 1000;
+
+      nowDate.setTime(addDate);
+
+      var year = nowDate.getFullYear();
+      var month = nowDate.getMonth() + 1;
+      var date = nowDate.getDate();
+
+      if (month < 10) month = "0" + month;
+      if (date < 10) date = "0" + date;
+
+      return year + "-" + month + "-" + date;
+    },
+
   },
 };
 </script>

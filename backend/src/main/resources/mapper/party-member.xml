@@ -14,14 +14,14 @@
     <select id="searchMemberByUserId" resultType="PartyMember">
         select user_id as 'userId', party_id as 'partyId', payment, chief, warning, ispay, isagree 
         from PartyMember
-        where user_id = #{userId} and party_id = #{partyId}
+        where user_id = #{userId}
+        	and party_id = #{partyId}
     </select>
 
     <select id="getPartyIdListByUserId" parameterType="long" resultType="Long">
         select party_id
         from PartyMember
         where user_id = #{userId}
-        	and party_id = #{partyId}
     </select>
 	
 	<select id="getMemberListByPartyId" parameterType="long"	resultType="PartyMember">
@@ -59,6 +59,8 @@
             payment = #{payment},
             chief = #{chief},
             warning = #{warning}
+            
+         where party_id = #{partyId} and user_id = #{userId}
     </update>
     <!--  Update  -->
 
