@@ -126,7 +126,7 @@ public class PartyContractService implements IPartyContractService {
 	public void pay(long userId, long partyId, String privateKey, long value) {
 		Wallet wallet = walletRepository.getWalletByOwnerId(userId);
 		if(wallet.getTBC().compareTo(new BigDecimal(value)) < 0) {
-			walletService.changeTBC((int)value/1000 + 1, privateKey);
+			walletService.changeTBC((int)value/1000 + 1, privateKey);	
 		}
 		
 		Credentials credentials = Credentials.create(privateKey);		// 사용자에게 입력받는 개인키
@@ -134,18 +134,16 @@ public class PartyContractService implements IPartyContractService {
 			CashContract cashContract = CashContract.load(ERC20_TOKEN_CONTRACT, web3j, credentials, contractGasProvider);
 			cashContract.pay(BigInteger.valueOf(partyId), BigInteger.valueOf(value)).send();
 			PartyMember partyMember = partyMemberRepository.searchMemberByUserId(userId, partyId);
+			partyMember.setPayment(partyMember.getPayment().add(new BigDecimal(value)));
 			partyMember.setIspay(true);
 			partyMemberRepository.update(partyMember);			
 			
 			walletUpdate(partyId, cashContract);
-
+			
 			Party party = partyRepository.searchById(partyId);
-			BigDecimal val = party.getTotalAmount();
-			long newVal = val.longValue();
-			newVal += value;
-			party.setTotalAmount(new BigDecimal(newVal));
-			partyRepository.update(party);
-
+            BigDecimal val = party.getTotalAmount();
+            party.setTotalAmount(val.add(new BigDecimal(value)));
+            partyRepository.update(party);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -159,6 +157,11 @@ public class PartyContractService implements IPartyContractService {
 			cashContract.withDraw(BigInteger.valueOf(partyId), value.toBigInteger()).send();
 			
 			walletUpdate(partyId, cashContract);
+			
+			Party party = partyRepository.searchById(partyId);
+            BigDecimal val = party.getTotalAmount();
+            party.setTotalAmount(val.subtract(value));
+            partyRepository.update(party);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
