@@ -397,6 +397,7 @@ export default {
       })
       .then(({ data }) => {
         this.group = data;
+        this.regularPay = this.group.payAmount;
         console.log(data);
         if (
           data.withdraw &&
@@ -440,9 +441,8 @@ export default {
           });
         }
 
-        this.sum = Number(this.sum);
+        this.sum = this.group.totalAmount;
         this.group.memberlist.forEach(element => {
-          this.sum += Number(element.payment);
 
           if (element.ispay) {
             this.goodMember.push(element.name);
@@ -557,9 +557,12 @@ export default {
     pay() {
       http
         .get("/party/pay", {
-          partyId: this.groupId,
-          privateKey: this.groupKey,
-          value: this.regularPay
+          params: {
+            userId: this.$store.state.auth.user.data.id,
+            partyId: this.groupId,
+            privateKey: this.groupKey,
+            value: this.regularPay
+          }
         })
         .then(({ data }) => {
           this.group = data;
