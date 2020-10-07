@@ -457,8 +457,8 @@ export default {
                 destination : this.groupDestinationCountry+" "+this.groupDestinationCity,
                 available : true,
                 exitFee : this.groupExitPay,
-                //finished : this.finished
-                //type : this.groupType
+                // finished : this.finished,
+                // type : this.groupType,
                 members : this.pickedFrinedId,
               },
               

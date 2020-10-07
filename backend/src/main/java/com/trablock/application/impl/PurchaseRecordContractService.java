@@ -2,6 +2,7 @@ package com.trablock.application.impl;
 
 import com.trablock.application.IPurchaseRecordContractService;
 import com.trablock.domain.*;
+import com.trablock.domain.Record;
 import com.trablock.domain.exception.ApplicationException;
 import com.trablock.domain.repository.IPurchaseRepository;
 import com.trablock.domain.wrapper.PurchaseRecordContract;
@@ -57,12 +58,14 @@ public class PurchaseRecordContractService implements IPurchaseRecordContractSer
         this.purchaseRepository = purchaseRepository;
     }
 
+	@Override
+	public List<Record> getHistory(String escrowContractAddress) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
     /**
      * TODO Sub PJT Ⅲ 과제 3
      * 구매 이력 조회
      */
-    @Override
-    public List<Record> getHistory(String contractAddress) {
-        return null;
-    }
 }

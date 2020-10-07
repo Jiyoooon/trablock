@@ -46,7 +46,7 @@ public class PartyService implements IPartyService {
         if (party == null) {
             throw new NotFoundException("모임 정보를 찾을 수 없습니다.");
         }
-
+        
         party.setMemberlist(partyMemberRepository.getMemberListByPartyId(id));
         return party;
     }
@@ -126,6 +126,8 @@ public class PartyService implements IPartyService {
         party.setWithdrawAmount(withdraw.getWithdrawAmount());
         party.setPrivatekey(withdraw.getPrivatekey());
         partyRepository.update(party);
+        
+        System.out.println(party.toString());
         
         //userId는 isagree = 1로
         PartyMember user = partyMemberRepository.searchMemberByUserId(withdraw.getUserId(), withdraw.getPartyId());

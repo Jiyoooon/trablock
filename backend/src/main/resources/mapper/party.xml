@@ -57,7 +57,12 @@
            end_date = #{endDate},
            destination = #{destination},
            available = #{available},
-           exit_fee = #{exitFee}
+           exit_fee = #{exitFee},
+           withdraw = #{withdraw},				
+    	   withdraw_name = #{withdrawName},			
+    	   withdraw_amount = #{withdrawAmount},
+    	   privatekey = #{privatekey}
+    	   
         where id = #{id}
     </update>
     <!-- Update    -->
