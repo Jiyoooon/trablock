@@ -138,6 +138,14 @@ public class PartyContractService implements IPartyContractService {
 			partyMemberRepository.update(partyMember);			
 			
 			walletUpdate(partyId, cashContract);
+
+			Party party = partyRepository.searchById(partyId);
+			BigDecimal val = party.getTotalAmount();
+			long newVal = val.longValue();
+			newVal += value;
+			party.setTotalAmount(new BigDecimal(newVal));
+			partyRepository.update(party);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
