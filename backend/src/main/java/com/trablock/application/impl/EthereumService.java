@@ -111,7 +111,7 @@ public class EthereumService implements IEthereumService {
 //			Credentials credentials =  WalletUtils.loadCredentials("ssafy", "./src/main/resources/wallet/admin.json");
 
 			// 1-2. 또는 keystore파일이 없을경우 사용자가 직접 privatekey를 입력함
-			String privateKey = "0x46996d907d2ccbd57259a521f64324ff647df15175f1b29f610c2f0eef381443";
+			String privateKey = "0xc4ccf684bd7446f931ecbdeb55e49c1f63f591ccd0d4a16963df482510d75fd2";
 			Credentials credentials = Credentials.create(privateKey);
 			
 			/* 2. 송금 트랜잭션 생성
