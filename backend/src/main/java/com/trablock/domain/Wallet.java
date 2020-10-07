@@ -71,4 +71,11 @@ public class Wallet {
 	public boolean canRequestEth(){
 		return this.receivingCount < 10;
 	}
+	@Override
+	public String toString() {
+		return "Wallet [id=" + id + ", ownerId=" + ownerId + ", address=" + address + ", balance=" + balance
+				+ ", receivingCount=" + receivingCount + ", TBC=" + TBC + "]";
+	}
+	
+	
 }

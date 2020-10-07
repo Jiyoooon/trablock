@@ -161,6 +161,8 @@ public class PartyContractService implements IPartyContractService {
 			Party party = partyRepository.searchById(partyId);
             BigDecimal val = party.getTotalAmount();
             party.setTotalAmount(val.subtract(value));
+			party.setWithdraw(false);//출금정보 리셋
+			party.setPrivatekey(null);//기본키 지움
             partyRepository.update(party);
 		} catch (Exception e) {
 			e.printStackTrace();
