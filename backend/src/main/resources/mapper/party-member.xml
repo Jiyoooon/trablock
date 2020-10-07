@@ -59,7 +59,9 @@
             payment = #{payment},
             chief = #{chief},
             warning = #{warning},
-            ispay = #{ispay}
+            ispay = #{ispay},
+            isagree = #{isagree}
+            
          where party_id = #{partyId} and user_id = #{userId}
     </update>
     <!--  Update  -->
