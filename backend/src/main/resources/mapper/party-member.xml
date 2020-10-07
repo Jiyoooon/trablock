@@ -11,7 +11,7 @@
         from Party
     </select>
     
-    <select id="searchMemberByUserId" parameterType="long" resultType="PartyMember">
+    <select id="searchMemberByUserId" resultType="PartyMember">
         select user_id as 'userId', party_id as 'partyId', payment, chief, warning, ispay, isagree 
         from PartyMember
         where user_id = #{userId}
