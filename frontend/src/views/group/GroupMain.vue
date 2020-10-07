@@ -83,13 +83,14 @@
                 <v-col cols="12" sm="9">
                   <v-row>
                     <v-col align="right">
-                      <router-link :to="{path: 'group/create'}" class="text-decoration-none">
-                        <v-btn 
+                      <!--<router-link :to="{path: 'group/create'}" class="text-decoration-none">-->
+                        <v-btn @click="goMakeGroup()"
                           rounded color="grey" dark
                           class="mx-5"
                         >
                         <v-icon dark>mdi-plus</v-icon>            
-                      </v-btn></router-link>
+                      </v-btn>
+                      <!--</router-link>-->
                     </v-col>
                   </v-row>
                   <v-row>
@@ -208,6 +209,12 @@ export default {
   },
   
   methods: {
+    goMakeGroup(){
+      if(!this.wCheck){
+        this.$dialog.notify.error("개인 계좌를 먼저 만들어주세요!", {
+          position: "bottom-right", timeout: 3000, });
+      }else this.$router.push('/group/create')
+    },
     setWcheck(value){
       this.wCheck = value;
     },
@@ -232,5 +239,5 @@ export default {
 };
 </script>
 <style>
-
+* { font-family: 'NanumSquareRound'; }
 </style>

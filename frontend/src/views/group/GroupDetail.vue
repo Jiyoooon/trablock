@@ -567,6 +567,7 @@ export default {
         .then(({ data }) => {
           this.group = data;
           this.groupKey = "";
+          this.$router.go();
         });
     },
     getAmount() {
@@ -734,4 +735,6 @@ export default {
     },
 };
 </script>
-<style></style>
+<style>
+* { font-family: 'NanumSquareRound'; }
+</style>
