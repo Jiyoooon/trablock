@@ -11,14 +11,6 @@
         </div>
         <v-spacer></v-spacer>
 
-        <v-btn icon>
-          <v-icon>far fa-user</v-icon>
-        </v-btn>
-
-        <!-- <v-btn icon>
-          <v-icon>mdi-blinds</v-icon>
-        </v-btn>-->
-
         <div class="my-2">
           <v-btn large color="red darken-1" @click="handleLogout">Logout</v-btn>
         </div>
@@ -691,4 +683,5 @@ export default {
 };
 </script>
 <style>
+* { font-family: 'NanumSquareRound'; }
 </style>

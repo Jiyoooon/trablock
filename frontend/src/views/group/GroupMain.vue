@@ -16,14 +16,6 @@
         </div>
         <v-spacer></v-spacer>
 
-        <v-btn icon>
-          <v-icon>far fa-user</v-icon>
-        </v-btn>
-
-        <!-- <v-btn icon>
-          <v-icon>mdi-blinds</v-icon>
-        </v-btn> -->
-
         <div class="my-2">
             <v-btn large color="red darken-1" @click="handleLogout">Logout</v-btn>
         </div>
@@ -44,19 +36,6 @@
       <v-tabs-items v-model="tab">
         <v-tab-item>
           <v-card flat min-height="90vh">
-            <v-row>
-              <v-col align="right">
-                <router-link :to="{path: 'group/create'}" class="text-decoration-none">
-                <v-btn 
-                  rounded color="grey" dark
-                  class="mx-5"
-                >
-                  <v-icon dark>mdi-plus</v-icon>            
-                </v-btn></router-link>
-              </v-col>
-              
-            </v-row>
-
             <v-navigation-drawer
               v-model="drawer"
               :expand-on-hover="expandOnHover"
@@ -95,217 +74,44 @@
                 </v-list-item>
               </v-list>
             </v-navigation-drawer>
-            <v-card min-height="40vh" class="mx-15">
-              <h1>HOW TO USE TRABLCOK</h1>
+
+            <v-card min-height="90vh" class="mx-15">
+              <v-row class="fill-height"></v-row>
+
+              <v-row class="fill-height">
+                <v-col cols="12" sm="3"></v-col>
+                <v-col cols="12" sm="9">
+                  <v-row>
+                    <v-col align="right">
+                      <!--<router-link :to="{path: 'group/create'}" class="text-decoration-none">-->
+                        <v-btn @click="goMakeGroup()"
+                          rounded color="grey" dark
+                          class="mx-5"
+                        >
+                        <v-icon dark>mdi-plus</v-icon>            
+                      </v-btn>
+                      <!--</router-link>-->
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col align="center">
+                      <h1>그룹 페이지 입니다 :)</h1>
+                      <br>
+                      <h3>친구들과</h3>
+                      <h3>모임을 만들고</h3>
+                      <h3>여행 계획을 세워보세요!</h3>
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-row>
             </v-card>
+
           </v-card>
         </v-tab-item>
         <v-tab-item>
-          <v-row v-if="wCheck==true">
-            <v-col cols="2">
-                    <v-card class="mx-auto">
-                        <v-card-subtitle class="pt-5 pb-0 text-center text-h5">사용자 정보</v-card-subtitle>
-                        <v-card-text class="grey--text text-center pb-0">
-                        <div>{{currentUser.email}}</div>
-                        </v-card-text>
-                        <v-card-text class="grey--text text-center">
-                            <v-divider></v-divider>
-                            <v-row>
-                                <v-col cols="5" class="text-left py-1 pl-5">닉네임</v-col>
-                                <v-col cols="7" class="text-right py-1 pr-5">{{currentUser.nickname}}</v-col>
-                            </v-row>
-                            <v-divider></v-divider>
-                        </v-card-text>
-                        <v-card-actions class="d-flex justify-end pt-0">
-                            <v-btn color="blue" text small class="font-weight-bold" @click.stop="dialog = true">update</v-btn>
-                            <!-- 수정모달 -->
-                            <v-dialog v-model="dialog" max-width="400">
-                                  <v-card>
-                                    <v-card-title class="headline">Edit Profile</v-card-title>
-                                    <v-card-text class="pb-0">
-                                      <v-col cols="12" class="py-0 mt-10">
-                                        <v-text-field
-                                          label="Nickname" :placeholder="U.nickname" v-model="U.nickname"
-                                          filled rounded dense></v-text-field>
-                                      </v-col>
-                                      <v-col cols="12" class="py-0">
-                                        <v-text-field
-                                          type="password"
-                                          label="Password" :placeholder="U.password" v-model="U.password"
-                                          hint="이전 비밀번호 혹은 변경할 비밀번호를 입력해주세요(필수)"
-                                          :rules="[v => !!v  || 'Password is required', v => v.length >= 5 || 'Password is too short']"
-                                          required
-                                          persistent-hint                                          
-                                          filled rounded dense></v-text-field>
-                                      </v-col>
-                                    </v-card-text>
-
-                                    <v-card-actions class="pt-5">
-                                      <v-spacer></v-spacer>
-                                      <v-btn color="orange" text @click="editProfile" >Edit</v-btn>
-                                      <v-btn color="grey" text @click="dialog = false" >Close</v-btn>
-                                    </v-card-actions>
-                                  </v-card>
-                                </v-dialog>
-                        </v-card-actions>
-                    </v-card>
-                    <v-card class="mx-auto mt-2">
-                        <v-expansion-panels accordion>
-                        <v-expansion-panel>
-                            <v-expansion-panel-header>more...</v-expansion-panel-header>
-                            <v-expansion-panel-content class="px-0">
-                                <v-row class="text-center">
-                                    <v-col cols="12" class="py-0">
-                                        <v-btn small color="orange" @click="handleLogout" block dark>Log out</v-btn>                                   
-                                    </v-col>
-                                    <v-col cols="12">
-                                        <v-btn small color="red" block dark @click="handleWithdraw = true">withdraw</v-btn>                                   
-                                    </v-col>
-                                </v-row>
-                            </v-expansion-panel-content>
-                        </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-card>
-                </v-col>
-                <v-col cols="10">
-                    <v-card class="mx-auto" height="71vh">
-                      <v-container>
-                        <v-row>
-            <v-col cols="12" class="pt-5 pb-0 text-center text-h3 font-weight-bold"><div>{{currentUser.nickname}}의 PROFILE</div></v-col>
-            <v-col cols="12" class="py-1 text-h4 font-weight-bold"><div>MY</div>
-            <!-- <v-icon class="font-weight-bold" fab x-large dark>fas fa-wallet</v-icon> -->
-              </v-col>
-            </v-row>
-
-            <v-row>
-              <v-col cols="12">
-                <template>
-                  <v-card
-                    class="mx-auto"
-                    color="green"
-                    dark
-                    max-width="650"
-                    elevation="10"
-                  >
-                    <v-card-title>
-                      <v-icon
-                        large
-                        left
-                      >
-                        fas fa-wallet
-                      </v-icon>
-                      <span class="title font-weight-light">내 지갑</span>
-                    </v-card-title>
-
-                    <v-card-text class="headline font-weight-light">
-                      <v-col cols="12" class="display-0" align="left">
-                        {{Wallet.address}}
-                      </v-col>
-                      <!-- <td>{{Wallet.address}}</td> -->
-                    </v-card-text>
-                    <v-card-text class="headline font-weight-bold">
-                      <v-row align="center">
-                        <v-col cols="3" class="display-0.5" align="left">
-                          남은 잔액
-                        </v-col>
-                        <v-col cols="9" class="display-3" align="right">
-                          {{ (Number(Wallet.balance) / 1000000000000000000).toFixed(9) }}
-                        </v-col>
-                      </v-row>
-                    </v-card-text>
-
-                    <v-card-actions>
-                      <v-list-item class="grow">
-                        <v-row
-                          align="center"
-                          justify="end"
-                        >
-                          <v-icon class="mr-1" @click="charge">
-                            mdi-heart
-                          </v-icon>
-                          <span class="subheading mr-2">충전하기</span>
-                          <!-- <span class="mr-1">·</span>
-                          <v-icon class="mr-1">
-                            mdi-share-variant
-                          </v-icon>
-                          <span class="subheading">45</span> -->
-                        </v-row>
-                      </v-list-item>
-                    </v-card-actions>
-                  </v-card>
-                </template>
-              </v-col>
-            </v-row>
-                      </v-container>
-                    </v-card>
-                </v-col>
-          </v-row>
-
-          <v-row v-else>
-            <v-col cols="12">
-            <v-card class="mx-auto" flat min-height="70vh">
-              <br><br><br><br>
-              <v-chip
-              class="ma-2"
-              color="grey darken-3"
-              label
-              outlined
-            >
-              개인 지갑이 생성되지 않았습니다.
-            </v-chip>
-            <br>
-              <v-chip
-              class="ma-2"
-              color="grey darken-3"
-              label
-              outlined
-            >
-              <v-icon left>mdi-label</v-icon>
-              계좌 생성하기
-            </v-chip>
-              <br><br>
-              <v-btn color="orange" class="font-weight-bold" fab x-large dark @click="createWallet">
-                <v-icon>fas fa-wallet</v-icon>
-              </v-btn>
-            </v-card>
-            </v-col>
-            <!-- <input type="hidden" id="hidden-area" :value="hiddenArea" /> -->
-            <v-dialog
-              v-model="dialogPK"
-              persistent
-              max-width="400"
-            >
-              <v-card>
-                <v-card-title class="headline">
-                  지갑 PrivateKey를 기억하세요!
-                </v-card-title>
-
-                <v-card-text>
-                  {{this.privateKey}}
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="copyPK"
-                  >
-                    Copy
-                  </v-btn>
-
-                  <v-btn
-                    color="green darken-1"
-                    text
-                    @click="movePK"
-                  >
-                    확인했습니다!
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </v-row>
+          <!--<component :is="wCheck ? 'MyWalletDetail' : 'MyWalletRegister'"></component> -->
+          <my-wallet-register v-if="!wCheck" @child="setWcheck"></my-wallet-register>
+          <my-wallet-detail v-if="wCheck"></my-wallet-detail>
         </v-tab-item>
       </v-tabs-items>                        
     </v-card>
@@ -314,15 +120,19 @@
 
 <script>
 import http from "@/util/http-common.js";
-import Web3 from 'web3';
+// import Web3 from 'web3';
 import authHeader from '@/services/auth-header.js';
+import MyWalletRegister from './MyWalletRegister';
+import MyWalletDetail from './MyWalletDetail';
+import { mapGetters } from 'vuex'
 // var web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/98aa6777fadd45949e67403767091144"));
 // var web3 = new Web3(new Web3.providers.HttpProvider('https://api.infura.io/v1/jsonrpc/ropsten'));
-var web3 = new Web3(new Web3.providers.HttpProvider('http://j3a101.p.ssafy.io/geth'));
+// var web3 = new Web3(new Web3.providers.HttpProvider('http://j3a101.p.ssafy.io/geth'));
 export default {
   name: 'GroupMain',
   components: {
-    
+    MyWalletRegister,
+    MyWalletDetail
   },
   data () {
       return {
@@ -356,22 +166,13 @@ export default {
 
         privateKey: '',
         dialogPK: false,
+        btnName: "copy"
       }
     },
   created(){
-    console.log(this.$store.state.auth.status.loggedIn);
     this.U.email = this.$store.state.auth.user.email;
     this.U.password = this.$store.state.auth.user.password
     this.U.nickname= this.$store.state.auth.user.nickname
-    console.log(this.$store.state.auth.user);
-    console.log(this.$store.state.auth.user.accessToken);
-    console.log(authHeader());
-    // http.get('/token/wallets/id', {
-    //   params : {
-    //     id : this.$store.state.auth.user.data.id
-    //   }
-    // });
-    // console.log(authHeader());
 
     //내 계좌 정보 가져오기
     http.get('/token/wallets', { 
@@ -408,42 +209,14 @@ export default {
   },
   
   methods: {
-    createWallet() {
-      const account = web3.eth.accounts.create();
-
-      console.log(account)
-      console.log(`Account : ${account.address}`);
-      console.log(`Private key  : ${account.privateKey}`);
-      this.privateKey = `${account.privateKey}`;
-
-      //내 계좌 생성하기
-      http.post('/token/wallets', 
-      {//data
-        "address": account.address
-      },
-      {//header 
-          headers: authHeader() 
-      }).then(({ data }) => {
-        console.log(data.address+", "+data.balance);
-        this.Wallet.address = data.address;
-        this.Wallet.balance = data.balance;
-        this.dialogPK = true;
-        // this.$dialog.notify.success("계좌 생성에 성공했습니다! 😃", {
-        //   position: "bottom-right",
-        //   timeout: 3000,
-        // });
-      })
+    goMakeGroup(){
+      if(!this.wCheck){
+        this.$dialog.notify.error("개인 계좌를 먼저 만들어주세요!", {
+          position: "bottom-right", timeout: 3000, });
+      }else this.$router.push('/group/create')
     },
-    charge(){
-      // console.log(this.Wallet.address);
-       //내 계좌 충전하기
-      http.put(`/token/wallets/${this.Wallet.address}`, null,
-      {//header 
-          headers: authHeader() 
-      }).then(({ data }) => {
-        console.log(data);
-      })
-
+    setWcheck(value){
+      this.wCheck = value;
     },
 
     editProfile() {
@@ -455,47 +228,16 @@ export default {
       this.$router.push('/');
     },
     
-    movePK() {
-      this.dialogPK = false;
-      alert("계좌 생성에 성공했습니다! 😃");
-      this.$router.go();
-    },
-
-    copyPK() {
-      let PK = this.privateKey;
-      const el = document.createElement('textarea');
-      el.value = PK;
-      alert(el.value);
-      document.body.appendChild(el);
-      // alert(PK);
-      // let toCopy = document.querySelector("#hidden-area");
-      // toCopy.setAttribute("type", "text");
-      // toCopy.setAttribute("value", PK);
-      el.select();
-
-      try {
-        document.execCommand("copy");
-        document.body.removeChild(el);
-        alert("Privat Key가 복사되었습니다! 은밀한 곳에 보관하세요 ^0^")
-        // this.text = emoji + " 가 복사되었습니다!\nCtrl+V 로 사용하세요!";
-        // this.snackbar = true;
-      } catch (err) {
-        // this.text = "복사에 실패하였습니다 😰";
-        // this.snackbar = true;
-      }
-
-      // toCopy.setAttribute("type", "hidden");
-      // window.getSelection().removeAllRanges();
-    },
   },
 
   computed: {
       currentUser(){
         return this.$store.state.auth.user.data;
       },
+      ...mapGetters(['wCheck'])
     },
 };
 </script>
 <style>
-
+* { font-family: 'NanumSquareRound'; }
 </style>

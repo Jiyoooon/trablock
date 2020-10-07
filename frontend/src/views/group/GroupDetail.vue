@@ -11,14 +11,6 @@
         </div>
         <v-spacer></v-spacer>
 
-        <v-btn icon>
-          <v-icon>far fa-user</v-icon>
-        </v-btn>
-
-        <!-- <v-btn icon>
-          <v-icon>mdi-blinds</v-icon>
-        </v-btn>-->
-
         <div class="my-2">
           <v-btn large color="red darken-1" @click="handleLogout">Logout</v-btn>
         </div>
@@ -266,9 +258,8 @@
           </v-card>
         </v-tab-item>
         <v-tab-item>
-          <v-card flat min-height="90vh">
-            <v-card-text>하이하이</v-card-text>
-          </v-card>
+          <my-wallet-register v-if="!wCheck" @child="setWcheck"></my-wallet-register>
+          <my-wallet-detail v-if="wCheck"></my-wallet-detail>
         </v-tab-item>
       </v-tabs-items>
     </v-card>
@@ -278,9 +269,16 @@
 <script>
 import http from "@/util/http-common.js";
 import authHeader from "@/services/auth-header.js";
+import MyWalletRegister from './MyWalletRegister';
+import MyWalletDetail from './MyWalletDetail';
+import { mapGetters } from 'vuex'
+
 export default {
   name: "GroupMain",
-  components: {},
+  components: {
+    MyWalletRegister,
+    MyWalletDetail
+  },
   data() {
     return {
       tab: null,
@@ -348,11 +346,29 @@ export default {
       nextPayDate: null,
       splitArray: [],
       dayArray: [],
-      endArray: []
+      endArray: [],
+
+      wCheck: false,
     };
   },
   created() {
     this.events = [];
+
+    //내 계좌 정보 가져오기
+    http.get('/token/wallets', { 
+        headers: authHeader() 
+    }).then(({ data }) => {
+      console.log(data);
+      if(data.result == "fail"){
+        this.wCheck = false;
+      }
+      else {
+        this.wCheck = true;
+        this.Wallet.address = data.address;
+        this.Wallet.balance = data.balance;
+      }
+    }),
+
     http
       .get("/party/searchId", {
         params: {
@@ -466,6 +482,9 @@ export default {
   },
 
   methods: {
+    setWcheck(value){
+      this.wCheck = value;
+    },
     viewDay({ date }) {
       this.dialogMemo = true;
       this.pickedDate = date;
@@ -706,7 +725,16 @@ export default {
 
       return year + "-" + month + "-" + date;
     }
-  }
+  },
+
+  computed: {
+      currentUser(){
+        return this.$store.state.auth.user.data;
+      },
+      ...mapGetters(['wCheck'])
+    },
 };
 </script>
-<style></style>
+<style>
+* { font-family: 'NanumSquareRound'; }
+</style>
