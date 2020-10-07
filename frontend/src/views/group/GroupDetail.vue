@@ -331,7 +331,7 @@ export default {
       groupMemo: "",
       group: {},
       memoList: [],
-      regularPay: "50",
+      regularPay: "",
       groupKey: "",
       dialogGetMoney: false,
       amount: "",
