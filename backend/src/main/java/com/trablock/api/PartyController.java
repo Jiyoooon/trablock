@@ -119,14 +119,14 @@ public class PartyController {
 	// 모임등록
 	@ApiOperation(value = "모임 등록")
 	@PostMapping("/party")
-	public Party create(@RequestBody Party party, @RequestParam String privateKey) {
-		System.out.println(party.getMembers().size());
+	public Party create(@RequestBody Party party) {
 
 		partyService.add(party, party.getMembers());
 		Party temp = partyService.get(party.getId());
+		System.out.println(party.toString());
 
 		// smart contract 배포
-		partyContractService.setPartyContract(party, privateKey);
+		partyContractService.setPartyContract(party, party.getPrivatekey());
 
 		return temp;
 	}

@@ -35,10 +35,10 @@
             withdraw_name, withdraw_amount, privatekey, total_amount
         ) values (
             #{name}, #{explanation}, now(), #{target},
-            #{payCycle}, #{payDate}, #{payAmount}, #{image},
-            #{startDate}, #{endDate}, #{destination}, #{available},
+            #{payCycle}, #{pay_date}, #{pay_amount}, #{image},
+            #{start_date}, #{end_date}, #{destination}, #{available},
             #{exitFee}, #{finished}, #{type}, #{withdraw},
-            #{withdraw_name}, #{withdraw_amount}, #{privatekey}, #{totalAmount}
+            #{withdraw_name}, #{withdraw_amount}, #{privatekey}, #{total_amount}
         )
     </insert>
     <!-- Create   -->
@@ -52,11 +52,11 @@
            created = #{created},
            target = #{target},
            pay_cycle = #{payCycle},
-           pay_date = #{payDate},
-           pay_amount = #{payAmount},
+           pay_date = #{pay_date},
+           pay_amount = #{pay_amount},
            image = #{image},
-           start_date = #{startDate},
-           end_date = #{endDate},
+           start_date = #{start_date},
+           end_date = #{end_date},
            destination = #{destination},
            available = #{available},
            exit_fee = #{exitFee},
@@ -66,7 +66,7 @@
     	   withdraw_name = #{withdraw_name},
     	   withdraw_amount = #{withdraw_amount},
     	   privatekey = #{privatekey},
-    	   total_amount = #{totalAmount}
+    	   total_amount = #{total_amount}
         where id = #{id}
     </update>
     <!-- Update    -->
