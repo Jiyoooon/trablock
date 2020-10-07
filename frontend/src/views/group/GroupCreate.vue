@@ -264,9 +264,41 @@
                             <router-link :to="{name: 'groupmain'}" class="text-decoration-none">
                               <v-btn color="amber darken-3" text @click="dialogUser = false"><h3>Close</h3></v-btn>
                             </router-link>
-                              <v-btn color="amber darken-3" text @click="createGroup()"><h3>Save</h3></v-btn>
+                              <v-btn color="amber darken-3" text @click="dialogCreate = true"><h3>Save</h3></v-btn>
                             
                           </v-col>
+                          <v-dialog
+                            v-model="dialogCreate"
+                            max-width="500px"
+                          >
+                            <v-card>
+                              <v-card-title>
+                                모임 계좌를 생성하는 과정입니다.
+                              </v-card-title>
+                              <v-card-text>
+                                <v-text-field
+                                  label="개인키를 입력하세요."
+                                  v-model="groupKey"
+                                ></v-text-field>
+                              </v-card-text>
+                              <v-card-actions>
+                                <v-btn
+                                  color="green"
+                                  text
+                                  @click="createGroup()"
+                                >
+                                  create
+                                </v-btn>
+                                <v-btn
+                                  color="primary"
+                                  text
+                                  @click="dialogCreate = false"
+                                >
+                                  Close
+                                </v-btn>
+                              </v-card-actions>
+                            </v-card>
+                          </v-dialog>
                         </v-row>
                       </v-list-item-content>
                     </v-list-item>
@@ -336,6 +368,8 @@ export default {
         pickedFriend : [],
         pickedFrinedId : [],
         pickedYoilIndex : '',
+        dialogCreate : false,
+        groupKey : '',
       }
     },
   created(){
@@ -439,7 +473,10 @@ export default {
               });
             });
 
-            console.log(this.pickedFrinedId)
+            if(this.groupCycle =='월간'){
+              this.pickedYoilIndex = this.groupPayDate
+            }
+
 
             http.post('/party', 
               {
@@ -457,9 +494,10 @@ export default {
                 destination : this.groupDestinationCountry+" "+this.groupDestinationCity,
                 available : true,
                 exitFee : this.groupExitPay,
-                // finished : this.finished,
-                // type : this.groupType,
+                finished : this.finished,
+                type : false,
                 members : this.pickedFrinedId,
+                privatekey : this.groupKey
               },
               
             ).then(({ data }) => {

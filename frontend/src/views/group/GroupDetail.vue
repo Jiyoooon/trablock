@@ -183,7 +183,7 @@
                         <v-list-item three-line>
                           <v-list-item-content align="left">
                             <v-list-item-title class="headline my-3 mx-2">총 누적금액은 <strong>{{sum}}원</strong>입니다.</v-list-item-title>
-                            <v-list-item-subtitle class="mx-2">2020.10.15까지 <strong>{{group.payAmount}}원</strong>을 입금해야 합니다.</v-list-item-subtitle>
+                            <v-list-item-subtitle class="mx-2">{{nextPayDate}}까지 <strong>{{group.payAmount}}원</strong>을 입금해야 합니다.</v-list-item-subtitle>
                           </v-list-item-content>
                         </v-list-item>
 
@@ -418,6 +418,7 @@ export default {
       }
     },
   created() {
+    this.events = []
     http.get('/party/searchId', {
       params : {
         id : this.$store.state.auth.user.data.id
@@ -443,10 +444,10 @@ export default {
     })
     .then(({data}) => {
       this.group = data
-      if(data.withdraw) {
+      console.log(data)
+      if(data.withdraw && data.withdraw_name != this.$store.state.auth.user.data.nickname) {
         this.rich = this.group.withdraw_name
         this.richAmount = this.group.withdraw_amount
-        console.log(data)
         var ok = confirm(data.withdraw_name+"이 "+data.withdraw_amount+"의 출금을 요청합니다.")
         
         if(ok){
@@ -468,6 +469,16 @@ export default {
         }
       }
 
+      if(this.group.startDate != null){
+        this.events.push({
+          id: 0,
+          name: this.group.destination,
+          start: this.group.startDate.substr(0, 10),
+          end: this.group.endDate,
+          color: "green",
+        })
+      }
+
       this.sum = Number(this.sum)
       this.group.memberlist.forEach(element => {
         this.sum += Number(element.payment)
@@ -487,7 +498,6 @@ export default {
 
       //다음 납부 날짜 계산하기
       this.nextPayDate = this.calculateNextPayDate();
-      alert(this.nextPayDate)
     })
 
     //메모 리스트 가져오기
@@ -498,6 +508,15 @@ export default {
       headers: authHeader()
     }).then(({data}) => {
       this.memoList = data.data
+      this.memoList.forEach(element => {
+        this.events.push({
+          id: 0,
+          name: '',
+          start: element.date.substr(0, 10),
+          end: element.date,
+          color: "amber",
+        })
+      });
     })
   },
 
@@ -540,30 +559,7 @@ export default {
 
         nativeEvent.stopPropagation()
       },
-      updateRange () {
-        const events = [];
-        if(this.group.startDate != null){
-          events.push({
-            id: 0,
-            name: 'travel',
-            start: this.group.startDate,
-            end: this.group.endDate,
-            color: "green",
-          })
-        }
-
-        this.memoList.forEach(element => {
-          events.push({
-            id: 0,
-            name: 'memo',
-            start: element.date,
-            end: element.date,
-            color: "amber",
-          })
-
-        });
-        this.events = events
-      },
+      
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
       },
@@ -583,7 +579,7 @@ export default {
         if(data.result == "success"){
           alert("저장이 완료되었습니다.")
           this.dialogMemo = false
-          this.$router.go;
+          this.$router.go()
         }
       })
     },
@@ -628,7 +624,7 @@ export default {
       //  2-1) 사이클이 주 인 경우 -> 요일
       //  2-2) 사이클이 월 인 경우 -> 특정일(1~28로 제한)
       // 3. 오늘 날짜
-      var endDate = this.group.endDate; // yyyy-mm-dd
+      var endDate = this.group.finished; // yyyy-mm-dd
       var today = this.getTimeStamp(); // yyyy-mm-dd
       var cycleIsWeek = this.group.payCycle; // False : 월단위, True : 주단위
       var cycle = this.group.payDate; // F : 1~28, 주 : 0(일) ~ 6(토)
@@ -666,7 +662,7 @@ export default {
             this.splitArray[0] += 1;
             this.splitArray[1] = 0;
           }
-          result = this.splitArray[0] + "-" + (this.splitArray[1] + 1) + "-" + cycle; // 오늘 날짜(년, <월 + 1달 후>) + 일(특정일자)
+          result = this.splitArray[0] + "-" + (Number(this.splitArray[1]) + 1) + "-" + cycle; // 오늘 날짜(년, <월 + 1달 후>) + 일(특정일자)
 
           if (!this.isEnd(result, endDate)) {
             // 계산된 정산일이 종료일 전이라면 계산한 날짜 반환
