@@ -74,14 +74,13 @@ public class WalletService implements IWalletService
 		// 주소로 정보검색 요청
 		BigInteger updatedBalance = ethereumService.getBalance(walletAddress);
 
+		wallet.setTBC(new BigDecimal(cashContractService.getBalance(wallet.getAddress())));
 		// 잔액정보가 불일치하면 업데이트
 		if (updatedBalance != wallet.getBalance().toBigInteger()) {
 			wallet.setBalance(new BigDecimal(updatedBalance.toString()));
-
 			//db에 지갑 잔액 업데이트
-			walletRepository.update(wallet);
 		}
-
+		walletRepository.update(wallet);
 		return wallet;
 	}
 
@@ -94,14 +93,13 @@ public class WalletService implements IWalletService
 		// 주소로 정보검색 요청
 		BigInteger updatedBalance = ethereumService.getBalance(address);
 
+		wallet.setTBC(new BigDecimal(cashContractService.getBalance(wallet.getAddress())));
 		// 잔액정보가 불일치하면 업데이트
 		if (updatedBalance != wallet.getBalance().toBigInteger()) {
 			wallet.setBalance(new BigDecimal(updatedBalance.toString()));
-
 			//db에 지갑 잔액 업데이트
-			walletRepository.update(wallet);
 		}
-
+		walletRepository.update(wallet);
 		return wallet;
 	}
 
