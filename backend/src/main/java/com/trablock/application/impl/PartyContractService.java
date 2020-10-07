@@ -122,6 +122,7 @@ public class PartyContractService implements IPartyContractService {
 	}
 	
 	public void pay(long userId, long partyId, String privateKey, long value) {
+		walletService.changeTBC((int)value, privateKey);
 		Credentials credentials = Credentials.create(privateKey);		// 사용자에게 입력받는 개인키
 		try {
 			CashContract cashContract = CashContract.load(ERC20_TOKEN_CONTRACT, web3j, credentials, contractGasProvider);
