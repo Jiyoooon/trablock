@@ -89,7 +89,8 @@ export default {
         },
         Wallet : {
           address: "",
-          balance: ""
+          balance: "",
+          TBC: ""
         },
         dialog: false,
 
@@ -130,6 +131,7 @@ export default {
         console.log(data.address+", "+data.balance);
         this.Wallet.address = data.address;
         this.Wallet.balance = data.balance;
+        this.Wallet.TBC = Number(data.tbc);
         this.dialogPK = true;
 
         // this.$dialog.notify.success("계좌 생성에 성공했습니다! 😃", {

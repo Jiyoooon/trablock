@@ -156,7 +156,8 @@ export default {
         },
         Wallet : {
           address: "",
-          balance: ""
+          balance: "",
+          TBC: ""
         },
         dialog: false,
 
@@ -186,6 +187,7 @@ export default {
         this.wCheck = true;
         this.Wallet.address = data.address;
         this.Wallet.balance = data.balance;
+        this.Wallet.TBC = Number(data.tbc);
       }
     })
 
