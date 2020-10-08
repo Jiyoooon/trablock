@@ -324,7 +324,7 @@ export default {
         "Conference",
         "Party"
       ],
-
+      Wallet:{},
       dialogPay: false,
       dialogMemo: false,
       pickedDate: "",
@@ -366,6 +366,7 @@ export default {
         this.wCheck = true;
         this.Wallet.address = data.address;
         this.Wallet.balance = data.balance;
+        this.Wallet.TBC = Number(data.tbc);
       }
     }),
 
