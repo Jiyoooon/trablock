@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.WalletFile;
 import org.web3j.crypto.WalletUtils;
 
 import java.io.File;
@@ -73,14 +74,13 @@ public class WalletService implements IWalletService
 		// 주소로 정보검색 요청
 		BigInteger updatedBalance = ethereumService.getBalance(walletAddress);
 
+		wallet.setTBC(new BigDecimal(cashContractService.getBalance(wallet.getAddress())));
 		// 잔액정보가 불일치하면 업데이트
 		if (updatedBalance != wallet.getBalance().toBigInteger()) {
 			wallet.setBalance(new BigDecimal(updatedBalance.toString()));
-
 			//db에 지갑 잔액 업데이트
-			walletRepository.update(wallet);
 		}
-
+		walletRepository.update(wallet);
 		return wallet;
 	}
 
@@ -93,14 +93,13 @@ public class WalletService implements IWalletService
 		// 주소로 정보검색 요청
 		BigInteger updatedBalance = ethereumService.getBalance(address);
 
+		wallet.setTBC(new BigDecimal(cashContractService.getBalance(wallet.getAddress())));
 		// 잔액정보가 불일치하면 업데이트
 		if (updatedBalance != wallet.getBalance().toBigInteger()) {
 			wallet.setBalance(new BigDecimal(updatedBalance.toString()));
-
 			//db에 지갑 잔액 업데이트
-			walletRepository.update(wallet);
 		}
-
+		walletRepository.update(wallet);
 		return wallet;
 	}
 
@@ -110,30 +109,29 @@ public class WalletService implements IWalletService
 	 * @return
 	 */
 	@Override
-	public Wallet register(final String userId) {
-		String walletPassword = this.userRepository.selectPassword(userId);
-		String walletDirectory = "./src/main/resources/wallet";
+	public Wallet register(final Wallet wallet) {
+//		String walletPassword = this.userRepository.selectPassword(wallet.getOwnerId());
+//		String walletDirectory = "./src/main/resources/wallet";
 
-		String walletName = null;
-		try {
-			walletName = WalletUtils.generateNewWalletFile(walletPassword, new File(walletDirectory));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("wallet location: " + walletDirectory + "/" + walletName);
+//		String walletName = null;
+//		try {
+//			walletName = WalletUtils.generateNewWalletFile(walletPassword, new File(walletDirectory));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println("wallet location: " + walletDirectory + "/" + walletName);
+//
+//		Credentials credentials = null;
+//		try {
+//			credentials = WalletUtils.loadCredentials(walletPassword, walletDirectory + "/" + walletName);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 
-		Credentials credentials = null;
-		try {
-			credentials = WalletUtils.loadCredentials(walletPassword, walletDirectory + "/" + walletName);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		String accountAddress = credentials.getAddress();
-		System.out.println("Account address: " + credentials.getAddress());
-
-		
-		Wallet wallet = new Wallet(Long.parseLong(userId), accountAddress, new BigDecimal(0));
+//		String accountAddress = credentials.getAddress();
+//		System.out.println("Account address: " + credentials.getAddress());
+//
+//		Wallet wallet = new Wallet(Long.parseLong(userId), accountAddress, new BigDecimal(0));
 		this.walletRepository.create(wallet);
 
 		return get(wallet.getOwnerId());
@@ -173,6 +171,9 @@ public class WalletService implements IWalletService
 		
 		return get(wallet.getAddress());
 	}
-	
-	
+
+	@Override
+	public void changeTBC(int value, String privatekey) {
+		cashContractService.buy(value, privatekey);
+	}
 }

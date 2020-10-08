@@ -9,24 +9,15 @@
       >
         <div align="center" justify="center">
           <v-toolbar-title>
-            <h1 class="my-15 mx-15">TRABLOCK</h1>
+            <router-link  :to="{name: 'groupmain'}" class="text-decoration-none">
+              <h1 class="my-15 mx-15" style="color:white;">TRABLOCK</h1>
+            </router-link>
           </v-toolbar-title>
         </div>
         <v-spacer></v-spacer>
 
-        <v-btn icon>
-          <v-icon>mdi-account-outline</v-icon>
-        </v-btn>
-
-        <v-btn icon>
-          <v-icon>mdi-blinds</v-icon>
-        </v-btn>
-
         <div class="my-2">
-          <router-link
-            :to="{path: 'group'}">
-            <v-btn large color="green darken-1">Blog</v-btn>
-          </router-link>
+            <v-btn large color="red darken-1" @click="handleLogout">Logout</v-btn>
         </div>
 
         <template v-slot:extension>
@@ -45,19 +36,6 @@
       <v-tabs-items v-model="tab">
         <v-tab-item>
           <v-card flat min-height="90vh">
-            <v-row>
-              <v-col align="right">
-                <router-link :to="{path: 'group/create'}" class="text-decoration-none">
-                <v-btn 
-                  rounded color="grey" dark
-                  class="mx-5"
-                >
-                  <v-icon dark>mdi-plus</v-icon>            
-                </v-btn></router-link>
-              </v-col>
-              
-            </v-row>
-
             <v-navigation-drawer
               v-model="drawer"
               :expand-on-hover="expandOnHover"
@@ -80,189 +58,60 @@
 
                 <v-divider></v-divider>
 
+                <div v-if="groups.length == 0" class="mt-3">등록한 모임이 없습니다. </div>
                 <v-list-item
                   v-for="item in groups"
                   :key="item.title"
                   link :to="{name: 'groupdetail',query: { groupId: item.id }}"
                 >
                   <v-list-item-icon>
-                    <v-icon>{{ item.icon }}</v-icon>
+                    <v-icon>mdi-view-dashboard</v-icon>
                   </v-list-item-icon>
 
                   <v-list-item-content>
-                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                    <v-list-item-title>{{ item.name }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
             </v-navigation-drawer>
-            <v-card min-height="40vh" class="mx-15">
-              <h1>HOW TO USE TRABLCOK</h1>
+
+            <v-card min-height="90vh" class="mx-15">
+              <v-row class="fill-height"></v-row>
+
+              <v-row class="fill-height">
+                <v-col cols="12" sm="3"></v-col>
+                <v-col cols="12" sm="9">
+                  <v-row>
+                    <v-col align="right">
+                      <!--<router-link :to="{path: 'group/create'}" class="text-decoration-none">-->
+                        <v-btn @click="goMakeGroup()"
+                          rounded color="grey" dark
+                          class="mx-5"
+                        >
+                        <v-icon dark>mdi-plus</v-icon>            
+                      </v-btn>
+                      <!--</router-link>-->
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col align="center">
+                      <h1>그룹 페이지 입니다 :)</h1>
+                      <br>
+                      <h3>친구들과</h3>
+                      <h3>모임을 만들고</h3>
+                      <h3>여행 계획을 세워보세요!</h3>
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-row>
             </v-card>
+
           </v-card>
         </v-tab-item>
         <v-tab-item>
-          <v-row v-if="wCheck==true">
-            <v-col cols="2">
-                    <v-card class="mx-auto">
-                        <v-card-subtitle class="pt-5 pb-0 text-center text-h5">사용자 정보</v-card-subtitle>
-                        <v-card-text class="grey--text text-center pb-0">
-                        <div>{{U.email}}</div>
-                        </v-card-text>
-                        <v-card-text class="grey--text text-center">
-                            <v-divider></v-divider>
-                            <v-row>
-                                <v-col cols="5" class="text-left py-1 pl-5">닉네임</v-col>
-                                <v-col cols="7" class="text-right py-1 pr-5">{{U.nickname}}</v-col>
-                            </v-row>
-                            <v-divider></v-divider>
-                            <v-row>
-                                <v-col cols="5" class="text-left py-1 pl-5 pr-0">가입일</v-col>
-                                <v-col cols="7" class="text-right py-1 pr-5 pl-0">{{U.created}}</v-col>
-                            </v-row>
-                            <v-divider></v-divider>
-                        </v-card-text>
-                        <v-card-actions class="d-flex justify-end pt-0">
-                            <v-btn color="blue" text small class="font-weight-bold" @click.stop="dialog = true">update</v-btn>
-                            <!-- 수정모달 -->
-                            <v-dialog v-model="dialog" max-width="400">
-                                  <v-card>
-                                    <v-card-title class="headline">Edit Profile</v-card-title>
-                                    <v-card-text class="pb-0">
-                                      <v-col cols="12" class="py-0 mt-10">
-                                        <v-text-field
-                                          label="Nickname" :placeholder="U.nickname" v-model="U.nickname"
-                                          filled rounded dense></v-text-field>
-                                      </v-col>
-                                      <v-col cols="12" class="py-0">
-                                        <v-text-field
-                                          type="password"
-                                          label="Password" :placeholder="U.password" v-model="U.password"
-                                          hint="이전 비밀번호 혹은 변경할 비밀번호를 입력해주세요(필수)"
-                                          :rules="[v => !!v  || 'Password is required', v => v.length >= 5 || 'Password is too short']"
-                                          required
-                                          persistent-hint                                          
-                                          filled rounded dense></v-text-field>
-                                      </v-col>
-                                    </v-card-text>
-
-                                    <v-card-actions class="pt-5">
-                                      <v-spacer></v-spacer>
-                                      <v-btn color="orange" text @click="editProfile" >Edit</v-btn>
-                                      <v-btn color="grey" text @click="dialog = false" >Close</v-btn>
-                                    </v-card-actions>
-                                  </v-card>
-                                </v-dialog>
-                        </v-card-actions>
-                    </v-card>
-                    <!-- <v-card class="mx-auto mt-5">
-                        <div v-if="mygroups.length >= 1">
-                            <v-expansion-panels accordion>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>Groups</v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-row  v-for="(item,i) in mygroups" :key="i">
-                                    <v-col cols="5" class="d-flex justify-center py-1 pl-5">
-                                        <v-card :color="item.clColor" class="transparent--text text-right" height="20" style="width:20px;">색</v-card>
-                                    </v-col>
-                                    <v-col cols="7" class="text-left text-caption py-1 pr-5 text-truncate pl-0">{{ item.clName }}</v-col>
-                                </v-row>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            </v-expansion-panels>
-                        </div>
-                        <div v-else>
-                            <v-expansion-panels accordion>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>Groups</v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-row>
-                                        <v-col cols="12" class="grey--text text-caption text-center">가입한 그룹이 없습니다 :)</v-col>
-                                    </v-row>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            </v-expansion-panels>
-                        </div>
-                    </v-card> -->
-                    <v-card class="mx-auto mt-2">
-                        <v-expansion-panels accordion>
-                        <v-expansion-panel>
-                            <v-expansion-panel-header>more...</v-expansion-panel-header>
-                            <v-expansion-panel-content class="px-0">
-                                <v-row class="text-center">
-                                    <v-col cols="12" class="py-0">
-                                        <v-btn small color="orange" @click="logOut" block dark>Log out</v-btn>                                   
-                                    </v-col>
-                                    <v-col cols="12">
-                                        <v-btn small color="red" block dark @click.stop="dialogforwithdraw = true">withdraw</v-btn>                                   
-                                    </v-col>
-                                    <v-dialog v-model="dialogforwithdraw" max-width="290" >
-                                          <v-card>
-                                            <v-card-title class="headline">Alert</v-card-title>
-                                            <v-card-text>
-                                              정말 탈퇴하시겠습니까?
-                                            </v-card-text>
-
-                                            <v-card-actions>
-                                              <v-spacer></v-spacer>
-
-                                              <v-btn color="red" text @click="confirmwithdraw" >
-                                                Yes
-                                              </v-btn>
-
-                                              <v-btn color="grey" text @click="dialogforwithdraw = false" >
-                                                No
-                                              </v-btn>
-                                            </v-card-actions>
-                                          </v-card>
-                                        </v-dialog>
-                                </v-row>
-                            </v-expansion-panel-content>
-                        </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-card>
-                </v-col>
-                <v-col cols="10">
-                    <v-card class="mx-auto" height="71vh">
-                      <v-container>
-                        <v-row>
-            <v-col cols="12" class="py-1 text-h5">PROFILE</v-col>
-            <v-col cols="12" class="py-1 text-h4 font-weight-bold">MY Wallet</v-col>
-          </v-row>
-          <v-row class="mt-10">
-            <v-col cols="12" class="py-1 text-h6">wallet 이름</v-col>
-            <v-col cols="4" class="ml-1 mt-3">
-                <img src="@/assets/user.png" alt="user-image" class="profile-image">
-            </v-col>
-            <br>
-            <v-col cols="12">
-              <v-simple-table dense>
-                <template v-slot:default>
-                  <tbody>
-                  <tr>
-                      <td>지갑 주소</td>
-                      <td>{{Wallet.address}}</td>
-                    </tr>
-                    <tr>
-                      <td>잔액</td>
-                      <td>{{Wallet.balance}}</td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>              
-            </v-col>
-          </v-row>
-                      </v-container>
-                    </v-card>
-                </v-col>
-          </v-row>
-
-          <v-row v-else>
-            <v-col cols="12">
-            <v-card class="mx-auto" flat min-height="70vh">
-              <v-btn color="blue" text small class="font-weight-bold" @click="createWallet">계좌 생성</v-btn>
-            </v-card>
-            </v-col>
-          </v-row>
+          <!--<component :is="wCheck ? 'MyWalletDetail' : 'MyWalletRegister'"></component> -->
+          <my-wallet-register v-if="!wCheck" @child="setWcheck"></my-wallet-register>
+          <my-wallet-detail v-if="wCheck"></my-wallet-detail>
         </v-tab-item>
       </v-tabs-items>                        
     </v-card>
@@ -271,10 +120,19 @@
 
 <script>
 import http from "@/util/http-common.js";
+// import Web3 from 'web3';
+import authHeader from '@/services/auth-header.js';
+import MyWalletRegister from './MyWalletRegister';
+import MyWalletDetail from './MyWalletDetail';
+import { mapGetters } from 'vuex'
+// var web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/98aa6777fadd45949e67403767091144"));
+// var web3 = new Web3(new Web3.providers.HttpProvider('https://api.infura.io/v1/jsonrpc/ropsten'));
+// var web3 = new Web3(new Web3.providers.HttpProvider('http://j3a101.p.ssafy.io/geth'));
 export default {
   name: 'GroupMain',
   components: {
-    
+    MyWalletRegister,
+    MyWalletDetail
   },
   data () {
       return {
@@ -291,26 +149,52 @@ export default {
 
         // 프로필 수정
         U: {
-          email: 'kimin0412@gmail.com',
-          password: '123456',
-          nickname: '김민지',
-          created: "2020-09-23"
+          email: '',
+          password: '',
+          nickname: '',
+          created: ""
         },
         Wallet : {
-          address: "dasdasdasd",
-          balance: "10ETH"
+          address: "",
+          balance: "",
+          TBC: ""
         },
         dialog: false,
 
-        wCheck: true,
-        // wCheck: false,
+        // wCheck: true,
+        wCheck: false,
+        access_token: this.$store.state.auth.user.accessToken,
+
+        privateKey: '',
+        dialogPK: false,
+        btnName: "copy"
       }
     },
   created(){
+    this.U.email = this.$store.state.auth.user.email;
+    this.U.password = this.$store.state.auth.user.password
+    this.U.nickname= this.$store.state.auth.user.nickname
+
+    //내 계좌 정보 가져오기
+    http.get('/token/wallets', { 
+        headers: authHeader() 
+    }).then(({ data }) => {
+      console.log(data);
+      if(data.result == "fail"){
+        this.wCheck = false;
+      }
+      else {
+        this.wCheck = true;
+        this.Wallet.address = data.address;
+        this.Wallet.balance = data.balance;
+        this.Wallet.TBC = Number(data.tbc);
+      }
+    })
+
     // 모임 가져오기
     http.get('/party/searchId', {
       params : {
-        id : 1 //사용자 id로 바꿔줘야해.
+        id : this.$store.state.auth.user.data.id
       }
     }).then(({ data }) => {
       this.groups = data;
@@ -327,20 +211,35 @@ export default {
   },
   
   methods: {
-    createWallet() {
-
+    goMakeGroup(){
+      if(!this.wCheck){
+        this.$dialog.notify.error("개인 계좌를 먼저 만들어주세요!", {
+          position: "bottom-right", timeout: 3000, });
+      }else this.$router.push('/group/create')
+    },
+    setWcheck(value){
+      this.wCheck = value;
     },
 
     editProfile() {
           
-        },
-    logOut() {
-        this.$store.dispatch('auth/logout');
-        this.$router.go();
-      },
+    },
+
+    handleLogout() {
+      this.$store.dispatch('auth/logout');
+      this.$router.push('/');
+    },
+    
   },
+
+  computed: {
+      currentUser(){
+        return this.$store.state.auth.user.data;
+      },
+      ...mapGetters(['wCheck'])
+    },
 };
 </script>
 <style>
-
+* { font-family: 'NanumSquareRound'; }
 </style>

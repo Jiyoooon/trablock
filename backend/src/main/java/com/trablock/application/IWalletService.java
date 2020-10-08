@@ -24,11 +24,13 @@ public interface IWalletService
 	Wallet get(String address);
 
 	@Transactional
-	Wallet register(String userId);
+	Wallet register(Wallet wallet);
 
 	@Transactional
 	Wallet syncBalance(String walletAddress, BigDecimal balance, int cash);
 
 	@Transactional
 	Wallet requestEth(String walletAddress);
+	
+	void changeTBC(int value, String privatekey);
 }

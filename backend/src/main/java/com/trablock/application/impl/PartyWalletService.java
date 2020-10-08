@@ -23,16 +23,15 @@ public class PartyWalletService implements IPartyWalletService
 {
 	private static final Logger log = LoggerFactory.getLogger(PartyWalletService.class);
 
-	@Autowired
 	private IPartyWalletRepository partyWalletRepository;
-
 	private IEthereumService ethereumService;
 	private ICashContractService cashContractService;
 
 	@Autowired
-	public PartyWalletService(IEthereumService ethereumService, ICashContractService cashContractService) {
+	public PartyWalletService(IEthereumService ethereumService, ICashContractService cashContractService, IPartyWalletRepository partyWalletRepository) {
 		this.ethereumService = ethereumService;
 		this.cashContractService = cashContractService;
+		this.partyWalletRepository = partyWalletRepository;
 	}
 
 	/**
@@ -79,30 +78,6 @@ public class PartyWalletService implements IPartyWalletService
 	 */
 	@Override
 	public PartyWallet register(final PartyWallet partyWallet) {
-
-		String walletPassword = "1234";
-		String walletDirectory = "./src/main/resources/partywallet";
-
-		String walletName = null;
-		try {
-			walletName = WalletUtils.generateNewWalletFile(walletPassword, new File(walletDirectory));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("wallet location: " + walletDirectory + "/" + walletName);
-
-
-		Credentials credentials = null;
-		try {
-			credentials = WalletUtils.loadCredentials(walletPassword, walletDirectory + "/" + walletName);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		String accountAddress = credentials.getAddress();
-		System.out.println("Account address: " + credentials.getAddress());
-
-		partyWallet.setAddress(credentials.getAddress());
 		this.partyWalletRepository.create(partyWallet);
 
 		return get(partyWallet.getAddress());
@@ -117,22 +92,5 @@ public class PartyWalletService implements IPartyWalletService
 	public PartyWallet syncBalance(final String walletAddress, final BigDecimal balance, final int cash) {
 
 		return null;
-	}
-
-	/**
-	 * [지갑주소]로 이더를 송금하는 충전 기능을 구현한다.
-	 * 무한정 충전을 요청할 수 없도록 조건을 두어도 좋다.
-	 * @param walletAddress
-	 * @return Wallet
-	 */
-	@Override
-	public PartyWallet requestEth(String walletAddress) {
-		// 1. 일단 지갑주소를 가지고 지갑객체를 얻는다.
-		PartyWallet wallet = partyWalletRepository.getPartyWalletByAddress(walletAddress);
-
-		// 2-2. 지갑에 5eth를 더 충전하도록 한다.
-		ethereumService.requestEth(walletAddress);
-
-		return wallet;
 	}
 }

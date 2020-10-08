@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Main from "../views/Main.vue";
 import groupMain from "../views/group/GroupMain.vue";
 import groupCreate from "../views/group/GroupCreate.vue";
+import groupDetail from "../views/group/GroupDetail.vue";
 
 // post
 import postMain from "../views/post/PostMain.vue";
@@ -23,17 +24,56 @@ Vue.use(VueRouter)
       path: "/",
       name: "main",
       component: Main,
+      beforeEnter(from, to, next) {
+        console.log(auth.state.status.loggedIn);
+        if (auth.state.status.loggedIn) {
+          alert('이미 로그인 상태입니다.')
+          next('/group')
+        } else {
+          next()
+        }
+      }
     },
     {
       path: "/group",
       name: "groupmain",
       component: groupMain,
+      beforeEnter(from, to, next) {
+        if (!auth.state.status.loggedIn) {
+          alert("로그인 후 이용해주세요!");
+          next('/')
+        } else {
+          next()
+        }
+      }
     },
     
     {
       path: "/group/create",
       name: "groupcreate",
       component: groupCreate,
+      beforeEnter(from, to, next) {
+        if (!auth.state.status.loggedIn) {
+          alert("로그인 후 이용해주세요!");
+          next('/')
+        } else {
+          next()
+        }
+      }
+    },
+
+    {
+      path: "/group/detail",
+      name: "groupdetail",
+      component: groupDetail,
+      beforeEnter(from, to, next) {
+        if (!auth.state.status.loggedIn) {
+          alert("로그인 후 이용해주세요!");
+          next('/')
+        } else {
+          next()
+        }
+      }
     },
 
     // post
@@ -65,7 +105,8 @@ Vue.use(VueRouter)
       component: Profile,
       beforeEnter(from, to, next) {
         if (!auth.state.status.loggedIn) {
-          next('/auth')
+          alert("로그인 후 이용해주세요!");
+          next('/')
         } else {
           next()
         }

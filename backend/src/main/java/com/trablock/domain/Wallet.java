@@ -14,7 +14,7 @@ public class Wallet {
 	private String address;
 	private BigDecimal balance = BigDecimal.valueOf(0);
 	private int receivingCount = 0;
-	private int cash = 0;
+	private BigDecimal TBC = BigDecimal.valueOf(0);
 
 	public Wallet(){}
 	public Wallet(long ownerId,String address, BigDecimal balance){
@@ -62,15 +62,20 @@ public class Wallet {
 		this.receivingCount = receivingCount;
 	}
 
-	public int getCash() {
-		return cash;
+	public BigDecimal getTBC() {
+		return TBC;
 	}
-
-	public void setCash(int cash) {
-		this.cash = cash;
+	public void setTBC(BigDecimal tBC) {
+		TBC = tBC;
 	}
-
 	public boolean canRequestEth(){
 		return this.receivingCount < 10;
 	}
+	@Override
+	public String toString() {
+		return "Wallet [id=" + id + ", ownerId=" + ownerId + ", address=" + address + ", balance=" + balance
+				+ ", receivingCount=" + receivingCount + ", TBC=" + TBC + "]";
+	}
+	
+	
 }

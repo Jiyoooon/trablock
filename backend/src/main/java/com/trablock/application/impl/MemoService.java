@@ -60,6 +60,11 @@ public class MemoService implements IMemoService {
 	}
 
 	@Override
+	public Memo searchMemoByDate(Memo memo) throws BadRequestException {
+		return memoRepository.selectMemoByDate(memo);
+	}
+
+	@Override
 	public List<Memo> searchMemoByParty(long partyId, long userId) throws BadRequestException{
 		if(memoRepository.isUserInParty(userId, partyId) == 0)
 			throw new BadRequestException("내 모임의 메모만 조회 가능");

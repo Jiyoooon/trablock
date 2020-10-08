@@ -13,6 +13,7 @@ public interface IMemoRepository {
 	public int deleteMemo(long memoId);
 	public List<Memo> selectMemoByParty(long partyId);
 	public Memo selectMemoById(long memoId);
+	public Memo selectMemoByDate(Memo memo);
 	
 	public int isUserInParty(long userId, long partyId);
 }

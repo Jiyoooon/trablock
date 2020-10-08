@@ -1,7 +1,10 @@
 import axios from 'axios';
+import authHeader from '@/services/auth-header.js';
 
-// const API_URL = 'http://j3a101.p.ssafy.io/api/user/';
-const API_URL = 'http://localhost:8080/api/user/';
+const API_URL = 'http://j3a101.p.ssafy.io/api/user/';
+const API_URL2 = 'http://j3a101.p.ssafy.io/api'
+// const API_URL = 'http://localhost:8080/api/user/';
+// const API_URL2 = 'http://localhost:8080/api'
 // id, email, password, created, nickname
 class AuthService {
   login(user) {
@@ -11,8 +14,10 @@ class AuthService {
         password: user.password
       })
       .then(response => {
-        if (response.data.accessToken) {
+        
+        if (response.data) {
           localStorage.setItem('user', JSON.stringify(response.data));
+          localStorage.setItem('token', response.headers.token);
         }
         if(response.status == 401){
           //console.log();
@@ -47,6 +52,16 @@ class AuthService {
       }
       
     });
+  }
+
+  withdraw() {
+    return axios.delete(API_URL2 + '/token/wallets',
+     {//header 
+      headers: authHeader() 
+      }).then(({ data }) => {
+        console.log(data);
+        localStorage.removeItem('user');
+    })
   }
 }
 
