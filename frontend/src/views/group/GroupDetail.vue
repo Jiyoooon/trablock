@@ -238,7 +238,7 @@
                               <tr v-for="(item, i) in group.memberlist" :key="i">
                                 <td>{{ item.name }}</td>
                                 <td>{{ item.payment }}원</td>
-                                <td v-if="item.isPay">O</td>
+                                <td v-if="item.ispay">O</td>
                                 <td v-else>X</td>
                                 <td v-if="item.warning">X</td>
                                 <td v-else>O</td>
