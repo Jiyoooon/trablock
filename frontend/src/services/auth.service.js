@@ -1,10 +1,10 @@
 import axios from 'axios';
 import authHeader from '@/services/auth-header.js';
 
-// const API_URL = 'http://j3a101.p.ssafy.io/api/user/';
-// const API_URL2 = 'http://j3a101.p.ssafy.io/api'
-const API_URL = 'http://localhost:8080/api/user/';
-const API_URL2 = 'http://localhost:8080/api'
+const API_URL = 'http://j3a101.p.ssafy.io/api/user/';
+const API_URL2 = 'http://j3a101.p.ssafy.io/api'
+// const API_URL = 'http://localhost:8080/api/user/';
+// const API_URL2 = 'http://localhost:8080/api'
 // id, email, password, created, nickname
 class AuthService {
   login(user) {

@@ -142,13 +142,15 @@
                             </v-list-item-title>
 
                             <v-progress-linear
-                              v-model="gage"
+                              :value="gage"
                               color="amber"
                               height="25"
                               style="margin-bottom:5px"
                             >
                               <template :v-slot="50">
-                                <strong style="color:gray">{{group.totalAmount}} / {{ group.target }}</strong>
+                                <strong
+                                  style="color:gray"
+                                >{{group.totalAmount}} / {{ group.target }}</strong>
                               </template>
                             </v-progress-linear>
 
@@ -181,21 +183,6 @@
                                 {{ item }}
                                 <span v-if="i != badMember.length - 1">,</span>
                               </span>님이 아직 미납하였습니다.
-                            </span>
-                          </h4>
-                          <h4 class="mx-8 my-3">
-                            <span v-if="rich.length > 0">
-                              <v-icon color="red" class="mr-2">mdi-cancel</v-icon>
-                              <span v-for="(item, i) in realBadMember" :key="i">
-                                {{ item }}
-                                <span v-if="i != realBadMember.length - 1">,</span>
-                              </span>님은 미납한 경험이 있는 회원입니다.
-                            </span>
-                          </h4>
-                          <h4 class="mx-8 my-3">
-                            <span v-if="realBadMember.length > 0">
-                              <v-icon color="red" class="mr-2">mdi-cancel</v-icon>
-                              {{rich}}님이 미납한 경험이 있는 회원입니다.
                             </span>
                           </h4>
                         </v-card>
@@ -281,9 +268,9 @@
 <script>
 import http from "@/util/http-common.js";
 import authHeader from "@/services/auth-header.js";
-import MyWalletRegister from './MyWalletRegister';
-import MyWalletDetail from './MyWalletDetail';
-import { mapGetters } from 'vuex'
+import MyWalletRegister from "./MyWalletRegister";
+import MyWalletDetail from "./MyWalletDetail";
+import { mapGetters } from "vuex";
 
 export default {
   name: "GroupMain",
@@ -293,7 +280,7 @@ export default {
   },
   data() {
     return {
-      gage:0,
+      gage: 0,
       tab: null,
       drawer: true,
       groups: [],
@@ -337,7 +324,7 @@ export default {
         "Conference",
         "Party"
       ],
-      Wallet:{},
+      Wallet: {},
       dialogPay: false,
       dialogMemo: false,
       pickedDate: "",
@@ -361,46 +348,46 @@ export default {
       dayArray: [],
       endArray: [],
 
-      wCheck: false,
+      wCheck: false
     };
   },
   created() {
     this.events = [];
 
     //내 계좌 정보 가져오기
-    http.get('/token/wallets', { 
-        headers: authHeader() 
-    }).then(({ data }) => {
-      console.log(data);
-      if(data.result == "fail"){
-        this.wCheck = false;
-      }
-      else {
-        this.wCheck = true;
-        this.Wallet.address = data.address;
-        this.Wallet.balance = data.balance;
-        this.Wallet.TBC = Number(data.tbc);
-      }
-    }),
-
     http
-      .get("/party/searchId", {
-        params: {
-          id: this.$store.state.auth.user.data.id
-        }
+      .get("/token/wallets", {
+        headers: authHeader()
       })
       .then(({ data }) => {
-        this.groups = data;
-      })
-      .catch(error => {
-        if (error.response) {
-          this.$router.push("servererror");
-        } else if (error.request) {
-          this.$router.push("error");
+        console.log(data);
+        if (data.result == "fail") {
+          this.wCheck = false;
         } else {
-          this.$router.push("/404");
+          this.wCheck = true;
+          this.Wallet.address = data.address;
+          this.Wallet.balance = data.balance;
+          this.Wallet.TBC = Number(data.tbc);
         }
-      });
+      }),
+      http
+        .get("/party/searchId", {
+          params: {
+            id: this.$store.state.auth.user.data.id
+          }
+        })
+        .then(({ data }) => {
+          this.groups = data;
+        })
+        .catch(error => {
+          if (error.response) {
+            this.$router.push("servererror");
+          } else if (error.request) {
+            this.$router.push("error");
+          } else {
+            this.$router.push("/404");
+          }
+        });
 
     // 모임 정보 가져오기
     http
@@ -412,7 +399,7 @@ export default {
       .then(({ data }) => {
         this.group = data;
         this.regularPay = this.group.payAmount;
-        this.gage = this.group.totalAmount / this.group.target * 100;
+        this.gage = (this.group.totalAmount / this.group.target) * 100;
         console.log(data);
         if (
           data.withdraw &&
@@ -458,7 +445,6 @@ export default {
 
         this.sum = this.group.totalAmount;
         this.group.memberlist.forEach(element => {
-
           if (element.ispay) {
             this.goodMember.push(element.name);
           } else {
@@ -497,7 +483,7 @@ export default {
   },
 
   methods: {
-    setWcheck(value){
+    setWcheck(value) {
       this.wCheck = value;
     },
     viewDay({ date }) {
@@ -743,13 +729,15 @@ export default {
   },
 
   computed: {
-      currentUser(){
-        return this.$store.state.auth.user.data;
-      },
-      ...mapGetters(['wCheck'])
+    currentUser() {
+      return this.$store.state.auth.user.data;
     },
+    ...mapGetters(["wCheck"])
+  }
 };
 </script>
 <style>
-* { font-family: 'NanumSquareRound'; }
+* {
+  font-family: "NanumSquareRound";
+}
 </style>
