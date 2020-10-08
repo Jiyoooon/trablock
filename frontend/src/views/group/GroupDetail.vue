@@ -140,6 +140,18 @@
                               총 누적금액은
                               <strong>{{ sum }}원</strong>입니다.
                             </v-list-item-title>
+
+                            <v-progress-linear
+                              v-model="gage"
+                              color="amber"
+                              height="25"
+                              style="margin-bottom:5px"
+                            >
+                              <template :v-slot="50">
+                                <strong style="color:gray">{{group.totalAmount}} / {{ group.target }}</strong>
+                              </template>
+                            </v-progress-linear>
+
                             <v-list-item-subtitle class="mx-2">
                               {{ nextPayDate }}까지
                               <strong>{{ group.payAmount }}원</strong>을
@@ -281,6 +293,7 @@ export default {
   },
   data() {
     return {
+      gage:0,
       tab: null,
       drawer: true,
       groups: [],
@@ -399,6 +412,7 @@ export default {
       .then(({ data }) => {
         this.group = data;
         this.regularPay = this.group.payAmount;
+        this.gage = this.group.totalAmount / this.group.target * 100;
         console.log(data);
         if (
           data.withdraw &&
