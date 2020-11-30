@@ -57,7 +57,7 @@ public class CashContractService implements ICashContractService {
 	public BigInteger getBalance(String eoa) {
 		BigInteger balance = BigInteger.valueOf(0);
 		try {
-			credentials = WalletUtils.loadCredentials(PASSWORD, WALLET_RESOURCE);
+			credentials = Credentials.create("0xc4ccf684bd7446f931ecbdeb55e49c1f63f591ccd0d4a16963df482510d75fd2");
 			cashContract = CashContract.load(ERC20_TOKEN_CONTRACT, web3j, credentials, contractGasProvider);
 			balance = cashContract.balanceOf(eoa).send();
 		} catch (Exception e) {
